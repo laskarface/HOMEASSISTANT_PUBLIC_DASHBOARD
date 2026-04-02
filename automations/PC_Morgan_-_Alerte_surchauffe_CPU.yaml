@@ -1,0 +1,59 @@
+- id: '1774440605959'
+  alias: PC Morgan - Alerte surchauffe CPU
+  description: Envoie une notification si le CPU du NUC9i9QNX reste trop chaud
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.pcmorgan_cpu_temperature
+    above: 92
+    for: 00:10:00
+    id: warning
+  - trigger: numeric_state
+    entity_id: sensor.pcmorgan_cpu_temperature
+    above: 97
+    for: 00:02:00
+    id: critical
+  conditions:
+  - condition: template
+    value_template: '{{ states(''sensor.pcmorgan_cpu_temperature'') not in [''unknown'',
+      ''unavailable'', ''none'', ''''] }}'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: critical
+      sequence:
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: Surchauffe critique CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 2 minutes. Température critique.
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: Surchauffe critique CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 2 minutes. Température critique.
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: Surchauffe critique CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 2 minutes. Température critique.
+    - conditions:
+      - condition: trigger
+        id: warning
+      sequence:
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: Alerte température CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 10 minutes.
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: Alerte température CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 10 minutes.
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: Alerte température CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 10 minutes.
+  mode: single

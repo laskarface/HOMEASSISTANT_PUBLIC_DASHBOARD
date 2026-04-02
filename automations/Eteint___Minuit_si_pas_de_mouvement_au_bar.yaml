@@ -1,0 +1,17 @@
+- id: '1765901461856'
+  alias: Eteint à Minuit si pas de mouvement au bar
+  description: ''
+  triggers:
+  - trigger: time
+    at: 00:00:00
+  conditions:
+  - type: is_no_motion
+    condition: device
+    device_id: 1004033e1949649d39be21ebd8ff9e98
+    entity_id: 90b780d7f85d92c836dbf945c0826d03
+    domain: binary_sensor
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.lumieres_maison
+  mode: single

@@ -1,0 +1,23 @@
+- id: notif_seche_linge_termine
+  alias: Notification - Sèche-linge terminé
+  description: Envoie une notification à Chris et Aline quand le sèche-linge est terminé
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.seche_linge_termine
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: Sèche-linge
+      message: Le sèche-linge est terminé ✅
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: Sèche-linge
+      message: Le sèche-linge est terminé ✅
+  - action: notify.mobile_app_iphone_de_marley
+    data:
+      title: Sèche-linge
+      message: Le sèche-linge est terminé ✅
+  mode: single

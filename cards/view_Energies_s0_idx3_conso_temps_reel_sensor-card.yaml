@@ -1,0 +1,43 @@
+# =========================================
+# CARTE : conso_temps_reel
+# VUE   : Energies
+# TYPE  : sensor (Carte monobloc)
+# DÉPENDANCES :
+#  - conso_global_bg.png
+#  - n.graph
+#  - n.header
+#  - n.measurement
+#  - n.value
+#  - sensor.ecojoko_consommation_temps_reel
+# =========================================
+
+card_mod:
+  style: "/* 1. Variables de couleur (Crystal Blue) */\n:host {\n  --accent-color:\
+    \ #A2F2FF !important;\n  --sensor-color: #A2F2FF !important;\n  --primary-color:\
+    \ #A2F2FF !important;\n}\n\n/* 2. Style du graphique harmonisé */\n.graph svg\
+    \ polyline {\n  stroke: #A2F2FF !important;\n}\n.graph svg path {\n  fill: #A2F2FF\
+    \ !important;\n  opacity: 0.15 !important;\n}\n\n/* 3. Fond Glassmorphism Large\
+    \ (Pylône & Maison) */\nha-card {\n  background: linear-gradient(rgba(10, 15,\
+    \ 25, 0.70), rgba(10, 15, 25, 0.70)), \n              url('/local/conso_global_bg.png')\
+    \ !important;\n  background-size: cover !important;\n  background-position: center\
+    \ 25% !important; /* On centre légèrement plus haut pour voir le pylône */\n \
+    \ backdrop-filter: blur(12px) !important;\n  -webkit-backdrop-filter: blur(12px)\
+    \ !important;\n  border-radius: 20px !important;\n  border: 1px solid rgba(255,255,255,0.12)\
+    \ !important;\n  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;\n}\n\n.header\
+    \ { padding: 16px 20px 0 20px !important; position: relative; z-index: 2; }\n\n\
+    .name { \n  font-size: 15px !important; \n  font-weight: 800 !important; \n  color:\
+    \ rgba(255,255,255,0.9) !important; \n  text-transform: uppercase;\n  letter-spacing:\
+    \ 1px;\n  text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;\n}\n\n.value { \n\
+    \  font-size: 32px !important; /* On grossit légèrement car la carte est plus\
+    \ large */\n  font-weight: 900 !important; \n  color: #FFFFFF !important; \n \
+    \ text-shadow: 0 2px 8px rgba(0,0,0,0.8) !important;\n}\n\n.measurement { \n \
+    \ font-size: 16px !important; \n  opacity: 0.75 !important; \n}\n\n.graph {\n\
+    \  position: relative;\n  z-index: 1;\n}\n"
+detail: 1
+entity: sensor.ecojoko_consommation_temps_reel
+graph: line
+grid_options:
+  columns: 12
+  rows: 2
+name: Conso Temps Réel
+type: sensor

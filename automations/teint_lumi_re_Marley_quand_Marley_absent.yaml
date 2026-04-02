@@ -1,0 +1,12 @@
+- id: '1774026330867'
+  alias: Éteint lumière Marley quand Marley absent
+  description: ''
+  triggers:
+  - entity_id: person.marley
+    from: home
+    trigger: state
+  actions:
+  - target:
+      entity_id: light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f
+    action: light.turn_off
+  mode: single

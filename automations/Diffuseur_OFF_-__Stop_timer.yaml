@@ -1,0 +1,13 @@
+- id: '1773266965541'
+  alias: Diffuseur OFF -> Stop timer
+  description: Annule le timer quand le diffuseur est mis sur OFF
+  triggers:
+  - entity_id: select.smart_humidifier_24080828541213641101c4e7ae093c61_spray
+    to: 'off'
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: timer.diffuseur_huile
+    action: timer.cancel
+  mode: single

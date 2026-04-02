@@ -1,0 +1,20 @@
+- id: '1763111057401'
+  alias: Quand la machine démarre (reset état terminée)
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.machine_a_laver_en_cours
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.machine_a_laver_terminee
+    data: {}
+  - action: timer.cancel
+    target:
+      entity_id: timer.machine_a_laver_fin
+    data: {}
+  mode: single

@@ -1,0 +1,515 @@
+# =========================================
+# CARTE : camera_salon_move_left
+# VUE   : dashboard
+# TYPE  : entities (Carte monobloc)
+# DÉPENDANCES :
+#  - browser_mod.popup
+#  - button.camera_bureau_move_down
+#  - button.camera_bureau_move_left
+#  - button.camera_bureau_move_right
+#  - button.camera_bureau_move_up
+#  - button.camera_chambre_move_down
+#  - button.camera_chambre_move_left
+#  - button.camera_chambre_move_right
+#  - button.camera_chambre_move_up
+#  - button.camera_salon_move_down
+#  - button.camera_salon_move_left
+#  - button.camera_salon_move_right
+#  - button.camera_salon_move_up
+#  - button.press
+#  - images.unsplash
+#  - n.card
+#  - number.camera_bureau_microphone_volume
+#  - number.camera_chambre_microphone_volume
+#  - number.camera_salon_microphone_volume
+#  - switch.camera_bureau_microphone_mute
+#  - switch.camera_chambre_microphone_mute
+#  - switch.camera_salon_microphone_mute
+# =========================================
+
+card_mod:
+  style: "ha-card {\n  background: transparent !important;\n  box-shadow: none !important;\n\
+    \  border: none !important;\n  padding: 0 !important;\n  margin: 0 !important;\n\
+    \  width: 100% !important;\n}\n.card-content {\n  padding: 0 !important;\n  margin:\
+    \ 0 !important;\n  width: 100% !important;\n}\n"
+entities:
+- card_mod:
+    style: ':host { --toggle-icon-width: 0px !important; }
+
+      #head ha-icon, #head ha-icon-button { display: none !important; width: 0px !important;
+      visibility: hidden !important; }
+
+      div#head { display: block !important; width: 100% !important; padding: 0 !important;
+      margin: 0 !important; }
+
+      #head { padding: 0 !important; margin: 0 !important; width: 100% !important;
+      cursor: pointer !important; }
+
+      #head > * { width: 100% !important; max-width: 100% !important; }
+
+      div#items { padding: 0 !important; margin: 0 !important; }
+
+      '
+  clickable: true
+  entities:
+  - name: CAMÉRA SALON
+    styles:
+      card:
+      - background: none
+      - border: none
+      - padding: 10px 15px 5px 15px
+      name:
+      - color: rgba(255,255,255,0.4)
+      - font-size: 10px
+      - font-weight: 800
+      - text-transform: uppercase
+      - justify-self: start
+    type: custom:button-card
+  - custom_fields:
+      cam:
+        card:
+          type: custom:webrtc-camera
+          ui: false
+          url: rtsp://!secret local_ip:8554/Salon
+    styles:
+      card:
+      - margin: 0 0px 15px 0px
+      - width: 100%
+      - border-radius: 12px
+      - overflow: hidden
+      - border: 1px solid rgba(255,255,255,0.1)
+      - padding: 0
+      - background: black
+      grid:
+      - grid-template-areas: '"cam"'
+      - grid-template-columns: 1fr
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        data:
+          content:
+            cards:
+            - type: custom:webrtc-camera
+              ui: true
+              url: rtsp://!secret local_ip:8554/Salon
+            - card_mod:
+                style: 'ha-card { background: rgba(0,0,0,0.3); border-radius: 12px;
+                  border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; margin-bottom:
+                  20px; }
+
+                  '
+              entities:
+              - entity: switch.camera_salon_microphone_mute
+                name: Désactiver Micro
+              - entity: number.camera_salon_microphone_volume
+                name: Volume Micro
+              type: entities
+            - cards:
+              - icon: mdi:arrow-up
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_salon_move_up
+                type: custom:button-card
+                view_layout:
+                  grid-area: up
+              - icon: mdi:arrow-left
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_salon_move_left
+                type: custom:button-card
+                view_layout:
+                  grid-area: left
+              - icon: mdi:arrow-right
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_salon_move_right
+                type: custom:button-card
+                view_layout:
+                  grid-area: right
+              - icon: mdi:arrow-down
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_salon_move_down
+                type: custom:button-card
+                view_layout:
+                  grid-area: down
+              layout:
+                grid-gap: 15px
+                grid-template-areas: '"  .    up    .  "
+
+                  " left  .   right"
+
+                  "  .   down   .  "
+
+                  '
+                grid-template-columns: 60px 60px 60px
+                grid-template-rows: 60px 60px 60px
+                place-content: center
+              layout_type: grid
+              type: custom:layout-card
+            type: vertical-stack
+          title: Live Salon
+        service: browser_mod.popup
+    type: custom:button-card
+  - name: CAMÉRA CHAMBRE
+    styles:
+      card:
+      - background: none
+      - border: none
+      - padding: 10px 15px 5px 15px
+      name:
+      - color: rgba(255,255,255,0.4)
+      - font-size: 10px
+      - font-weight: 800
+      - text-transform: uppercase
+      - justify-self: start
+    type: custom:button-card
+  - custom_fields:
+      cam:
+        card:
+          type: custom:webrtc-camera
+          ui: false
+          url: rtsp://!secret local_ip:8554/Chambre
+    styles:
+      card:
+      - margin: 0 0px 15px 0px
+      - width: 100%
+      - border-radius: 12px
+      - overflow: hidden
+      - border: 1px solid rgba(255,255,255,0.1)
+      - padding: 0
+      - background: black
+      grid:
+      - grid-template-areas: '"cam"'
+      - grid-template-columns: 1fr
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        data:
+          content:
+            cards:
+            - type: custom:webrtc-camera
+              ui: true
+              url: rtsp://!secret local_ip:8554/Chambre
+            - card_mod:
+                style: 'ha-card { background: rgba(0,0,0,0.3); border-radius: 12px;
+                  border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; margin-bottom:
+                  20px; }'
+              entities:
+              - entity: switch.camera_chambre_microphone_mute
+              - entity: number.camera_chambre_microphone_volume
+              type: entities
+            - cards:
+              - icon: mdi:arrow-up
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_chambre_move_up
+                type: custom:button-card
+                view_layout:
+                  grid-area: up
+              - icon: mdi:arrow-left
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_chambre_move_left
+                type: custom:button-card
+                view_layout:
+                  grid-area: left
+              - icon: mdi:arrow-right
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_chambre_move_right
+                type: custom:button-card
+                view_layout:
+                  grid-area: right
+              - icon: mdi:arrow-down
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_chambre_move_down
+                type: custom:button-card
+                view_layout:
+                  grid-area: down
+              layout:
+                grid-gap: 15px
+                grid-template-areas: '" . up . " " left . right " " . down . "'
+                grid-template-columns: 60px 60px 60px
+                grid-template-rows: 60px 60px 60px
+                place-content: center
+              layout_type: grid
+              type: custom:layout-card
+            type: vertical-stack
+          title: Live Chambre
+        service: browser_mod.popup
+    type: custom:button-card
+  - name: CAMÉRA BUREAU
+    styles:
+      card:
+      - background: none
+      - border: none
+      - padding: 10px 15px 5px 15px
+      name:
+      - color: rgba(255,255,255,0.4)
+      - font-size: 10px
+      - font-weight: 800
+      - text-transform: uppercase
+      - justify-self: start
+    type: custom:button-card
+  - custom_fields:
+      cam:
+        card:
+          type: custom:webrtc-camera
+          ui: false
+          url: rtsp://!secret local_ip:8554/Bureau
+    styles:
+      card:
+      - margin: 0 0px 15px 0px
+      - width: 100%
+      - border-radius: 12px
+      - overflow: hidden
+      - border: 1px solid rgba(255,255,255,0.1)
+      - padding: 0
+      - background: black
+      grid:
+      - grid-template-areas: '"cam"'
+      - grid-template-columns: 1fr
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        data:
+          content:
+            cards:
+            - type: custom:webrtc-camera
+              ui: true
+              url: rtsp://!secret local_ip:8554/Bureau
+            - card_mod:
+                style: 'ha-card { background: rgba(0,0,0,0.3); border-radius: 12px;
+                  border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; margin-bottom:
+                  20px; }'
+              entities:
+              - entity: switch.camera_bureau_microphone_mute
+              - entity: number.camera_bureau_microphone_volume
+              type: entities
+            - cards:
+              - icon: mdi:arrow-up
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_bureau_move_up
+                type: custom:button-card
+                view_layout:
+                  grid-area: up
+              - icon: mdi:arrow-left
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_bureau_move_left
+                type: custom:button-card
+                view_layout:
+                  grid-area: left
+              - icon: mdi:arrow-right
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_bureau_move_right
+                type: custom:button-card
+                view_layout:
+                  grid-area: right
+              - icon: mdi:arrow-down
+                styles:
+                  card:
+                  - background: rgba(255,255,255,0.15)
+                  - border-radius: 50%
+                  icon:
+                  - color: white
+                  - width: 30px
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.camera_bureau_move_down
+                type: custom:button-card
+                view_layout:
+                  grid-area: down
+              layout:
+                grid-gap: 15px
+                grid-template-areas: '" . up . " " left . right " " . down . "'
+                grid-template-columns: 60px 60px 60px
+                grid-template-rows: 60px 60px 60px
+                place-content: center
+              layout_type: grid
+              type: custom:layout-card
+            type: vertical-stack
+          title: Live Bureau
+        service: browser_mod.popup
+    type: custom:button-card
+  full_row: true
+  head:
+    custom_fields:
+      details: "[[[\n  const bgImg = \"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=500&auto=format&fit=crop\"\
+        ;\n  return `\n    <div style=\"width: 100%; height: 100%; position: relative;\
+        \ overflow: hidden; display: flex; flex-direction: column; align-items: center;\
+        \ justify-content: center;\">\n      <div style=\"position: absolute; top:0;\
+        \ left:0; width: 100%; height: 100%; background: url('${bgImg}') center/cover\
+        \ no-repeat; opacity: 0.25; z-index: 0;\"></div>\n      <div style=\"position:\
+        \ relative; z-index: 1; text-align: center; width: 100%;\">\n        <div\
+        \ style=\"font-size: 13px; font-weight: 950; color: white; text-transform:\
+        \ uppercase; letter-spacing: 1px; margin-bottom: 2px; text-shadow: 0 4px 8px\
+        \ rgba(0,0,0,0.95);\">INTÉRIEURES</div>\n        <div style=\"font-size: 10px;\
+        \ color: #46D278; font-weight: 900; display: flex; align-items: center; gap:\
+        \ 5px; justify-content: center; text-shadow: 0 2px 4px rgba(0,0,0,0.9);\"\
+        >\n          <span style=\"width: 6px; height: 6px; background: #46D278; border-radius:\
+        \ 50%; display: inline-block; animation: pulseLED 2s infinite;\"></span>\n\
+        \          SALON, CHAMBRE & BUREAU EN LIGNE\n        </div>\n      </div>\n\
+        \    </div>\n    <style>@keyframes pulseLED { 0%, 100% { opacity: 0.5; } 50%\
+        \ { opacity: 1; } }</style>\n  `;\n]]]\n"
+      footer: '[[[ return `<div style="display:flex; width:100%; justify-content:center;
+        padding: 5px;"><ha-icon icon="mdi:chevron-down" style="color:rgba(255,255,255,0.5);
+        width:18px;"></ha-icon></div>`; ]]]
+
+        '
+      icon: "[[[\n  const blue = \"#00BFFF\";\n  const svg = `\n    <svg viewBox=\"\
+        0 0 100 100\" width=\"42\" height=\"42\" style=\"filter: drop-shadow(0 4px\
+        \ 8px rgba(0,0,0,0.5));\">\n      <circle cx=\"50\" cy=\"45\" r=\"25\" fill=\"\
+        white\" />\n      <circle cx=\"50\" cy=\"45\" r=\"18\" fill=\"#111\" />\n\
+        \      <circle cx=\"50\" cy=\"45\" r=\"12\" fill=\"black\" />\n      <circle\
+        \ cx=\"50\" cy=\"28\" r=\"1.5\" fill=\"#00E676\" style=\"animation: blinkLED\
+        \ 2.5s infinite;\" />\n    </svg>\n  `;\n  return `\n    <div style=\"width:\
+        \ 100%; height: 100%; display: flex; flex-direction: column; align-items:\
+        \ center; justify-content: center; background: linear-gradient(135deg, ${blue}33\
+        \ 0%, ${blue}0D 100%);\">\n      <div style=\"position: relative; z-index:\
+        \ 1;\">${svg}</div>\n      <div style=\"font-size: 10px; font-weight: 950;\
+        \ color: white; text-transform: uppercase; margin-top: 2px;\">Caméras</div>\n\
+        \    </div>\n  `;\n]]]\n"
+    show_icon: false
+    show_name: false
+    show_state: false
+    styles:
+      card:
+      - padding: 0
+      - background: rgba(20, 27, 38, 0.6)
+      - backdrop-filter: blur(10px)
+      - -webkit-backdrop-filter: blur(10px)
+      - border-radius: 20px
+      - border: 1px solid rgba(0, 191, 255, 0.4)
+      - box-shadow: 0 8px 32px rgba(0,0,0,0.4)
+      - height: 85px
+      - overflow: hidden
+      custom_fields:
+        details:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - position: relative
+        - overflow: hidden
+        icon:
+        - justify-self: stretch
+        - align-self: stretch
+        - border-right: 2px solid rgba(255,255,255,0.6)
+        - border-top-left-radius: 20px
+        - display: flex
+        - align-items: center
+        - justify-content: center
+        - z-index: 2
+      grid:
+      - grid-template-areas: '"icon details" "footer footer"'
+      - grid-template-columns: 130px minmax(0, 1fr)
+      - grid-template-rows: 58px 27px
+    type: custom:button-card
+  padding: 0
+  type: custom:fold-entity-row
+type: entities

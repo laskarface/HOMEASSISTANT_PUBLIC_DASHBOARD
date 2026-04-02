@@ -1,0 +1,34 @@
+- id: '1773268008474'
+  alias: OpenUV - Première MAJ au lever (compte dans les 40)
+  description: ''
+  triggers:
+  - event: sunrise
+    trigger: sun
+  conditions:
+  - condition: template
+    value_template: '{{ states(''counter.openuv_updates_today'')|int < 40 }}'
+  actions:
+  - target:
+      entity_id: sensor.openuv_maison_indice_uv_actuel
+    action: homeassistant.update_entity
+  - delay: 00:00:05
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ states('sensor.openuv_maison_niveau_uv_actuel')\n   not
+          in ['unknown','unavailable',''] }}\n"
+      sequence:
+      - target:
+          entity_id: counter.openuv_updates_today
+        action: counter.increment
+      - target:
+          entity_id: input_datetime.openuv_last_update
+        data:
+          datetime: '{{ now().isoformat() }}'
+        action: input_datetime.set_datetime
+      - target:
+          entity_id: input_number.openuv_last_update_ts
+        data:
+          value: '{{ as_timestamp(now()) | int }}'
+        action: input_number.set_value
+  mode: single

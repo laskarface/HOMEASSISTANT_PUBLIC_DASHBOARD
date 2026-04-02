@@ -1,0 +1,424 @@
+arcticForest_dark:
+
+  # TODO
+  #   - [x] radio button bg is too dark
+  #   - [ ] media player bg light-grey is bad
+  #     - something about the kiosk page makes this annoying
+  #   - [ ] text input field bg should be slightly lighter
+  #   - [ ] (input-)dropdown bg should be same as/similar to text
+  #   - [ ] differentiate both fields btw disabled/enabled
+  #   - [ ] make both different from bg color
+  #   - [ ] make entity history plot yellow less ugly greenish
+  #   - [x] notify badge doesn't look great as orange
+  #   - [x] better red for "restart" text
+
+  amber-color: '#ffc107'
+  black-color: '#000000'
+  blue-color: '#2196f3'
+  blue-grey-color: '#607d8b'
+  brown-color: '#795548'
+  cyan-color: '#00bcd4'
+  green-color: '#4caf50'
+  grey-color: '#9e9e9e'
+  indigo-color: '#3f51b5'
+  lime-color: '#cddc39'
+  orange-color: '#ff9800'
+  pink-color: '#e91e63'
+  purple-color: '#926bc7'
+  red-color: '#f44336'
+  teal-color: '#009688'
+  white-color: '#ffffff'
+  yellow-color: '#ffeb3b'
+  light-blue-color: '#03a9f4'
+  light-green-color: '#8bc34a'
+  light-grey-color: '#bdbdbd'
+  dark-grey-color: '#606060'
+  deep-orange-color: '#ff6f22'
+  deep-purple-color: '#6e41ab'
+
+  primary-color: '#5392c0'
+  light-primary-color: '#3a94c5'
+  dark-primary-color: '#5392c0'
+  success-color: '#43a047'
+  info-color: '#039be5'
+  warning-color: '#ffa600'
+  error-color: '#e56058'
+  disabled-color: '#bdbdbd'
+  divider-color: '#3c444b'
+  accent-color: '#d99838'
+  text-accent-color: '#fff2d4'
+
+  background-color: '#3c444b'
+  background-color-2: '#3c444b'
+
+  chip-background-color: 'rgba(33,33,33, 0.15)'
+  clear-background-color: '#5392c0'
+  code-editor-background-color: '#2f383e'
+  markdown-code-background-color: '#454e56'
+  more-info-header-background: '#243d51'
+  primary-background-color: '#3c444b'
+  secondary-background-color: '#32404b'
+  st-mode-background: '#3c444b'
+  card-background-color: '#243d51'
+
+  ha-card-background: '#243d51'
+  ha-card-border-color: 'rgba(0,0,0,0)'
+  ha-card-header-color: '#d3c6aa'
+
+  sidebar-background-color: '#3c444b'
+  sidebar-icon-color: '#8cb9b2'
+  sidebar-selected-icon-color: '#5392c0'
+  sidebar-selected-text-color: '#d3c6aa'
+  sidebar-text-color: '#d3c6aa'
+
+  scrollbar-thumb-color: 'rgb(194, 194, 194)'
+
+  app-theme-color: '#243d51'
+  app-header-background-color: '#3c444b'
+  app-header-text-color: '#d3c6aa'
+
+  outline-color: 'rgba(0, 0, 0, 0.12)'
+  outline-hover-color: 'rgba(0, 0, 0, 0.24)'
+
+  data-table-background-color: '#32404b'
+  table-header-background-color: '#32404b'
+  table-row-alternative-background-color: '#32404b'
+  table-row-background-color: '#3c444b'
+
+  accent-medium-color: '#5392c0'
+
+  mini-media-player-accent-color: '#5392c0'
+  mini-media-player-base-color: '#32404b'
+  mini-media-player-button-color: '#8cb9b2'
+  mini-media-player-active-color: '#32404b'
+
+  text-medium-color: '#dedcaf'
+  text-medium-light-color: '#ebe3ce'
+  text-primary-color: '#d3c6aa'
+  disabled-text-color: '#879189'
+  primary-text-color: '#d3c6aa'
+  secondary-text-color: '#92acc6'
+  text-color: '#d3c6aa'
+  text-light-primary-color: '#d3c6aa'
+
+  switch-checked-button-color: '#5392c0'
+  switch-checked-track-color: '#879189'
+  switch-unchecked-button-color: '#70889e'
+  switch-unchecked-track-color: '#bdbdbd'
+
+  wa-color-danger-border-loud: '#e2436c'
+  wa-color-danger-on-normal: '#e2436c'
+#   wa-color-danger-fill-loud: '#a55671'
+#   wa-color-danger-on-quiet: '#a55671'
+#   wa-color-danger-border-quiet: '#c66887'
+#   wa-color-danger-border-normal: '#da85a0'
+#   wa-color-danger-fill-normal: '#e3a8b9'
+#   wa-color-danger-fill-quiet: '#edcad3'
+#   wa-color-danger-on-loud: '#f8eaee'
+
+  input-disabled-fill-color: '#2196f3'
+  input-disabled-ink-color: '#879189'
+  input-disabled-line-color: '#879189'
+  input-disabled-label-ink-color: '#879189'
+  input-fill-color: '#2d586b'
+  input-label-ink-color: '#d3c6aa'
+  input-dropdown-icon-color: '#92acc6'
+  input-hover-line-color: '#5392c0'
+  input-idle-line-color: '#2196f3'
+  input-ink-color: '#d3c6aa'
+  input-outlined-disabled-border-color: '#879189'
+  input-outlined-hover-border-color: '#879189'
+  input-outlined-idle-border-color: '#879189'
+
+  energy-battery-in-color: '#f06292'
+  energy-battery-out-color: '#4db6ac'
+  energy-gas-color: '#8e021b'
+  energy-grid-consumption-color: '#488fc2'
+  energy-grid-return-color: '#8353d1'
+  energy-non-fossil-color: '#0f9d58'
+  energy-solar-color: '#ff9800'
+  energy-water-color: '#00bcd4'
+
+  label-badge-background-color: '#2196f3'
+  label-badge-text-color: '#d3c6aa'
+  label-badge-blue: 'rgba(83,146,192,1)'
+  label-badge-green: 'rgba(71,134,103,1)'
+  label-badge-grey: '#9e9e9e'
+  label-badge-red: 'rgba(216,131,130,1)'
+  label-badge-yellow: '#9f5a17'
+
+  slider-color: '#5392c0'
+  slider-secondary-color: '#879189'
+  slider-track-color: 'rgb(194, 194, 194)'
+
+  state-green-color: '#478667'
+  state-orange-color: '#d5a236'
+  state-red-color: '#d88382'
+
+  state-icon-color: '#44739e'
+  state-icon-error-color: '#db4437'
+
+  state-active-color: '#5392c0'
+  state-inactive-color: '#9e9e9e'
+
+  state-unavailable-color: '#8496a5'
+
+  state-alert-off-color: '#ecdfc2'
+  state-alert-on-color: '#d88382'
+
+  state-automation-active-color: '#5392c0'
+
+  state-binary_sensor-active-color: '#5392c0'
+  state-binary_sensor-battery-on-color: '#d88382'
+  state-binary_sensor-carbon_monoxide-on-color: '#d88382'
+  state-binary_sensor-gas-on-color: '#d88382'
+  state-binary_sensor-heat-on-color: '#d88382'
+  state-binary_sensor-lock-on-color: '#d88382'
+  state-binary_sensor-moisture-on-color: '#d88382'
+  state-binary_sensor-problem-on-color: '#d88382'
+  state-binary_sensor-safety-on-color: '#d88382'
+  state-binary_sensor-smoke-on-color: '#d88382'
+  state-binary_sensor-sound-on-color: '#d88382'
+  state-binary_sensor-tamper-on-color: '#d88382'
+
+  state-climate-auto-color: '#a1acbc'
+  state-climate-cool-color: '#5392c0'
+  state-climate-dry-color: '#5392c0'
+  state-climate-fan_only-color: '#5392c0'
+  state-climate-heat-color: '#ed8c36'
+  state-climate-heat-cool-color: '#5392c0'
+
+  state-cover-active-color: '#5392c0'
+
+  state-device_tracker-active-color: '#5392c0'
+  state-device_tracker-home-color: '#5392c0'
+
+  state-fan-active-color: '#5392c0'
+
+  state-group-active-color: '#5392c0'
+
+  state-humidifier-active-color: '#5392c0'
+  state-humidifier-on-color: '#2196f3'
+
+  state-input_boolean-active-color: '#5392c0'
+
+  state-lawn_mower-error-color: '#f44336'
+  state-lawn_mower-mowing-color: '#009688'
+
+  state-light-active-color: '#5392c0'
+
+  state-lock-jammed-color: '#d88382'
+  state-lock-locked-color: '#5392c0'
+  state-lock-locking-color: '#ff9800'
+  state-lock-open-color: '#f44336'
+  state-lock-opening-color: '#ff9800'
+  state-lock-pending-color: '#d5a236'
+  state-lock-unlocked-color: '#ecdfc2'
+  state-lock-unlocking-color: '#ff9800'
+
+  state-media_player-active-color: '#5392c0'
+
+  state-person-active-color: '#5392c0'
+  state-person-home-color: '#5392c0'
+
+  state-plant-active-color: '#d88382'
+
+  state-sensor-battery-high-color: '#5392c0'
+  state-sensor-battery-low-color: '#d88382'
+  state-sensor-battery-medium-color: '#d5a236'
+
+  state-siren-active-color: '#d88382'
+
+  state-sun-above_horizon-color: '#ffc107'
+  state-sun-below_horizon-color: '#3f51b5'
+
+  state-switch-active-color: '#5392c0'
+
+  state-update-active-color: '#5392c0'
+
+  state-vacuum-active-color: '#5392c0'
+
+  state-valve-active-color: '#2196f3'
+
+  state-water_heater-eco-color: '#4caf50'
+  state-water_heater-electric-color: '#ff9800'
+  state-water_heater-gas-color: '#ff9800'
+  state-water_heater-heat_pump-color: '#ff9800'
+  state-water_heater-high_demand-color: '#ff6f22'
+  state-water_heater-performance-color: '#ff6f22'
+
+  alarm-color-armed: 'rgba(247,53,67,1)'
+  state-alarm_control_panel-armed_away-color: '#478667'
+  state-alarm_control_panel-armed_custom_bypass-color: '#478667'
+  state-alarm_control_panel-armed_home-color: '#478667'
+  state-alarm_control_panel-armed_night-color: '#478667'
+  state-alarm_control_panel-armed_vacation-color: '#478667'
+  state-alarm_control_panel-arming-color: '#d5a236'
+  state-alarm_control_panel-disarming-color: '#d5a236'
+  state-alarm_control_panel-pending-color: '#d5a236'
+  state-alarm_control_panel-triggered-color: '#d88382'
+
+  ha-assist-chip-active-container-color: 'rgba(3,169,244,0.15)'
+
+  history-unavailable-color: 'transparent'
+  history-unknown-color: '#606060'
+
+  paper-dialog-background-color: '#2196f3'
+  paper-listbox-background-color: '#2196f3'
+  paper-card-background-color: '#2196f3'
+  paper-input-container-focus-color: '#5392c0'
+
+  paper-item-icon-active-color: '#5392c0'
+  paper-item-icon-color: '#ecdfc2'
+  paper-item-selected_-_background-color: '#2196f3'
+  paper-radio-button-checked-color: '#5392c0'
+  paper-slider-active-color: '#5392c0'
+  paper-slider-container-color: '#3c444b'
+  paper-slider-disabled-active-color: '#879189'
+  paper-slider-disabled-secondary-color: '#879189'
+  paper-slider-knob-color: '#5392c0'
+  paper-slider-knob-start-color: '#5392c0'
+  paper-slider-pin-color: '#3c444b'
+  paper-slider-secondary-color: '#32404b'
+  paper-toggle-button-checked-bar-color: '#5392c0'
+  paper-toggle-button-checked-ink-color: '#5392c0'
+  paper-toggle-button-unchecked-bar-color: '#879189'
+  paper-toggle-button-unchecked-button-color: '#879189'
+  paper-toggle-button-unchecked-ink-color: '#879189'
+
+  material-primary-color: '#5392c0'
+  material-primary-contrast-color: '#478667'
+  material-background-color: '#3c444b'
+  material-secondary-background-color: '#32404b'
+  material-body-text-color: '#d3c6aa'
+  material-disabled-text-color: 'rgba(0, 0, 0, 0.38)'
+  material-error-text-color: '#db4437'
+  material-primary-text-color: '#5392c0'
+  material-secondary-text-color: '#92acc6'
+  material-disabled-color: 'rgba(0, 0, 0, 0.26)'
+  material-divider-color: 'rgba(0, 0, 0, 0.12)'
+  material-error-color: '#db4437'
+
+  mdc-theme-primary: '#5392c0'
+  mdc-theme-secondary: '#5392c0'
+  mdc-theme-background: '#3c444b'
+  mdc-theme-on-primary: '#d3c6aa'
+  mdc-theme-on-secondary: '#d3c6aa'
+  mdc-theme-on-surface: '#d3c6aa'
+  mdc-theme-text-disabled-on-light: '#879189'
+  mdc-theme-text-hint-on-background: '#92acc6'
+  mdc-theme-text-icon-on-background: '#92acc6'
+  mdc-theme-text-primary-on-background: '#d3c6aa'
+  mdc-theme-text-secondary-on-background: '#92acc6'
+  mdc-theme-error: '#db4437'
+  mdc-theme-surface: '#32404b'
+
+  mdc-text-field-disabled-fill-color: '#4a5151'
+  mdc-text-field-disabled-ink-color: '#879189'
+  mdc-text-field-disabled-line-color: '#879189'
+  mdc-text-field-fill-color: '#232f39'
+  mdc-text-field-hover-line-color: '#5392c0'
+  mdc-text-field-idle-line-color: '#2196f3'
+  mdc-text-field-ink-color: '#d3c6aa'
+  mdc-text-field-outlined-disabled-border-color: '#879189'
+  mdc-text-field-outlined-hover-border-color: '#879189'
+  mdc-text-field-outlined-idle-border-color: '#879189'
+  mdc-text-field-label-ink-color: '#92acc6'
+
+  mdc-button-disabled-ink-color: '#879189'
+  mdc-button-outline-color: 'rgba(0, 0, 0, 0.12)'
+  mdc-checkbox-disabled-color: '#879189'
+  mdc-checkbox-unchecked-color: 'rgba(33,33,33, 0.54)'
+  mdc-dialog-content-ink-color: '#d3c6aa'
+  mdc-dialog-heading-ink-color: '#d3c6aa'
+  mdc-dialog-scroll-divider-color: '#2196f3'
+  mdc-radio-disabled-color: '#879189'
+  mdc-radio-unchecked-color: 'rgba(33,33,33, 0.54)'
+  mdc-select-disabled-dropdown-icon-color: '#879189'
+  mdc-select-disabled-fill-color: '#4a5151'
+  mdc-select-disabled-ink-color: '#879189'
+  mdc-select-dropdown-icon-color: '#92acc6'
+  mdc-select-fill-color: '#232f39'
+  mdc-select-hover-line-color: '#5392c0'
+  mdc-select-idle-line-color: '#3c444b'
+  mdc-select-ink-color: '#d3c6aa'
+  mdc-select-outlined-disabled-border-color: '#404c51'
+  mdc-select-outlined-hover-border-color: '#879189'
+  mdc-select-outlined-idle-border-color: '#879189'
+  mdc-select-label-ink-color: '#d3c6aa'
+  mdc-tab-text-label-color-default: '#d3c6aa'
+
+  lumo-base-color: '#2196f3'
+  lumo-primary-color: '#5392c0'
+  lumo-body-text-color: '#89B3F8'
+  lumo-header-text-color: '#89B3F8'
+  lumo-primary-text-color: '#5392c0'
+  lumo-secondary-text-color: '#5392c0'
+  lumo-tertiary-text-color: '#89B3F8'
+  lumo-shade: '#2196f3'
+  lumo-shade-5pct: 'rgba(34, 34, 34, .05)'
+  lumo-shade-10pct: 'rgba(34, 34, 34, .1)'
+  lumo-shade-20pct: 'rgba(34, 34, 34, .2)'
+  lumo-shade-30pct: 'rgba(34, 34, 34, .3)'
+  lumo-shade-40pct: 'rgba(34, 34, 34, .4)'
+  lumo-shade-50pct: 'rgba(34, 34, 34, .5)'
+  lumo-shade-60pct: 'rgba(34, 34, 34, .6)'
+  lumo-shade-70pct: 'rgba(34, 34, 34, .7)'
+  lumo-shade-80pct: 'rgba(34, 34, 34, .8)'
+  lumo-shade-90pct: 'rgba(34, 34, 34, .9)'
+  lumo-tint-5pct: '#2196f3'
+
+  ch-background: '#2196f3'
+  ch-active-tab-color: '#5392c0'
+  ch-all-tabs-color: '#8cb9b2'
+  ch-notification-dot-color: '#5392c0'
+  ch-tab-indicator-color: '#5392c0'
+
+  valetudo-map-floor-color: '#70889e'
+  valetudo-map-wall-color: 'rgba(216,131,130,1)'
+
+  swiper-theme-color: '#007aff'
+
+  codemirror-keyword: '#58a47e'
+  codemirror-atom: '#E69875'
+  codemirror-number: '#d699b6'
+  codemirror-string: '#dfa000'
+  codemirror-comment: '#859289'
+  codemirror-property: '#3a94c5'
+
+
+##################
+
+# NOTE - Work in Progress: These are intended to be used on dashboard cards or
+# individual panels within to change up the accent color from the standard
+# My personal use-case is the line graphs on a sensor card
+arcticForest_dark_alt-accent_blue-grey:
+  accent-color: '#607d8b'
+arcticForest_dark_alt-accent_steel-blue:
+  accent-color: '#44739e'
+arcticForest_dark_alt-accent_pale-blue:
+  accent-color: '#8cb9b2'
+arcticForest_dark_alt-accent_blue:
+  accent-color: '#5392c0'
+arcticForest_dark_alt-accent_teal:
+  accent-color: '#4db6ac'
+arcticForest_dark_alt-accent_aqua:
+  accent-color: '#009688'
+arcticForest_dark_alt-accent_green:
+  accent-color: '#43a047'
+arcticForest_dark_alt-accent_dark-green:
+  accent-color: '#478667'
+arcticForest_dark_alt-accent_purple:
+  accent-color: '#926bc7'
+arcticForest_dark_alt-accent_deep-purple:
+  accent-color: '#6e41ab'
+arcticForest_dark_alt-accent_violet:
+  accent-color: '#3f51b5'
+arcticForest_dark_alt-accent_liquid-bismuth:
+  accent-color: '#d699b6'
+arcticForest_dark_alt-accent_dark-bubblegum:
+  accent-color: '#f06292'
+arcticForest_dark_alt-accent_salmon:
+  accent-color: '#d88382'
+arcticForest_dark_alt-accent_clementine:
+  accent-color: '#E69875'

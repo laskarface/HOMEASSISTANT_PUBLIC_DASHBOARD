@@ -1,0 +1,109 @@
+# =========================================
+# CARTE : sonoff_acc8001cf0_temperature
+# VUE   : Temperatures_et_Humidites
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - event.stop
+#  - hum.to
+#  - nt.state
+#  - sensor.sdb_chloe_morgan_humidity
+#  - sensor.sdb_chloe_morgan_temperature
+#  - sensor.sonoff_acc8001cf0_temperature
+#  - temp.to
+#  - this.dispatch
+#  - variables.hum_entity
+#  - variables.temp_entity
+# =========================================
+
+custom_fields:
+  main: "[[[\n  const tempEnt = states[variables.temp_entity];\n  const humEnt = states[variables.hum_entity];\n\
+    \  const temp = tempEnt && tempEnt.state ? parseFloat(tempEnt.state) : 0;\n  const\
+    \ hum = humEnt && humEnt.state ? parseFloat(humEnt.state) : 0;\n  \n  // -----\
+    \ LOGIQUE D'ALERTE TEMPERATURE -----\n  let tempAlert = false;\n  let tempBg =\
+    \ \"transparent\";\n  let tempIconColor = \"rgba(255,255,255,0.3)\";\n  let tempTextColor\
+    \ = \"white\";\n  \n  if (temp < 19) {\n    tempAlert = true;\n    tempBg = \"\
+    linear-gradient(135deg, rgba(41, 182, 246, 0.25) 0%, transparent 100%)\";\n  \
+    \  tempIconColor = \"#29B6F6\";\n    tempTextColor = \"#29B6F6\";\n  } else if\
+    \ (temp > 25) {\n    tempAlert = true;\n    tempBg = \"linear-gradient(135deg,\
+    \ rgba(255, 152, 0, 0.25) 0%, transparent 100%)\";\n    tempIconColor = \"#FF9800\"\
+    ;\n    tempTextColor = \"#FF9800\";\n  }\n\n  // ----- LOGIQUE D'ALERTE HUMIDITE\
+    \ (Uniformisée en Bleu #2196F3) -----\n  let humAlert = false;\n  let humBg =\
+    \ \"transparent\";\n  let humIconColor = \"rgba(255,255,255,0.3)\";\n  let humTextColor\
+    \ = \"white\";\n\n  if (hum > 65) {\n    humAlert = true;\n    humBg = \"linear-gradient(135deg,\
+    \ rgba(33, 150, 243, 0.25) 0%, transparent 100%)\";\n    humIconColor = \"#2196F3\"\
+    ;\n    humTextColor = \"#2196F3\";\n  }\n\n  // ----- LOGIQUE GLOBALE (BLOC DE\
+    \ GAUCHE) -----\n  let leftColor = \"#4CAF50\"; \n  if (tempAlert || humAlert)\
+    \ {\n     if (temp < 19) leftColor = \"#29B6F6\"; \n     if (temp > 25) leftColor\
+    \ = \"#FF9800\"; \n     if (hum > 65) leftColor = \"#2196F3\"; \n  }\n\n  return\
+    \ `\n    <div style=\"display: flex; width: 100%; height: 100%; margin: 0; padding:\
+    \ 0;\">\n      \n      <div style=\"flex: 0 0 130px; height: 100%; display: flex;\
+    \ flex-direction: column; justify-content: center; align-items: center; border-right:\
+    \ 1px solid rgba(255,255,255,0.1); background: linear-gradient(135deg, ${leftColor}25\
+    \ 0%, transparent 100%); transition: background 0.3s; margin: 0; padding: 0; box-sizing:\
+    \ border-box;\">\n        <ha-icon icon=\"mdi:bathtub\" style=\"width: 24px; height:\
+    \ 24px; color: ${leftColor}; filter: drop-shadow(0 0 8px ${leftColor}80); margin-bottom:\
+    \ 2px;\"></ha-icon>\n        <div style=\"font-size: 8px; font-weight: 800; color:\
+    \ white; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin:\
+    \ 0; line-height: 1.2;\">SDB CHLOÉ<br>& MOMO</div>\n      </div>\n      \n   \
+    \   <div style=\"flex: 1; height: 100%; display: flex; flex-direction: column;\
+    \ justify-content: center; align-items: center; border-right: 1px solid rgba(255,255,255,0.05);\
+    \ background: ${tempBg}; cursor: pointer; transition: all 0.3s; margin: 0; padding:\
+    \ 0; box-sizing: border-box;\"\n           onclick=\"event.stopPropagation();\
+    \ const e = new CustomEvent('hass-more-info', { detail: { entityId: '${variables.temp_entity}'\
+    \ }, bubbles: true, composed: true }); this.dispatchEvent(e);\">\n        <div\
+    \ style=\"display: flex; align-items: center; gap: 4px; margin-bottom: 2px;\"\
+    >\n          <ha-icon icon=\"mdi:thermometer\" style=\"width: 12px; height: 12px;\
+    \ color: ${tempIconColor};\"></ha-icon>\n          <span style=\"font-size: 8px;\
+    \ font-weight: 900; color: ${tempIconColor}; letter-spacing: 1px; line-height:\
+    \ 1;\">TEMPÉRATURE</span>\n        </div>\n        <div style=\"display: flex;\
+    \ align-items: baseline; gap: 4px;\">\n          <span style=\"font-size: 22px;\
+    \ font-weight: 900; color: ${tempTextColor}; line-height: 1;\">${temp.toFixed(1)}</span>\n\
+    \          <span style=\"font-size: 11px; font-weight: 800; color: ${tempIconColor};\
+    \ line-height: 1;\">°C</span>\n        </div>\n      </div>\n      \n      <div\
+    \ style=\"flex: 1; height: 100%; display: flex; flex-direction: column; justify-content:\
+    \ center; align-items: center; background: ${humBg}; cursor: pointer; transition:\
+    \ all 0.3s; margin: 0; padding: 0; box-sizing: border-box;\"\n           onclick=\"\
+    event.stopPropagation(); const e = new CustomEvent('hass-more-info', { detail:\
+    \ { entityId: '${variables.hum_entity}' }, bubbles: true, composed: true }); this.dispatchEvent(e);\"\
+    >\n        <div style=\"display: flex; align-items: center; gap: 4px; margin-bottom:\
+    \ 2px;\">\n          <ha-icon icon=\"mdi:water-percent\" style=\"width: 13px;\
+    \ height: 13px; color: ${humIconColor}; margin-left: -2px;\"></ha-icon>\n    \
+    \      <span style=\"font-size: 8px; font-weight: 900; color: ${humIconColor};\
+    \ letter-spacing: 1px; line-height: 1;\">HUMIDITÉ</span>\n        </div>\n   \
+    \     <div style=\"display: flex; align-items: baseline; gap: 4px;\">\n      \
+    \    <span style=\"font-size: 22px; font-weight: 900; color: ${humTextColor};\
+    \ line-height: 1;\">${hum.toFixed(0)}</span>\n          <span style=\"font-size:\
+    \ 11px; font-weight: 800; color: ${humIconColor}; line-height: 1;\">%</span>\n\
+    \        </div>\n      </div>\n      \n    </div>\n  `;\n]]]\n"
+entity: sensor.sonoff_acc8001cf0_temperature
+show_icon: false
+show_name: false
+show_state: false
+styles:
+  card:
+  - padding: 0
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 20px
+  - border: 1px solid rgba(255, 255, 255, 0.1)
+  - box-shadow: 0 4px 15px rgba(0,0,0,0.2)
+  - overflow: hidden
+  - margin-top: 8px
+  custom_fields:
+    main:
+    - justify-self: stretch
+    - align-self: stretch
+    - padding: 0
+    - height: 100%
+    - margin: 0
+  grid:
+  - grid-template-areas: '"main"'
+  - grid-template-columns: 1fr
+  - grid-template-rows: 64px
+  - margin: 0
+  - gap: 0
+type: custom:button-card
+variables:
+  hum_entity: sensor.sdb_chloe_morgan_humidity
+  temp_entity: sensor.sdb_chloe_morgan_temperature

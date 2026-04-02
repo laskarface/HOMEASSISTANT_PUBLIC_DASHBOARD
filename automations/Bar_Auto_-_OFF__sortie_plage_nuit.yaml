@@ -1,0 +1,16 @@
+- id: '1765969403142'
+  alias: Bar Auto - OFF (sortie plage nuit)
+  description: ''
+  triggers:
+  - event: sunrise
+    offset: +00:45:00
+    trigger: sun
+  conditions:
+  - condition: state
+    entity_id: light.bar
+    state: 'on'
+  actions:
+  - target:
+      entity_id: light.bar
+    action: light.turn_off
+  mode: single

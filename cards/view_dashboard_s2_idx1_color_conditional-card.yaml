@@ -1,0 +1,293 @@
+# =========================================
+# CARTE : color
+# VUE   : dashboard
+# TYPE  : conditional (Carte monobloc)
+# DÉPENDANCES :
+#  - bar_ids.includes
+#  - chloe_ids.includes
+#  - homeassistant.turn_off
+#  - images.unsplash
+#  - light.bar
+#  - light.chambre_chloe
+#  - light.chambre_lison
+#  - light.leds_lison
+#  - light.lumiere_chloe
+#  - light.lumieres_maison
+#  - light.meross_mss710r_3de1_outlet
+#  - light.piano
+#  - light.pilote_led_chloe
+#  - light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6
+#  - light.smart_rgb_bulb_2401021551861452050248e1e9e8d8fb
+#  - light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+#  - light.smart_rgb_bulb_2401023753523452050248e1e9e8dca9
+#  - light.smart_rgb_bulb_2401026885944952050248e1e9e8dccb
+#  - light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb
+#  - light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15
+#  - light.smart_rgb_pro_led_strip_23122886861017560f0448e1e9e89f81
+#  - lison_ids.includes
+#  - lum_ids.for
+#  - piano_ids.includes
+#  - pieces.add
+#  - pieces.size
+#  - sw_ids.for
+#  - switch.inter_maison
+#  - this.entity_id
+#  - variables.color
+# =========================================
+
+card:
+  card_mod:
+    style: 'div#head { display: block !important; width: 100% !important; padding:
+      0 !important; margin: 0 !important; --toggle-icon-width: 0px !important; } #head
+      { padding: 0 !important; margin: 0 !important; width: 100% !important; cursor:
+      pointer !important; pointer-events: auto !important; }  #head ha-icon { display:
+      none !important; width: 0px !important; }  div#items { padding: 0 !important;
+      margin: 0 !important; }
+
+      '
+  clickable: true
+  entities:
+  - card:
+      card_mod:
+        style: 'ha-card { background: transparent !important; border: none !important;
+          margin-top: 20px !important; }'
+      columns: 2
+      square: false
+      type: grid
+    card_param: cards
+    filter:
+      exclude:
+      - entity_id: light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb
+      - entity_id: light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6
+      - entity_id: light.smart_rgb_bulb_2401021551861452050248e1e9e8d8fb
+      - entity_id: light.smart_rgb_bulb_2401026885944952050248e1e9e8dccb
+      - entity_id: light.smart_rgb_bulb_2401023753523452050248e1e9e8dca9
+      - entity_id: light.smart_rgb_pro_led_strip_23122886861017560f0448e1e9e89f81
+      - entity_id: light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+      - entity_id: light.leds_lison
+      - entity_id: light.lumiere_chloe
+      - entity_id: light.pilote_led_chloe
+      - entity_id: light.lumieres_maison
+      - entity_id: switch.inter_maison
+      - entity_id: light.bar
+      - entity_id: light.piano
+      include:
+      - entity_id: light.chambre_chloe
+        options:
+          card_mod:
+            style: 'ha-card { background: rgba(20,27,38,0.6) !important; border: 1px
+              solid rgba(255,179,0,0.4) !important; border-radius: 15px !important;
+              margin: 4px !important; }'
+          icon: mdi:bed
+          name: Chloé
+          tap_action:
+            action: call-service
+            data:
+              entity_id: this.entity_id
+            service: homeassistant.turn_off
+          type: custom:mushroom-light-card
+          use_light_color: true
+        state: 'on'
+      - entity_id: light.chambre_lison
+        options:
+          card_mod:
+            style: 'ha-card { background: rgba(20,27,38,0.6) !important; border: 1px
+              solid rgba(255,179,0,0.4) !important; border-radius: 15px !important;
+              margin: 4px !important; }'
+          icon: mdi:bed
+          name: Lison
+          tap_action:
+            action: call-service
+            data:
+              entity_id: this.entity_id
+            service: homeassistant.turn_off
+          type: custom:mushroom-light-card
+          use_light_color: true
+        state: 'on'
+      - entity_id: light.meross_mss710r_3de1_outlet
+        options:
+          card_mod:
+            style: 'ha-card { background: rgba(20,27,38,0.6) !important; border: 1px
+              solid rgba(255,179,0,0.4) !important; border-radius: 15px !important;
+              margin: 4px !important; }'
+          icon: mdi:piano
+          name: Piano
+          tap_action:
+            action: call-service
+            data:
+              entity_id: this.entity_id
+            service: homeassistant.turn_off
+          type: custom:mushroom-light-card
+          use_light_color: true
+        state: 'on'
+      - entity_id: light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15
+        options:
+          card_mod:
+            style: 'ha-card { background: rgba(20,27,38,0.6) !important; border: 1px
+              solid rgba(255,179,0,0.4) !important; border-radius: 15px !important;
+              margin: 4px !important; }'
+          icon: mdi:glass-cocktail
+          name: BAR
+          tap_action:
+            action: call-service
+            data:
+              entity_id: this.entity_id
+            service: homeassistant.turn_off
+          type: custom:mushroom-light-card
+          use_light_color: true
+        state: 'on'
+      - group: light.lumieres_maison
+        options:
+          card_mod:
+            style: 'ha-card { background: rgba(20,27,38,0.6) !important; border: 1px
+              solid rgba(255,179,0,0.4) !important; border-radius: 15px !important;
+              margin: 4px !important; }'
+          tap_action:
+            action: call-service
+            data:
+              entity_id: this.entity_id
+            service: homeassistant.turn_off
+          type: custom:mushroom-light-card
+          use_light_color: true
+        state: 'on'
+      - group: switch.inter_maison
+        options:
+          card_mod:
+            style: 'ha-card { background: rgba(20,27,38,0.6) !important; border: 1px
+              solid rgba(255,179,0,0.4) !important; border-radius: 15px !important;
+              margin: 4px !important; }'
+          icon_color: amber
+          tap_action:
+            action: call-service
+            data:
+              entity_id: this.entity_id
+            service: homeassistant.turn_off
+          type: custom:mushroom-entity-card
+        state: 'on'
+    show_empty: false
+    type: custom:auto-entities
+    unique: entity
+  head:
+    custom_fields:
+      details: "[[[\n  const bar_ids = ['light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15','light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb','light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6','light.smart_rgb_bulb_2401021551861452050248e1e9e8d8fb','light.smart_rgb_bulb_2401026885944952050248e1e9e8dccb','light.smart_rgb_bulb_2401023753523452050248e1e9e8dca9','light.smart_rgb_pro_led_strip_23122886861017560f0448e1e9e89f81'];\n\
+        \  const piano_ids = ['light.meross_mss710r_3de1_outlet', 'light.piano'];\n\
+        \  const lison_ids = ['light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e',\
+        \ 'light.leds_lison', 'light.chambre_lison'];\n  const chloe_ids = ['light.lumiere_chloe',\
+        \ 'light.pilote_led_chloe', 'light.chambre_chloe'];\n  \n  let pieces = new\
+        \ Set();\n  const lum_ids = states['light.lumieres_maison']?.attributes?.entity_id\
+        \ || [];\n  lum_ids.forEach(id => {\n    if (states[id]?.state === 'on' &&\
+        \ id !== 'light.lumieres_maison') {\n      if (bar_ids.includes(id)) pieces.add('bar');\n\
+        \      else if (piano_ids.includes(id)) pieces.add('piano');\n      else if\
+        \ (lison_ids.includes(id)) pieces.add('lison');\n      else if (chloe_ids.includes(id))\
+        \ pieces.add('chloe');\n      else pieces.add(id);\n    }\n  });\n  const\
+        \ sw_ids = states['switch.inter_maison']?.attributes?.entity_id || [];\n \
+        \ sw_ids.forEach(id => {\n    if (states[id]?.state === 'on' && id !== 'switch.inter_maison')\
+        \ {\n       if (lison_ids.includes(id)) pieces.add('lison');\n       else\
+        \ if (chloe_ids.includes(id)) pieces.add('chloe');\n       else pieces.add(id);\n\
+        \    }\n  });\n  \n  const count = pieces.size;\n  const bgImg = \"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=500&auto=format&fit=crop\"\
+        ;\n  \n  return `\n    <div style=\"width: 100%; height: 100%; position: relative;\
+        \ overflow: hidden; display: flex; align-items: center; justify-content: center;\"\
+        >\n      <!-- On adoucit le sepia (0.6) et on décale à 75% vers le bas pour\
+        \ faire remonter l'ampoule -->\n      <div style=\"position: absolute; top:0;\
+        \ left:0; width: 100%; height: 100%; background: url('${bgImg}') center 75%\
+        \ / cover no-repeat; opacity: 0.5; z-index: 0; filter: sepia(0.6) saturate(2.5)\
+        \ hue-rotate(-10deg);\"></div>\n      \n      <div style=\"position: relative;\
+        \ z-index: 1; width:280px; max-width:100%; display:flex; flex-direction:row;\
+        \ align-items:center; justify-content:flex-start; gap:15px; padding:0 15px;\"\
+        >\n        <div style=\"font-size:38px; font-weight:900; color:${variables.color};\
+        \ line-height:1; text-shadow:0 0 15px ${variables.color}80; min-width:40px;\
+        \ text-align:center;\">${count}</div>\n        <div style=\"display:flex;\
+        \ flex-direction:column; align-items:flex-start; justify-content:center; flex:1;\"\
+        >\n          <div style=\"font-size:13px; font-weight:800; color:white; text-transform:uppercase;\
+        \ letter-spacing:1px; line-height:1.2; text-shadow: 0 1px 4px rgba(0,0,0,0.8);\"\
+        >${count > 1 ? 'PIÈCES' : 'PIÈCE'}</div>\n          <div style=\"font-size:11px;\
+        \ color:rgba(255,255,255,0.8); margin-top:4px; font-weight:700; text-shadow:\
+        \ 0 1px 2px rgba(0,0,0,0.8);\">ALLUMÉE${count > 1 ? 'S' : ''} DANS LA MAISON</div>\n\
+        \        </div>\n      </div>\n    </div>`;\n]]]\n"
+      footer: "<div style=\"display:flex; width:100%; justify-content:center; align-items:center;\"\
+        >\n  <ha-icon icon=\"mdi:chevron-down\" style=\"color: rgba(255,255,255,0.7);\
+        \ width: 18px; height: 18px;\"></ha-icon>\n</div>\n"
+      icon: "[[[\n  const color = variables.color;\n  return `\n    <div style=\"\
+        width: 100%; height: 100%; display: flex; flex-direction: column; align-items:\
+        \ center; justify-content: center; background: linear-gradient(135deg, ${color}33\
+        \ 0%, ${color}0D 100%); border-top-left-radius: 20px; box-sizing: border-box;\
+        \ position: relative;\">\n       <div style=\"position: absolute; width: 50px;\
+        \ height: 50px; background: ${color}; border-radius: 50%; filter: blur(20px);\
+        \ opacity: 0.3;\"></div>\n       <div style=\"font-size: 32px; filter: drop-shadow(0\
+        \ 0 10px ${color}80); z-index: 1;\">\U0001F4A1</div>\n       <div style=\"\
+        font-size: 10px; font-weight: 900; color: white; text-transform: uppercase;\
+        \ letter-spacing: 0.8px; margin-top: 2px; z-index: 1;\">Eclairages</div>\n\
+        \    </div>`;\n]]]\n"
+    entity: light.lumieres_maison
+    show_icon: false
+    show_name: false
+    show_state: false
+    styles:
+      card:
+      - padding: 0
+      - background: rgba(20, 27, 38, 0.6)
+      - backdrop-filter: blur(10px)
+      - -webkit-backdrop-filter: blur(10px)
+      - border-radius: 20px
+      - border: '[[[ return `1px solid ${variables.color}80`; ]]]'
+      - box-shadow: '[[[ return `0 0 20px ${variables.color}40, 0 8px 32px rgba(0,0,0,0.4)`;
+          ]]]'
+      - height: 85px
+      - pointer-events: none
+      - overflow: hidden
+      - margin: 0px
+      - box-sizing: border-box
+      custom_fields:
+        details:
+        - justify-self: stretch
+        - align-self: stretch
+        - display: flex
+        - flex-direction: column
+        - justify-content: center
+        - align-items: center
+        - padding: 0
+        - overflow: hidden
+        - position: relative
+        footer:
+        - justify-self: stretch
+        - align-self: stretch
+        - background: rgba(0,0,0,0.2)
+        - border-top: 1px solid rgba(255,255,255,0.05)
+        - display: flex
+        - align-items: center
+        - justify-content: center
+        - border-radius: 0 0 20px 20px
+        icon:
+        - justify-self: stretch
+        - align-self: stretch
+        - border-right: 2px solid rgba(255,255,255,0.6)
+        - border-top-left-radius: 20px
+        - display: flex
+        - align-items: center
+        - justify-content: center
+        - padding: 0
+        - z-index: 2
+      grid:
+      - grid-template-areas: '"icon details" "footer footer"'
+      - grid-template-columns: 130px minmax(0, 1fr)
+      - grid-template-rows: 60px 25px
+      - gap: 0px
+      - width: 100%
+      - margin: 0
+    tap_action:
+      action: none
+    type: custom:button-card
+    variables:
+      color: '#FFB300'
+  padding: 0
+  type: custom:fold-entity-row
+conditions:
+- condition: or
+  conditions:
+  - condition: state
+    entity: light.lumieres_maison
+    state: 'on'
+  - condition: state
+    entity: switch.inter_maison
+    state: 'on'
+type: conditional

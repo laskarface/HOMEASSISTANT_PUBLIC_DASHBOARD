@@ -1,0 +1,29 @@
+- id: '1766395799546'
+  alias: ⚠️ Home Assistant - Alertes système (hors mises à jour)
+  description: Push iPhone sur toute persistent_notification.created
+  triggers:
+  - event_type: persistent_notification.created
+    trigger: event
+  conditions:
+  - condition: template
+    value_template: '{% set t = (trigger.event.data.title | default('''') | lower)
+      %} {% set m = (trigger.event.data.message | default('''') | lower) %}  {{ not
+      (''update'' in t or ''mise à jour'' in t or ''upgrade'' in t or ''nouvelle version''
+      in t or ''update'' in m or ''mise à jour'' in m or ''upgrade'' in m or ''nouvelle
+      version'' in m or ''supervisor'' in t or ''home assistant core'' in t or ''home
+      assistant os'' in t or ''hacs'' in t or ''supervisor'' in m or ''home assistant
+      core'' in m or ''home assistant os'' in m or ''hacs'' in m) }}
+
+      '
+  actions:
+  - data:
+      title: ⚠️ Home Assistant
+      message: '{{ trigger.event.data.title | default(''Alerte système'') }} {% if
+        trigger.event.data.message %} - {{ trigger.event.data.message }} {% endif
+        %}'
+      data:
+        push:
+          sound: default
+        interruption-level: time-sensitive
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  mode: queued

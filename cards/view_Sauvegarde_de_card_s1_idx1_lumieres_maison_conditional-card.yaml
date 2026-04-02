@@ -1,0 +1,60 @@
+# =========================================
+# CARTE : lumieres_maison
+# VUE   : Sauvegarde_de_card
+# TYPE  : conditional (Carte monobloc)
+# DÉPENDANCES :
+#  - light.lumieres_maison
+# =========================================
+
+card:
+  cards:
+  - card_mod:
+      style: "ha-card {\n  background: rgba(20, 27, 38, 0.6) !important;\n  backdrop-filter:\
+        \ blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border-radius: 20px\
+        \ !important;\n  border: 1px solid {{ 'rgba(255, 0, 0, 0.6)' if is_state('light.lumieres_maison',\
+        \ 'on') else 'rgba(255, 255, 255, 0.1)' }} !important;\n  box-shadow: {{ '0\
+        \ 0 20px rgba(255, 0, 0, 0.3)' if is_state('light.lumieres_maison', 'on')\
+        \ else '0 4px 15px rgba(0,0,0,0.2)' }} !important;\n  padding: 1px !important;\n\
+        \  transition: all 0.3s ease-in-out;\n}\n"
+    entity: light.lumieres_maison
+    fill_container: true
+    icon: mdi:home-lightbulb
+    layout: vertical
+    name: Toute la Maison
+    type: custom:mushroom-light-card
+    use_light_color: true
+  - card:
+      card_mod:
+        style: "ha-card {\n  background: none;\n  box-shadow: none;\n  border: none;\n\
+          \  padding: 0 !important;\n  margin-top: 10px !important;\n}\n"
+      columns: 3
+      square: false
+      type: grid
+    card_param: cards
+    filter:
+      exclude:
+      - entity_id: light.lumieres_maison
+      include:
+      - group: light.lumieres_maison
+        options:
+          card_mod:
+            style: "ha-card {\n  background: rgba(20, 27, 38, 0.6) !important;\n \
+              \ backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n\
+              \  border-radius: 15px !important;\n  border: 1px solid rgba(255, 0,\
+              \ 0, 0.4) !important;\n  box-shadow: 0 0 10px rgba(255, 0, 0, 0.2) !important;\n\
+              \  transition: all 0.3s ease-in-out;\n}\n"
+          show_brightness_control: false
+          show_color_control: false
+          show_color_temp_control: false
+          type: custom:mushroom-light-card
+          use_light_color: true
+        state: 'on'
+    show_empty: false
+    type: custom:auto-entities
+    unique: true
+  type: vertical-stack
+conditions:
+- condition: state
+  entity: light.lumieres_maison
+  state: 'on'
+type: conditional

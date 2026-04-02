@@ -1,0 +1,98 @@
+# =========================================
+# CARTE : smart_rgb_bulb_2401023613738552050248e1e
+# VUE   : Lumieres
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - ath.max
+#  - ath.round
+#  - bulb.attributes
+#  - bulb.state
+#  - images.pexels
+#  - leds.attributes
+#  - leds.state
+#  - light.leds_lison
+#  - light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+#  - light.turn_off
+#  - light.turn_on
+#  - rgb_color.join
+# =========================================
+
+custom_fields:
+  left: "[[[\n  const bulb = states['light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e'];\n\
+    \  const leds = states['light.leds_lison'];\n  const bulbOn = bulb && bulb.state\
+    \ === 'on';\n  const ledsOn = leds && leds.state === 'on';\n  const anyOn = bulbOn\
+    \ || ledsOn;\n  \n  let dominantColor = '255,152,0';\n  if (bulbOn && bulb.attributes.rgb_color)\
+    \ dominantColor = bulb.attributes.rgb_color.join(',');\n  else if (ledsOn && leds.attributes.rgb_color)\
+    \ dominantColor = leds.attributes.rgb_color.join(',');\n\n  const bg = anyOn ?\
+    \ `linear-gradient(135deg, rgba(${dominantColor}, 0.3) 0%, transparent 100%)`\
+    \ : 'transparent';\n  \n  return `\n    <div style=\"width: 100%; height: 100%;\
+    \ display: flex; flex-direction: column; align-items: center; justify-content:\
+    \ center; background: ${bg}; border-right: 2px solid rgba(255,255,255,0.1); box-sizing:\
+    \ border-box; gap: 4px;\">\n      <ha-icon icon=\"mdi:bed\" style=\"width: 24px;\
+    \ height: 24px; color: white; filter: ${anyOn ? 'drop-shadow(0 0 8px rgba(255,255,255,0.8))'\
+    \ : 'none'};\"></ha-icon>\n      <div style=\"font-size: 10px; font-weight: 950;\
+    \ color: white; text-transform: uppercase; letter-spacing: 1px;\">LISON</div>\n\
+    \    </div>\n  `;\n]]]\n"
+  right: "[[[\n  const bulb = states['light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e'];\n\
+    \  const leds = states['light.leds_lison'];\n  const bulbOn = bulb && bulb.state\
+    \ === 'on';\n  const ledsOn = leds && leds.state === 'on';\n  const anyOn = bulbOn\
+    \ || ledsOn;\n  \n  let msg = anyOn ? \"Allumé\" : \"Éteint\";\n  let bri = 0;\n\
+    \  if (bulbOn || ledsOn) {\n    const b1 = bulbOn ? (bulb.attributes.brightness\
+    \ || 0) : 0;\n    const b2 = ledsOn ? (leds.attributes.brightness || 0) : 0;\n\
+    \    bri = Math.round((Math.max(b1, b2) / 255) * 100);\n  }\n  \n  const bgImg\
+    \ = \"https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=500\"\
+    ;\n  // Correction ICI : Opacité augmentée et filtre de contraste/saturation ajouté\n\
+    \  const bgHtml = `<div style=\"position: absolute; inset: 0; background: url('${bgImg}')\
+    \ center center / cover no-repeat; opacity: 0.45; z-index: 0; filter: contrast(1.2)\
+    \ saturate(1.3);\"></div>`;\n\n  return bgHtml + `\n    <div style=\"position:\
+    \ relative; width: 100%; height: 100%; z-index: 1; pointer-events: none; background:\
+    \ rgba(0,0,0,0.2);\">\n      <div style=\"position: absolute; top: 0; left: 0;\
+    \ height: 100%; width: ${bri}%; background: linear-gradient(90deg, rgba(255,152,0,0.1)\
+    \ 0%, rgba(255,152,0,0.4) 100%); transition: width 0.4s ease-out; z-index: 1;\"\
+    ></div>\n      <div style=\"position: absolute; inset: 0; display: flex; align-items:\
+    \ center; justify-content: center; z-index: 2;\">\n        <span style=\"font-size:\
+    \ 13px; font-weight: 950; color: white; text-shadow: 0 1px 8px rgba(0,0,0,1);\
+    \ letter-spacing: 1px;\">\n          ${anyOn ? '✦ LISON : ' + bri + '% ✦' : 'CHAMBRE\
+    \ ÉTEINTE'}\n        </span>\n      </div>\n    </div>`;\n]]]\n"
+entity: light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+show_icon: false
+show_name: false
+styles:
+  card:
+  - height: 62px
+  - padding: 0
+  - border-radius: 20px
+  - border: 1.5px solid rgba(255, 152, 0, 0.6)
+  - background: rgba(10, 15, 25, 0.8)
+  - backdrop-filter: blur(8px)
+  - -webkit-backdrop-filter: blur(8px)
+  - box-shadow: 0 4px 15px rgba(0,0,0,0.3)
+  - overflow: hidden
+  - margin-top: 8px
+  custom_fields:
+    left:
+    - justify-self: stretch
+    - align-self: stretch
+    - z-index: 2
+    right:
+    - justify-self: stretch
+    - align-self: stretch
+    - position: relative
+    - overflow: hidden
+    - z-index: 1
+  grid:
+  - grid-template-areas: '"left right"'
+  - grid-template-columns: 130px 1fr
+  - grid-template-rows: 100%
+tap_action:
+  action: call-service
+  service: "[[[\n  const leds = states['light.leds_lison'];\n  const bulb = states['light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e'];\n\
+    \  if ((leds && leds.state === 'on') || (bulb && bulb.state === 'on')) {\n   \
+    \ return 'light.turn_off';\n  }\n  return 'light.turn_on';\n]]]\n"
+  service_data:
+    entity_id:
+    - light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+    - light.leds_lison
+triggers_update:
+- light.leds_lison
+type: custom:button-card

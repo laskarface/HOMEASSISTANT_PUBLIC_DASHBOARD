@@ -1,0 +1,28 @@
+- id: '1764160807774'
+  alias: PSG - Match demain à 8h
+  description: Préviens la veille du match du PSG
+  triggers:
+  - at: 08:00:00
+    trigger: time
+  conditions:
+  - condition: template
+    value_template: "{% set start = state_attr('calendar.paris_saint_germain', 'start_time')
+      %} {% if not start %}\n  false\n{% else %}\n  {{ as_datetime(start).date() ==
+      (now() + timedelta(days=1)).date() }}\n{% endif %}\n"
+  actions:
+  - variables:
+      event_start: '{% set s = state_attr(''calendar.paris_saint_germain'',''start_time'')
+        %} {{ as_datetime(s).strftime(''%H:%M'') if s else '''' }}'
+  - data:
+      title: Rappel match PSG ⚽️
+      message: Match du PSG demain à {{ event_start }}
+    action: notify.mobile_app_iphone_daline
+  - data:
+      title: Rappel match PSG ⚽️
+      message: Match du PSG demain à {{ event_start }}
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Rappel match PSG ⚽️
+      message: Match du PSG demain à {{ event_start }}
+    action: notify.mobile_app_iphone_de_marley
+  mode: single

@@ -1,0 +1,73 @@
+# =========================================
+# CARTE : length
+# VUE   : PSG
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.espncdn
+#  - milestones.length
+# =========================================
+
+custom_fields:
+  jauge: "[[[\n  // On calcule l'avancée globale de la LDC selon le calendrier universel\
+    \ (sans dépendre du tirage ESPN)\n  let now = new Date();\n  let gamesPlayed =\
+    \ 0;\n  let etape = 'Phase de Ligue';\n  \n  // Calendrier approximatif des jours\
+    \ de matchs LDC (lendemain de chaque journée de compétition)\n  let milestones\
+    \ = [\n    { d: '2025-09-19', n: 'Phase de Ligue (J2)' },\n    { d: '2025-10-03',\
+    \ n: 'Phase de Ligue (J3)' },\n    { d: '2025-10-24', n: 'Phase de Ligue (J4)'\
+    \ },\n    { d: '2025-11-06', n: 'Phase de Ligue (J5)' },\n    { d: '2025-11-27',\
+    \ n: 'Phase de Ligue (J6)' },\n    { d: '2025-12-12', n: 'Phase de Ligue (J7)'\
+    \ },\n    { d: '2026-01-23', n: 'Phase de Ligue (J8)' },\n    { d: '2026-01-30',\
+    \ n: 'Barrages' },\n    { d: '2026-02-18', n: 'Barrages' },\n    { d: '2026-02-26',\
+    \ n: '1/8 de Finale' },\n    { d: '2026-03-12', n: '1/8 de Finale' },\n    { d:\
+    \ '2026-03-19', n: '1/4 de Finale' },\n    { d: '2026-04-10', n: '1/4 de Finale'\
+    \ },\n    { d: '2026-04-17', n: 'Demi-finales' },\n    { d: '2026-04-30', n: 'Demi-finales'\
+    \ },\n    { d: '2026-05-08', n: 'La Finale' },      // Fin des demi, on patiente\
+    \ pour la finale\n    { d: '2026-06-01', n: 'Saison Terminée' } // Lendemain de\
+    \ la grande finale\n  ];\n  \n  for (let i = 0; i < milestones.length; i++) {\n\
+    \     if (now > new Date(milestones[i].d)) {\n        gamesPlayed++;\n     } else\
+    \ {\n        etape = milestones[i].n;\n        break;\n     }\n  }\n  \n  if (gamesPlayed\
+    \ >= 17) etape = \"Saison Terminée\";\n  let sousTitre = (etape === 'Saison Terminée')\
+    \ ? etape : 'Actuellement : ' + etape;\n  \n  let totalGames = 17; \n  let pct\
+    \ = (gamesPlayed / totalGames) * 100;\n  if (pct > 100) pct = 100;\n  \n  return\
+    \ `\n    <!-- En-tête -->\n    <div style=\"display: flex; align-items: center;\
+    \ justify-content: space-between; margin-bottom: 5px;\">\n      <div style=\"\
+    display: flex; align-items: center; gap: 10px;\">\n        <img src=\"https://a.espncdn.com/i/leaguelogos/soccer/500/2.png\"\
+    \ style=\"width: 32px; filter: grayscale(100%) invert(100%) brightness(200%);\
+    \ opacity: 0.9;\">\n        <div style=\"display: flex; flex-direction: column;\"\
+    >\n          <span style=\"font-weight: 700; font-size: 15px; color: white; line-height:\
+    \ 1;\">Champions League</span>\n          <span style=\"font-size: 10px; color:\
+    \ #a9b1d6; margin-top: 2px;\">${sousTitre}</span>\n        </div>\n      </div>\n\
+    \      <div style=\"font-size: 12px; color: #00bfff; font-weight: bold; background:\
+    \ rgba(0,191,255,0.1); padding: 4px 10px; border-radius: 20px; border: 1px solid\
+    \ rgba(0,191,255,0.2);\">\n        Étape ${gamesPlayed} / ${totalGames}\n    \
+    \  </div>\n    </div>\n    \n    <!-- Barre de progression globale du Tournoi\
+    \ -->\n    <div style=\"position: relative; width: 100%; height: 8px; background:\
+    \ rgba(255,255,255,0.1); border-radius: 10px; margin-top: 15px; box-shadow: inset\
+    \ 0 1px 3px rgba(0,0,0,0.4);\">\n      <div style=\"position: absolute; top: 0;\
+    \ left: 0; height: 100%; width: ${pct}%; background: linear-gradient(90deg, rgba(0,191,255,0.6),\
+    \ #00bfff); border-radius: 10px; box-shadow: 0 0 10px rgba(0,191,255,0.5);\"></div>\n\
+    \      <div style=\"position: absolute; top: 50%; left: ${pct}%; transform: translate(-50%,\
+    \ -50%); width: 16px; height: 16px; background: white; border-radius: 50%; box-shadow:\
+    \ 0 0 6px rgba(0,0,0,0.5); border: 2px solid #00bfff;\"></div>\n    </div>\n \
+    \   \n    <!-- Dates de la saison -->\n    <div style=\"display: flex; justify-content:\
+    \ space-between; margin-top: 12px; font-size: 12px; color: #8a92b2; font-weight:\
+    \ 700;\">\n      <span>17.09.</span>\n      <span style=\"display: flex; align-items:\
+    \ center; gap: 6px;\">\n        <ha-icon icon=\"mdi:trophy\" style=\"--mdc-icon-size:\
+    \ 16px; color: #d1d5db; filter: drop-shadow(0 0 3px rgba(255,255,255,0.4));\"\
+    ></ha-icon> 31.05.\n      </span>\n    </div>\n  `;\n]]]\n"
+show_icon: false
+show_name: false
+styles:
+  card:
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 15px
+  - border: 1px solid rgba(255, 255, 255, 0.1)
+  - box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3)
+  - padding: 15px
+  - cursor: default
+  grid:
+  - grid-template-areas: '"jauge"'
+  - grid-template-columns: 100%
+type: custom:button-card

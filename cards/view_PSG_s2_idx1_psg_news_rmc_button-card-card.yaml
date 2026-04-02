@@ -1,0 +1,84 @@
+# =========================================
+# CARTE : psg_news_rmc
+# VUE   : PSG
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.espncdn
+#  - article.link
+#  - article.pub
+#  - article.title
+#  - ate.get
+#  - entity.attributes
+#  - event.stop
+#  - items.for
+#  - items.length
+#  - items.slice
+#  - parts.join
+#  - parts.length
+#  - parts.pop
+#  - sensor.psg_news_rmc
+#  - this.style
+#  - window.open
+# =========================================
+
+custom_fields:
+  news: "[[[\n  let out = `\n    <h2 style=\"border-bottom: 1px solid rgba(255,255,255,0.1);\
+    \ padding-bottom: 6px; color: #fff; margin: 0 0 8px 0; font-size: 16px; font-weight:\
+    \ 500; display: flex; align-items: center; justify-content: space-between;\">\n\
+    \      <div style=\"display: flex; align-items: center; gap: 8px;\">\n       \
+    \ <img src=\"https://a.espncdn.com/i/teamlogos/soccer/500/160.png\" style=\"width:\
+    \ 22px; height: 22px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));\">\n\
+    \        Actualités PSG\n      </div>\n      <span style=\"font-size: 10px; color:\
+    \ #a9b1d6; font-style: italic; font-weight: normal;\">via RMC Sport</span>\n \
+    \   </h2>\n    <div style=\"display: flex; flex-direction: column;\">\n  `;\n\
+    \  \n  let items = (entity && entity.attributes && entity.attributes.items) ?\
+    \ entity.attributes.items.slice(0, 6) : [];\n  \n  if (items.length === 0) {\n\
+    \     return out + `<div style=\"font-size: 10px; font-style: italic; color: #8a92b2;\
+    \ text-align: center; white-space: normal; padding: 10px;\">Chargement du flux\
+    \ RMC Sport...</div></div>`;\n  }\n  \n  items.forEach((article, index) => {\n\
+    \     let parts = article.title ? article.title.split(' - ') : ['Titre inconnu'];\n\
+    \     let title = article.title || 'Titre inconnu';\n     \n     if (parts.length\
+    \ > 1) {\n        // Google News ajoute \" - RMC Sport\" à la fin de tous les\
+    \ titres, on le coupe pour un rendu propre\n        parts.pop(); \n        title\
+    \ = parts.join(' - ').trim();\n     }\n     \n     let dateStr = '';\n     if\
+    \ (article.pubDate) {\n       let pubDate = new Date(article.pubDate);\n     \
+    \  let d = pubDate.getDate().toString().padStart(2, '0');\n       let m = (pubDate.getMonth()\
+    \ + 1).toString().padStart(2, '0');\n       let y = pubDate.getFullYear().toString().slice(-2);\n\
+    \       let h = pubDate.getHours().toString().padStart(2, '0');\n       let min\
+    \ = pubDate.getMinutes().toString().padStart(2, '0');\n       dateStr = `${d}/${m}/${y}\
+    \ à ${h}:${min}`;\n     }\n\n     let lienUrl = article.link || '#';\n     \n\
+    \     out += `\n      <div \n        onclick=\"event.stopPropagation(); window.open('${lienUrl}',\
+    \ '_blank');\"\n        onpointerdown=\"event.stopPropagation();\"\n        ontouchstart=\"\
+    event.stopPropagation();\"\n        style=\"display: flex; flex-direction: column;\
+    \ gap: 3px; cursor: pointer; transition: opacity 0.2s; padding: 2px;\"\n     \
+    \   onmouseover=\"this.style.opacity='0.6'\"\n        onmouseout=\"this.style.opacity='1'\"\
+    \n      >\n        <div style=\"white-space: normal; font-size: 13.5px; font-weight:\
+    \ 600; color: #ffffff; line-height: 1.3; text-align: left;\">${title}</div>\n\
+    \        <div style=\"white-space: normal; font-size: 10px; font-style: italic;\
+    \ color: #8a92b2; line-height: 1.2; text-align: center;\">${dateStr}</div>\n \
+    \     </div>\n     `;\n     \n     if (index < items.length - 1) {\n        out\
+    \ += `\n          <div style=\"height: 1px; width: 85%; margin: 6px auto; background:\
+    \ linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent\
+    \ 100%); box-shadow: 0 1px 3px rgba(255,255,255,0.2);\"></div>\n        `;\n \
+    \    }\n  });\n  \n  out += `</div>`;\n  return out;\n]]]\n"
+entity: sensor.psg_news_rmc
+show_icon: false
+show_name: false
+show_state: false
+styles:
+  card:
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 15px
+  - border: 1px solid rgba(255, 255, 255, 0.1)
+  - box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3)
+  - padding: 10px 12px
+  - cursor: default
+  custom_fields:
+    news:
+    - pointer-events: auto
+  grid:
+  - grid-template-areas: '"news"'
+  - grid-template-columns: 100%
+type: custom:button-card

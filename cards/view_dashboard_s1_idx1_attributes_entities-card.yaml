@@ -1,0 +1,183 @@
+# =========================================
+# CARTE : attributes
+# VUE   : dashboard
+# TYPE  : entities (Carte monobloc)
+# DÉPENDANCES :
+#  - ath.ceil
+#  - ath.floor
+#  - ath.random
+#  - entity.attributes
+#  - ilestone.get
+#  - images.unsplash
+#  - n.card
+#  - now.get
+#  - sensor.suivi_greffe_jour
+#  - start.get
+#  - t.color
+#  - t.icon
+#  - t.key
+#  - t.name
+#  - tasks.length
+# =========================================
+
+card_mod:
+  style: "ha-card {\n  background: none !important;\n  border: none !important;\n\
+    \  box-shadow: none !important;\n  padding: 0 !important;\n  margin: 0 !important;\n\
+    }\n#states { padding: 0 !important; margin: 0 !important; }\n.card-content { padding:\
+    \ 0 !important; margin: 0 !important; }\n"
+entities:
+- card_mod:
+    style: 'div#head { display: block !important; width: 100% !important; padding:
+      0 !important; margin: 0 !important; --toggle-icon-width: 0px !important; } #head
+      { padding: 0 !important; margin: 0 !important; width: 100% !important; cursor:
+      pointer !important; } #head ha-icon { display: none !important; width: 0px !important;
+      } div#items { padding: 0 !important; margin: 0 !important; }
+
+      '
+  clickable: true
+  entities:
+  - custom_fields:
+      tasks: "[[[\n  if (!entity || !entity.attributes) return `<div style=\"padding:20px;color:rgba(255,255,255,0.5);\
+        \ text-align:center;\">Chargement...</div>`;\n  var tasks = [\n    { key:\
+        \ 'shampoing_aujourdhui', name: 'Shampoing', icon: 'mdi:shower', color: '#1e88e5'\
+        \ },\n    { key: 'vitamine_aujourdhui', name: 'Vitamines', icon: 'mdi:pill-multiple',\
+        \ color: '#2e7d32' },\n    { key: 'serum_ozone_aujourdhui', name: 'Sérum ozonée',\
+        \ icon: 'mdi:beaker-outline', color: '#8e24aa' },\n    { key: 'dermaroller_serum_aujourdhui',\
+        \ name: 'Dermaroller', icon: 'mdi:needle', color: '#fb8c00' },\n    { key:\
+        \ 'huile_capillaire_aujourdhui', name: 'Huile', icon: 'mdi:eyedropper-variant',\
+        \ color: '#6d4c41' },\n    { key: 'massage_cuir_chevelu_aujourdhui', name:\
+        \ 'Massage', icon: 'mdi:hand-back-right', color: '#00897b' },\n    { key:\
+        \ 'prp_aujourdhui', name: 'PRP', icon: 'mdi:hospital-marker', color: '#e91e63'\
+        \ }\n  ];\n  var titleHtml = `<div style=\"width: 100%; text-align: left;\
+        \ margin-bottom: 12px; padding-left: 4px;\"><span style=\"font-size: 11px;\
+        \ font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase;\
+        \ letter-spacing: 1.5px;\">À FAIRE AUJOURD'HUI :</span></div>`;\n  var html\
+        \ = '<div style=\"display:flex; flex-wrap:wrap; gap:8px;\">';\n  for (var\
+        \ i = 0; i < tasks.length; i++) {\n    var t = tasks[i];\n    var val = entity.attributes[t.key];\n\
+        \    if (val) {\n      var displayVal = (val === true) ? 'À faire' : val;\n\
+        \      html += '<div style=\"flex: 1 1 30%; min-width: 100px; height: 100px;\
+        \ box-sizing: border-box; padding: 12px; border-radius: 20px; border: 1px\
+        \ solid rgba(255,255,255,0.1); background: rgba(20, 27, 38, 0.4); backdrop-filter:\
+        \ blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 15px\
+        \ rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center;\
+        \ justify-content: center;\">'\n          + '<ha-icon icon=\"' + t.icon +\
+        \ '\" style=\"--mdc-icon-size: 32px; color: ' + t.color + '; filter: drop-shadow(0\
+        \ 0 8px ' + t.color + 'aa); margin-bottom: 8px;\"></ha-icon>'\n          +\
+        \ '<div style=\"font-size: 13px; font-weight: 700; color: white;\">' + t.name\
+        \ + '</div>'\n          + '<div style=\"font-size: 11px; font-weight: 500;\
+        \ opacity: 0.7; margin-top: 4px; color: white;\">' + displayVal + '</div>'\n\
+        \        + '</div>';\n    }\n  }\n  html += '</div>';\n  return titleHtml\
+        \ + html;\n]]]\n"
+    entity: sensor.suivi_greffe_jour
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: none
+      - box-shadow: none
+      - border: none
+      - padding: 0
+      - margin-top: 10px
+      grid:
+      - grid-template-areas: '"tasks"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: auto
+    type: custom:button-card
+  head:
+    custom_fields:
+      details: "[[[\n  const start = new Date('2025-10-24T00:00:00');\n  const now\
+        \ = new Date();\n  const timeDiff = now.getTime() - start.getTime();\n  const\
+        \ jPlus = Math.floor(timeDiff / (1000 * 3600 * 24));\n  \n  let months = (now.getFullYear()\
+        \ - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());\n  let\
+        \ days = now.getDate() - start.getDate();\n  if (days < 0) {\n    months--;\n\
+        \    const lastDayPrevMonth = new Date(now.getFullYear(), now.getMonth(),\
+        \ 0).getDate();\n    days += lastDayPrevMonth;\n  }\n\n  let nextMilestone\
+        \ = new Date(start.getFullYear(), start.getMonth() + months + 1, start.getDate());\n\
+        \  if (nextMilestone.getDate() !== start.getDate()) nextMilestone = new Date(nextMilestone.getFullYear(),\
+        \ nextMilestone.getMonth() + 1, 0);\n  const daysToMilestone = Math.ceil((nextMilestone.getTime()\
+        \ - now.getTime()) / (1000 * 3600 * 24));\n  \n  const milestoneText = (now.getDate()\
+        \ === 24) \n    ? `C'est le jour anniversaire (${months} mois) !` \n    :\
+        \ `${months + 1} mois dans ${daysToMilestone} jours`;\n\n  let confettis =\
+        \ \"\";\n  if (now.getDate() === 24) {\n    confettis = '<div style=\"position:absolute;width:100%;height:100%;pointer-events:none;\"\
+        >';\n    for(let i=0; i<20; i++) {\n      const left = Math.random()*100;\n\
+        \      const delay = Math.random()*3;\n      const color = ['#FFD700','#FF4500','#ADFF2F','#00BFFF','#FF1493'][Math.floor(Math.random()*5)];\n\
+        \      confettis += `<div style=\"position:absolute;left:${left}%;top:-10px;width:5px;height:10px;background:${color};animation:fall\
+        \ 3s linear infinite ${delay}s;opacity:0.8;\"></div>`;\n    }\n    confettis\
+        \ += '<style>@keyframes fall{0%{transform:translateY(0) rotate(0deg)}100%{transform:translateY(100px)\
+        \ rotate(360deg)}}</style></div>';\n  }\n\n  const bgImg = \"https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=500&auto=format&fit=crop\"\
+        ;\n  return `\n    <div style=\"width: 100%; height: 95px; position: relative;\
+        \ overflow: hidden; display: flex; flex-direction: column; align-items: center;\
+        \ justify-content: center;\">\n      <div style=\"position: absolute; top:0;\
+        \ left:0; width: 100%; height: 100%; background: url('${bgImg}') center/cover\
+        \ no-repeat; opacity: 0.35; z-index: 0;\"></div>\n      ${confettis}\n   \
+        \   <div style=\"position: relative; z-index: 1; text-align: center; width:\
+        \ 100%;\">\n        <div style=\"font-size: 32px; font-weight: 950; color:\
+        \ white; line-height: 1; text-shadow: 0 4px 12px rgba(0,0,0,0.95);\">J+${jPlus}</div>\n\
+        \        <div style=\"font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7);\
+        \ margin-top:2px;\">${months} mois et ${days} ${days > 1 ? 'jours' : 'jour'}</div>\n\
+        \        <div style=\"font-size: 13px; font-weight: 900; color: #4fc3f7; text-transform:\
+        \ uppercase; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.15);\
+        \ display: inline-block; padding-top: 5px; width: 80%;\">${milestoneText}</div>\n\
+        \      </div>\n    </div>\n  `;\n]]]\n"
+      footer: '[[[ return `<div style="display:flex; width:100%; justify-content:center;
+        padding: 5px;"><ha-icon icon="mdi:chevron-down" style="color: rgba(255,255,255,0.4);
+        width: 24px; height: 24px;"></ha-icon></div>`; ]]]
+
+        '
+      icon: "[[[\n  const svg = `\n    <svg viewBox=\"0 0 100 100\" width=\"65\" height=\"\
+        65\" style=\"filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));\">\n      <rect\
+        \ x=\"20\" y=\"25\" width=\"60\" height=\"50\" rx=\"12\" ry=\"12\" fill=\"\
+        white\" />\n      <rect x=\"46\" y=\"40\" width=\"8\" height=\"20\" rx=\"\
+        2\" fill=\"#4fc3f7\" />\n      <rect x=\"40\" y=\"46\" width=\"20\" height=\"\
+        8\" rx=\"2\" fill=\"#4fc3f7\" />\n    </svg>\n  `;\n  return `\n    <div style=\"\
+        width: 100%; height: 100%; display: flex; flex-direction: column; align-items:\
+        \ center; justify-content: center; background: linear-gradient(135deg, rgba(79,\
+        \ 195, 247, 0.15) 0%, rgba(20, 27, 38, 0) 100%);\">\n      <div style=\"position:\
+        \ relative; z-index: 1;\">${svg}</div>\n      <div style=\"font-size: 11px;\
+        \ font-weight: 950; color: white; text-align: center; text-transform: uppercase;\
+        \ margin-top: 5px;\">SUIVI<br/>POST-GREFFE</div>\n    </div>\n  `;\n]]]\n"
+    entity: sensor.suivi_greffe_jour
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - padding: 0
+      - background: rgba(20, 27, 38, 0.6)
+      - backdrop-filter: blur(10px)
+      - -webkit-backdrop-filter: blur(10px)
+      - border-radius: 20px
+      - border: 1px solid rgba(79, 195, 247, 0.4)
+      - box-shadow: 0 4px 15px rgba(0,0,0,0.2)
+      - overflow: hidden
+      - margin: 0px
+      - box-sizing: border-box
+      - pointer-events: none
+      custom_fields:
+        details:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - overflow: hidden
+        - position: relative
+        icon:
+        - justify-self: stretch
+        - align-self: stretch
+        - border-right: 2px solid rgba(255,255,255,0.6)
+        - border-top-left-radius: 20px
+        - display: flex
+        - align-items: center
+        - justify-content: center
+        - z-index: 2
+      grid:
+      - grid-template-areas: '"icon details" "footer footer"'
+      - grid-template-columns: 130px minmax(0, 1fr)
+      - grid-template-rows: 95px 30px
+      - gap: 0px
+      - width: 100%
+      - margin: 0
+    tap_action:
+      action: none
+    type: custom:button-card
+  padding: 0
+  type: custom:fold-entity-row
+type: entities

@@ -1,0 +1,35 @@
+- id: '1773266811205'
+  alias: "\U0001F697 Notification Trafic : Trajet Aline"
+  description: Alerte Aline si le trajet vers le travail est plus bouché que d'habitude
+    (comparé à S-1 même heure).
+  triggers:
+  - at: 07:20:00
+    trigger: time
+  conditions:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: template
+    value_template: '{% set actuel = states(''sensor.trajet_maison_travail_aline'')
+      | float(0) %} {% set s1 = states(''sensor.trajet_aline_semaine_derniere'') |
+      float(0) %} {# On ne notifie que si le capteur S1 est valide et que le trajet
+      est 10% plus long #} {{ s1 > 0 and actuel > (s1 * 1.1) }}
+
+      '
+  actions:
+  - data:
+      title: ⚠️ Alerte Trafic Trajet
+      message: "Le trajet vers ton travail est plus long ce matin !  \U0001F697 Actuel
+        : {{ states('sensor.trajet_maison_travail_aline') | round(0) }} min \U0001F4CA
+        Semaine dernière : {{ states('sensor.trajet_aline_semaine_derniere') | round(0)
+        }} min\n"
+      data:
+        push:
+          sound: default
+        url: https://www.waze.com/ul?ll=48.598,2.425&navigate=yes
+    action: notify.mobile_app_iphone_daline
+  mode: single

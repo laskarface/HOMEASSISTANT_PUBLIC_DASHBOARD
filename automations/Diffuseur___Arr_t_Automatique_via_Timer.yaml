@@ -1,0 +1,20 @@
+- id: '1773655501495'
+  alias: 'Diffuseur : Arrêt Automatique via Timer'
+  description: Éteint le diffuseur quand le chrono se termine ou est annulé
+  triggers:
+  - trigger: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.diffuseur_huile
+  - trigger: event
+    event_type: timer.cancelled
+    event_data:
+      entity_id: timer.diffuseur_huile
+  conditions: []
+  actions:
+  - action: select.select_option
+    target:
+      entity_id: select.smart_humidifier_24080828541213641101c4e7ae093c61_spray
+    data:
+      option: 'off'
+  mode: restart

@@ -1,0 +1,51 @@
+- id: '1771076261767'
+  alias: 'Lison : Contrôle Intelligent Chauffage (Prise & Sonde)'
+  description: Pilote la prise en ON/OFF selon la température cible (20.5°C ou 17°C)
+    avec 0.3°C d'hystérésis pour chauffer de 20.2°C à 20.5°C.
+  triggers:
+  - trigger: state
+    entity_id: sensor.capteur_lison_z_temperature
+  - trigger: state
+    entity_id:
+    - input_boolean.lison_heater_force_manual
+    - input_boolean.lison_heater_force_schedule
+    - binary_sensor.fenetre_lison_contact
+    - calendar.chris_billet_gmail_com
+  actions:
+  - variables:
+      cal_state: '{{ is_state(''calendar.chris_billet_gmail_com'', ''on'') }}'
+      cal_msg: '{{ state_attr(''calendar.chris_billet_gmail_com'', ''message'')|lower
+        if state_attr(''calendar.chris_billet_gmail_com'', ''message'') is not none
+        else '''' }}'
+      lison_presente: '{{ cal_state and (''papa'' in cal_msg or ''vacances'' in cal_msg
+        or ''lison'' in cal_msg) }}'
+      now_ts: '{{ as_timestamp(now()) }}'
+      start_ts: '{{ as_timestamp(states(''input_datetime.lison_heater_force_start''))
+        }}'
+      end_ts: '{{ as_timestamp(states(''input_datetime.lison_heater_force_end''))
+        }}'
+      planning_actif: '{{ is_state(''input_boolean.lison_heater_force_schedule'',
+        ''on'') and now_ts >= start_ts and now_ts <= end_ts }}'
+      forcage_manuel: '{{ is_state(''input_boolean.lison_heater_force_manual'', ''on'')
+        }}'
+      target_temp: "{% if is_state('binary_sensor.fenetre_lison_contact', 'on') %}\n
+        \ 5\n{% elif forcage_manuel or planning_actif or lison_presente %}\n  20.5\n{%
+        else %}\n  17\n{% endif %}\n"
+      current_temp: '{{ states(''sensor.capteur_lison_z_temperature'') | float(0)
+        }}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ current_temp < (target_temp - 0.2) }}'
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.chauffage_lison_z
+    - conditions:
+      - condition: template
+        value_template: '{{ current_temp >= target_temp }}'
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.chauffage_lison_z
+  mode: restart

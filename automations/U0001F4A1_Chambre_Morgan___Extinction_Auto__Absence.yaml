@@ -1,0 +1,14 @@
+- id: '1769198801749'
+  alias: "\U0001F4A1 Chambre Morgan : Extinction Auto (Absence)"
+  description: Éteint le plafonnier et les LEDs dès que Morgan quitte la maison.
+  triggers:
+  - trigger: state
+    entity_id: person.morgan
+    from: home
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.lumieres_morgan
+      - light.leds_morgan_v2
+  mode: single

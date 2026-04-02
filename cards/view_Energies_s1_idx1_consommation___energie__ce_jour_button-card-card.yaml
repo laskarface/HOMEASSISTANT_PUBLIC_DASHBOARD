@@ -1,0 +1,96 @@
+# =========================================
+# CARTE : consommation___energie__ce_jour
+# VUE   : Energies
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - conso_global_bg.png
+#  - sensor.battery_charge_today
+#  - sensor.battery_discharge_today
+#  - sensor.ecojoko_consommation_reseau
+#  - sensor.production_solaire_today
+# =========================================
+
+custom_fields:
+  table:
+    card:
+      custom_fields:
+        batterie: "[[[\n  const isBat = states['sensor.battery_charge_today'] !==\
+          \ undefined;\n  if (!isBat) return `<div style=\"display:none\"></div>`;\n\
+          \  const dch = states['sensor.battery_discharge_today']?.state || '0';\n\
+          \  return `\n    <div style=\"display: grid; grid-template-columns: 1fr\
+          \ 120px; padding: 15px 10px; align-items: center;\">\n      <div style=\"\
+          display: flex; align-items: center; gap: 12px;\">\n        <div style=\"\
+          color: #00FF00; display: flex; filter: drop-shadow(0 0 5px rgba(0, 255,\
+          \ 0, 0.4));\"><ha-icon icon=\"mdi:battery-high\" style=\"--mdc-icon-size:\
+          \ 22px;\"></ha-icon></div>\n        <div style=\"font-size: 14px; font-weight:\
+          \ 700; color: rgba(255,255,255,0.95);\">Batterie</div>\n      </div>\n \
+          \     <div style=\"text-align: right; font-size: 15px; font-weight: 800;\
+          \ color: #00FF00; text-shadow: 0 2px 4px rgba(0,0,0,0.5);\">${dch} kWh</div>\n\
+          \    </div>\n  `;\n]]]\n"
+        header: "[[[\n  return `\n    <div style=\"display: grid; grid-template-columns:\
+          \ 1fr 120px; padding: 0 10px 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.1);\
+          \ font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform:\
+          \ uppercase; letter-spacing: 1px;\">\n      <div>Source</div>\n      <div\
+          \ style=\"text-align: right;\">Consommé</div>\n    </div>\n  `;\n]]]\n"
+        reseau: "[[[\n  const c = states['sensor.ecojoko_consommation_reseau']?.state\
+          \ || '0';\n  const unit = states['sensor.ecojoko_consommation_reseau']?.attributes?.unit_of_measurement\
+          \ || 'kWh';\n  return `\n    <div style=\"display: grid; grid-template-columns:\
+          \ 1fr 120px; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);\
+          \ align-items: center;\">\n      <div style=\"display: flex; align-items:\
+          \ center; gap: 12px;\">\n        <div style=\"color: #00B4FF; display: flex;\
+          \ filter: drop-shadow(0 0 5px rgba(0, 180, 255, 0.4));\"><ha-icon icon=\"\
+          mdi:transmission-tower\" style=\"--mdc-icon-size: 22px;\"></ha-icon></div>\n\
+          \        <div style=\"font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.95);\"\
+          >Réseau</div>\n      </div>\n      <div style=\"text-align: right; font-size:\
+          \ 15px; font-weight: 800; color: #00B4FF; text-shadow: 0 2px 4px rgba(0,0,0,0.5);\"\
+          >${c} ${unit}</div>\n    </div>\n  `;\n]]]\n"
+        solaire: "[[[\n  const p = states['sensor.production_solaire_today']?.state\
+          \ || '0'; \n  const isProd = states['sensor.production_solaire_today'] !==\
+          \ undefined;\n  if (!isProd) return `<div style=\"display:none\"></div>`;\n\
+          \  return `\n    <div style=\"display: grid; grid-template-columns: 1fr\
+          \ 120px; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);\
+          \ align-items: center;\">\n      <div style=\"display: flex; align-items:\
+          \ center; gap: 12px;\">\n        <div style=\"color: #FFD700; display: flex;\
+          \ filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));\"><ha-icon icon=\"\
+          mdi:solar-power\" style=\"--mdc-icon-size: 22px;\"></ha-icon></div>\n  \
+          \      <div style=\"font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.95);\"\
+          >Solaire</div>\n      </div>\n      <div style=\"text-align: right; font-size:\
+          \ 15px; font-weight: 800; color: #FFD700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);\"\
+          >—</div>\n    </div>\n  `;\n]]]\n"
+      styles:
+        card:
+        - background: transparent
+        - border: none
+        - box-shadow: none
+        - padding: 0
+        grid:
+        - grid-template-areas: '"header" "solaire" "reseau" "batterie"'
+        - grid-template-columns: 1fr
+      type: custom:button-card
+name: Consommation & Énergie (Ce jour)
+styles:
+  card:
+  - background: "[[[ \n  return \"linear-gradient(rgba(10, 15, 25, 0.75), rgba(10,\
+      \ 15, 25, 0.75)), url('/local/conso_global_bg.png')\";\n]]]\n"
+  - background-size: cover
+  - background-position: center
+  - backdrop-filter: blur(15px)
+  - -webkit-backdrop-filter: blur(15px)
+  - border-radius: 24px
+  - border: 1px solid rgba(255,255,255,0.12)
+  - box-shadow: 0 8px 32px rgba(0,0,0,0.5)
+  - padding: 20px
+  grid:
+  - grid-template-areas: '"n" "table"'
+  - grid-template-rows: auto auto
+  name:
+  - font-size: 16px
+  - font-weight: 800
+  - color: rgba(255,255,255,0.9)
+  - margin-bottom: 20px
+  - text-align: left
+  - justify-self: start
+  - text-transform: uppercase
+  - letter-spacing: 1px
+  - text-shadow: 0 2px 4px rgba(0,0,0,0.8)
+type: custom:button-card

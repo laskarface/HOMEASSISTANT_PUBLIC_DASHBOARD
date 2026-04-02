@@ -1,0 +1,20 @@
+- id: '1773267087851'
+  alias: 'Lison : Nettoyage Forçage Planifié'
+  description: Désactive le mode planification une fois la date de fin passée.
+  triggers:
+  - minutes: /5
+    trigger: time_pattern
+  conditions:
+  - condition: state
+    entity_id: input_boolean.lison_heater_force_schedule
+    state: 'on'
+  - condition: template
+    value_template: '{% set now_ts = as_timestamp(now()) %} {% set end_ts = as_timestamp(states(''input_datetime.lison_heater_force_end''))
+      %} {{ now_ts > end_ts }}
+
+      '
+  actions:
+  - target:
+      entity_id: input_boolean.lison_heater_force_schedule
+    action: input_boolean.turn_off
+  mode: single

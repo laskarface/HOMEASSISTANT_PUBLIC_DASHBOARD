@@ -1,0 +1,28 @@
+- id: '1773267674927'
+  alias: OpenUV - Init quotidienne 00h00 (reset + intervalle)
+  triggers:
+  - at: 00:00:00
+    trigger: time
+  actions:
+  - target:
+      entity_id: counter.openuv_updates_today
+    action: counter.reset
+  - target:
+      entity_id: input_datetime.openuv_last_update
+    data:
+      datetime: '{{ now().isoformat() }}'
+    action: input_datetime.set_datetime
+  - target:
+      entity_id: input_number.openuv_interval_seconds
+    data:
+      value: "{% set ss_dt = as_datetime(state_attr('sun.sun','next_setting')) %}
+        {% set nr_dt = as_datetime(state_attr('sun.sun','next_rising')) %}\n{% if
+        ss_dt and nr_dt %}\n  {% if is_state('sun.sun','above_horizon') %}\n    {#
+        En journée: next_rising est demain -> lever de ce matin #}\n    {% set sr_dt
+        = nr_dt - timedelta(days=1) %}\n  {% else %}\n    {# Avant lever: next_rising
+        est bien le lever du jour #}\n    {% set sr_dt = nr_dt %}\n  {% endif %}\n\n
+        \ {% set duration = (ss_dt - sr_dt).total_seconds() %}\n  {% set interval
+        = (duration / 50) | int %}\n\n  {{ [60, [interval, 3000] | min] | max }}\n{%
+        else %}\n  900\n{% endif %}"
+    action: input_number.set_value
+  mode: single

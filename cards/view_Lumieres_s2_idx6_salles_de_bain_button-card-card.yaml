@@ -1,0 +1,46 @@
+# =========================================
+# CARTE : salles_de_bain
+# VUE   : Lumieres
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  (Aucune dépendance)
+# =========================================
+
+custom_fields:
+  l: ' '
+icon: mdi:sofa-single
+name: Salles de Bain
+styles:
+  card:
+  - background: none
+  - border: none
+  - padding: 8px 15px
+  - height: auto
+  custom_fields:
+    l:
+    - width: 100%
+    - height: 1.5px
+    - background: 'linear-gradient(to right, transparent 0%, #FFB03B 50%, transparent
+        100%)'
+    - margin-top: 5px
+    - opacity: 0.7
+  grid:
+  - grid-template-areas: '"i n" "l l"'
+  - grid-template-columns: min-content 1fr
+  - grid-template-rows: min-content min-content
+  - gap: 0px 10px
+  icon:
+  - width: 24px
+  - color: '#FFB03B'
+  - filter: drop-shadow(0 0 5px rgba(255, 176, 59, 0.4))
+  - align-self: center
+  name:
+  - justify-self: start
+  - font-weight: 900
+  - font-size: 15px
+  - color: '#FFB03B'
+  - text-transform: uppercase
+  - letter-spacing: 1px
+  - text-shadow: 0 0 10px rgba(255, 176, 59, 0.3)
+  - align-self: center
+type: custom:button-card

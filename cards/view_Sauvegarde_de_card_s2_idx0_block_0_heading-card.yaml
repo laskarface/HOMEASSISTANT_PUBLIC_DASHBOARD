@@ -1,0 +1,10 @@
+# =========================================
+# CARTE : block_0
+# VUE   : Sauvegarde_de_card
+# TYPE  : heading (Carte monobloc)
+# DÉPENDANCES :
+#  (Aucune dépendance)
+# =========================================
+
+heading: Nouvelle section
+type: heading

@@ -1,0 +1,16 @@
+- id: '1773269578672'
+  alias: Prolonger toilettes
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: f2d957196da2dd76f26c8bd803da0212
+    type: action
+    subtype: 'on'
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 39146e2a0a39cbb1b5f0a7ba6cf97195
+    entity_id: 73cee160ad3da187704c98efe0935767
+    domain: switch
+  mode: single

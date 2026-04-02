@@ -1,0 +1,29 @@
+- id: '1765876584300'
+  alias: Machine à laver - notif Machine vidée
+  description: Reset le statut dès l'ouverture
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_ouverture_lave_linge_contact
+    to: 'on'
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.notif_ml_vidage_envoyee
+        state: 'on'
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: Machine à laver
+          message: ✅ Machine vidée.
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: Machine à laver
+          message: ✅ Machine vidée.
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.notif_ml_vidage_envoyee
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.machine_a_laver_terminee
+  mode: single

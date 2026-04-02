@@ -1,0 +1,68 @@
+# =========================================
+# CARTE : for
+# VUE   : PSG
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.espncdn
+#  - e.stats
+#  - entries.for
+#  - gp.display
+#  - s.name
+#  - sensor.attributes
+#  - sensor.ligue_1_scoreboard
+# =========================================
+
+custom_fields:
+  jauge: "[[[\n  // On fouille dans le capteur existant pour trouver la Journée actuelle\
+    \ (max matchs joués)\n  let sensor = states['sensor.ligue_1_scoreboard'];\n  let\
+    \ gamesPlayed = 0;\n  if (sensor && sensor.attributes && sensor.attributes.entries)\
+    \ {\n     let maxGames = 0;\n     sensor.attributes.entries.forEach(e => {\n \
+    \       if (e.stats) {\n           let gp = e.stats.find(s => s.name === 'gamesPlayed');\n\
+    \           if (gp) {\n              let v = parseInt(gp.displayValue);\n    \
+    \          if (v > maxGames) maxGames = v;\n           }\n        }\n     });\n\
+    \     gamesPlayed = maxGames;\n  }\n  \n  let totalGames = 34; // 18 équipes en\
+    \ L1 = 34 Journées\n  let pct = (gamesPlayed / totalGames) * 100;\n  if (pct >\
+    \ 100) pct = 100;\n  \n  return `\n    <!-- En-tête : Logo, Titres et Badge Journée\
+    \ -->\n    <div style=\"display: flex; align-items: center; justify-content: space-between;\
+    \ margin-bottom: 5px;\">\n      <div style=\"display: flex; align-items: center;\
+    \ gap: 10px;\">\n        <img src=\"https://a.espncdn.com/i/leaguelogos/soccer/500/9.png\"\
+    \ style=\"width: 28px; filter: brightness(0) invert(1); opacity: 0.9;\">\n   \
+    \     <div style=\"display: flex; flex-direction: column;\">\n          <span\
+    \ style=\"font-weight: 700; font-size: 16px; color: white; line-height: 1;\">Ligue\
+    \ 1</span>\n          <span style=\"font-size: 10px; color: #a9b1d6; margin-top:\
+    \ 2px;\">2025/2026</span>\n        </div>\n      </div>\n      <div style=\"font-size:\
+    \ 12px; color: #00bfff; font-weight: bold; background: rgba(0,191,255,0.1); padding:\
+    \ 4px 10px; border-radius: 20px; border: 1px solid rgba(0,191,255,0.2);\">\n \
+    \       J.${gamesPlayed} / ${totalGames}\n      </div>\n    </div>\n    \n   \
+    \ <!-- Barre de progression de la saison (margin-top réduit car plus de punaise)\
+    \ -->\n    <div style=\"position: relative; width: 100%; height: 8px; background:\
+    \ rgba(255,255,255,0.1); border-radius: 10px; margin-top: 15px; box-shadow: inset\
+    \ 0 1px 3px rgba(0,0,0,0.4);\">\n      <!-- Remplissage Bleu -->\n      <div style=\"\
+    position: absolute; top: 0; left: 0; height: 100%; width: ${pct}%; background:\
+    \ linear-gradient(90deg, rgba(0,191,255,0.6), #00bfff); border-radius: 10px; box-shadow:\
+    \ 0 0 10px rgba(0,191,255,0.5);\"></div>\n      \n      <!-- Curseur Rond métallique\
+    \ -->\n      <div style=\"position: absolute; top: 50%; left: ${pct}%; transform:\
+    \ translate(-50%, -50%); width: 16px; height: 16px; background: white; border-radius:\
+    \ 50%; box-shadow: 0 0 6px rgba(0,0,0,0.5); border: 2px solid #00bfff;\"></div>\n\
+    \    </div>\n    \n    <!-- Légende Dates en dessous -->\n    <div style=\"display:\
+    \ flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color:\
+    \ #8a92b2; font-weight: 700;\">\n      <span>15.08.</span>\n      <span style=\"\
+    display: flex; align-items: center; gap: 6px;\">\n        <ha-icon icon=\"mdi:trophy\"\
+    \ style=\"--mdc-icon-size: 15px; color: #d1d5db; filter: drop-shadow(0 0 3px rgba(255,255,255,0.4));\"\
+    ></ha-icon> 16.05.\n      </span>\n    </div>\n  `;\n]]]\n"
+show_icon: false
+show_name: false
+styles:
+  card:
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 15px
+  - border: 1px solid rgba(255, 255, 255, 0.1)
+  - box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3)
+  - padding: 15px
+  - cursor: default
+  grid:
+  - grid-template-areas: '"jauge"'
+  - grid-template-columns: 100%
+type: custom:button-card

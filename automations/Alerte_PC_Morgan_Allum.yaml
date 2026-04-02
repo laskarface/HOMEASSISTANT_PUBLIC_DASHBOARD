@@ -1,0 +1,39 @@
+- id: '1774356356205'
+  alias: ⚠️ Alerte PC Morgan Allumé
+  description: ''
+  triggers:
+  - entity_id:
+    - switch.pc_morgan
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    trigger: state
+  - entity_id:
+    - person.morgan
+    to: not_home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: switch.pc_morgan
+    state: 'on'
+  - condition: state
+    entity_id: person.morgan
+    state: not_home
+  actions:
+  - data:
+      title: ⚠️ PC de Morgan
+      message: Le PC tourne alors que Morgan n'est pas là ! Tu peux l'éteindre depuis
+        le Dashboard.
+    action: notify.mobile_app_iphone_daline
+  - data:
+      title: ⚠️ PC de Morgan
+      message: Le PC tourne alors que Morgan n'est pas là ! Tu peux l'éteindre depuis
+        le Dashboard.
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  mode: single

@@ -1,0 +1,15 @@
+- id: '1763114933958'
+  alias: "\U0001F9FA Sèche-linge — Signal fin (Mode Finished)"
+  description: Passe en terminé et lance le timer de sécurité
+  triggers:
+  - trigger: state
+    entity_id: sensor.seche_linge_mode
+    to: Finished
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  - action: timer.start
+    target:
+      entity_id: timer.seche_linge_fin
+  mode: single

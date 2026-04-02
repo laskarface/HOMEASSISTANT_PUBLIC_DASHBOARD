@@ -1,0 +1,160 @@
+# =========================================
+# CARTE : round
+# VUE   : Lumieres
+# TYPE  : custom:mod-card (Carte monobloc)
+# DÉPENDANCES :
+#  - ath.round
+#  - entity.attributes
+#  - entity.state
+#  - light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f
+#  - nt.attributes
+#  - nt.state
+# =========================================
+
+card:
+  cards:
+  - card_mod:
+      style: ':host { flex: 1 1 0 !important; }
+
+        '
+    custom_fields:
+      main: "[[[\n  const lightEnt = states['light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f'];\n\
+        \  const isOn = lightEnt && lightEnt.state === 'on';\n  const offColor = \"\
+        rgba(255,255,255,0.3)\";\n  const rightTextColor = isOn ? \"white\" : offColor;\n\
+        \  const stateText = isOn ? \"ALLUMÉE\" : \"ÉTEINTE\";\n  const rgb = isOn\
+        \ && lightEnt.attributes.rgb_color;\n  const bri = isOn ? Math.round((lightEnt.attributes.brightness\
+        \ || 255) / 255 * 100) : 0;\n  const rgbColor = rgb ? `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`\
+        \ : null;\n\n  const rgbStrAlpha = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.45)`\
+        \ : '';\n  const centerHaloStr = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.25)`\
+        \ : '';\n\n  let rgbStyles = \"\";\n  let classLeftBg = \"\";\n  let classIcon\
+        \ = \"\";\n  let classCenterBg = \"\";\n\n  if (isOn && !rgbColor) {\n   \
+        \ classLeftBg = \"rgb-bg-left-marley\";\n    classIcon = \"rgb-icon-marley\"\
+        ;\n    classCenterBg = \"rgb-bg-center-marley\";\n    rgbStyles = `<style>\n\
+        \      @keyframes pulseRgbIconM {\n        0%{color:#ff0000;filter:drop-shadow(0\
+        \ 0 6px rgba(255,0,0,0.6));}\n        16%{color:#ff00ff;filter:drop-shadow(0\
+        \ 0 6px rgba(255,0,255,0.6));}\n        33%{color:#0000ff;filter:drop-shadow(0\
+        \ 0 6px rgba(0,0,255,0.6));}\n        50%{color:#00ffff;filter:drop-shadow(0\
+        \ 0 6px rgba(0,255,255,0.6));}\n        66%{color:#00ff00;filter:drop-shadow(0\
+        \ 0 6px rgba(0,255,0,0.6));}\n        83%{color:#ffff00;filter:drop-shadow(0\
+        \ 0 6px rgba(255,255,0,0.6));}\n        100%{color:#ff0000;filter:drop-shadow(0\
+        \ 0 6px rgba(255,0,0,0.6));}\n      }\n      @keyframes pulseRgbBgM {\n  \
+        \      0%{background:linear-gradient(135deg,rgba(255,0,0,0.22) 0%,transparent\
+        \ 100%);}\n        16%{background:linear-gradient(135deg,rgba(255,0,255,0.22)\
+        \ 0%,transparent 100%);}\n        33%{background:linear-gradient(135deg,rgba(0,0,255,0.22)\
+        \ 0%,transparent 100%);}\n        50%{background:linear-gradient(135deg,rgba(0,255,255,0.22)\
+        \ 0%,transparent 100%);}\n        66%{background:linear-gradient(135deg,rgba(0,255,0,0.22)\
+        \ 0%,transparent 100%);}\n        83%{background:linear-gradient(135deg,rgba(255,255,0,0.22)\
+        \ 0%,transparent 100%);}\n        100%{background:linear-gradient(135deg,rgba(255,0,0,0.22)\
+        \ 0%,transparent 100%);}\n      }\n      @keyframes pulseRgbCenterM {\n  \
+        \      0%{background:radial-gradient(ellipse at center,rgba(255,0,0,0.22)\
+        \ 0%,transparent 65%); text-shadow:0 0 10px rgba(255,0,0,0.8);}\n        16%{background:radial-gradient(ellipse\
+        \ at center,rgba(255,0,255,0.22) 0%,transparent 65%); text-shadow:0 0 10px\
+        \ rgba(255,0,255,0.8);}\n        33%{background:radial-gradient(ellipse at\
+        \ center,rgba(0,0,255,0.22) 0%,transparent 65%); text-shadow:0 0 10px rgba(0,0,255,0.8);}\n\
+        \        50%{background:radial-gradient(ellipse at center,rgba(0,255,255,0.22)\
+        \ 0%,transparent 65%); text-shadow:0 0 10px rgba(0,255,255,0.8);}\n      \
+        \  66%{background:radial-gradient(ellipse at center,rgba(0,255,0,0.22) 0%,transparent\
+        \ 65%); text-shadow:0 0 10px rgba(0,255,0,0.8);}\n        83%{background:radial-gradient(ellipse\
+        \ at center,rgba(255,255,0,0.22) 0%,transparent 65%); text-shadow:0 0 10px\
+        \ rgba(255,255,0,0.8);}\n        100%{background:radial-gradient(ellipse at\
+        \ center,rgba(255,0,0,0.22) 0%,transparent 65%); text-shadow:0 0 10px rgba(255,0,0,0.8);}\n\
+        \      }\n      .rgb-icon-marley { animation: pulseRgbIconM 8s linear infinite;\
+        \ }\n      .rgb-bg-left-marley { animation: pulseRgbBgM 8s linear infinite;\
+        \ }\n      .rgb-bg-center-marley { animation: pulseRgbCenterM 8s linear infinite;\
+        \ }\n    </style>`;\n  }\n\n  const iconColor = rgbColor || (isOn ? \"white\"\
+        \ : offColor);\n  const iconShadow = isOn ? `drop-shadow(0 0 8px ${rgbColor\
+        \ || 'rgba(255,255,255,0.6)'})` : \"none\";\n  const leftBgStyle = (isOn &&\
+        \ rgbStrAlpha) ? `background:linear-gradient(135deg, ${rgbStrAlpha} 0%, transparent\
+        \ 100%);` : '';\n  const centerHaloStyle = (isOn && centerHaloStr) ? `background:radial-gradient(ellipse\
+        \ at center, ${centerHaloStr} 0%, transparent 70%); text-shadow: 0 0 12px\
+        \ ${rgbColor};` : '';\n\n  return `\n    ${rgbStyles}\n    <div style=\"display:flex;width:100%;height:100%;margin:0;padding:0;align-items:center;\"\
+        >\n      <div class=\"${classLeftBg}\" style=\"flex:0 0 130px;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border-right:1px\
+        \ solid rgba(255,255,255,0.1);margin:0;box-sizing:border-box;${leftBgStyle}\"\
+        >\n        <ha-icon icon=\"mdi:led-strip-variant\" class=\"${classIcon}\"\
+        \ style=\"width:20px;height:20px;color:${iconColor};filter:${iconShadow};display:block;\"\
+        ></ha-icon>\n        <div style=\"font-size:8px;font-weight:950;color:${isOn?'white':'rgba(255,255,255,0.5)'};text-transform:uppercase;letter-spacing:1px;text-align:center;line-height:1;\"\
+        >LED MARLEY</div>\n      </div>\n      <div class=\"${classCenterBg}\" style=\"\
+        flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0;box-sizing:border-box;${centerHaloStyle}\"\
+        >\n        <span style=\"font-size:7px;font-weight:950;color:${rightTextColor};letter-spacing:1.5px;line-height:1;margin-bottom:2px;\"\
+        >${isOn ? bri + '%' : ''}</span>\n        <span style=\"font-size:16px;font-weight:950;color:${rightTextColor};letter-spacing:1px;line-height:1;\"\
+        >${stateText}</span>\n      </div>\n    </div>`;\n]]]\n"
+    entity: light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f
+    show_icon: false
+    show_name: false
+    show_state: false
+    styles:
+      card:
+      - padding: 0
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - border-radius: 0
+      - overflow: hidden
+      - cursor: pointer
+      - height: 52px
+      custom_fields:
+        main:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"main"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 52px
+      - margin: 0
+      - gap: 0
+    tap_action:
+      action: toggle
+    type: custom:button-card
+  - card_mod:
+      style: ':host { flex: 0 0 54px !important; }
+
+        ha-card { display: flex !important; align-items: center !important; justify-content:
+        center !important; }
+
+        '
+    custom_fields:
+      m: "[[[\n  const on = entity.state === 'on';\n  const rgb = entity.attributes.rgb_color\
+        \ || [255,215,0];\n  const r = rgb[0], g = rgb[1], b = rgb[2];\n  const briRatio\
+        \ = on ? (entity.attributes.brightness || 0) / 255 : 0;\n  const size = on\
+        \ ? Math.round(18 + briRatio * 16) : 18;\n  const op = on ? (briRatio * 0.45).toFixed(2)\
+        \ : '0.08';\n  const bord = on ? (briRatio * 0.85).toFixed(2) : '0.15';\n\
+        \  const svgSize = size * 0.55;\n  return `<div style=\"width:${size}px;height:${size}px;border-radius:50%;\n\
+        \    background:rgba(${on?r+','+g+','+b:'255,255,255'},${op});\n    border:1px\
+        \ solid rgba(${on?r+','+g+','+b:'255,255,255'},${bord});\n    display:flex;align-items:center;justify-content:center;transition:all\
+        \ 0.4s;\">\n    <ha-icon icon=\"mdi:cog\" style=\"--mdc-icon-size: ${svgSize}px;\
+        \ color: rgba(255,255,255,${on?'1':'0.4'});\"></ha-icon>\n  </div>`;\n]]]\n"
+    entity: light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - border-left: 1px solid rgba(255,255,255,0.08)
+      - border-radius: 0
+      - padding: 0
+      - height: 52px
+      grid:
+      - grid-template-areas: '"m"'
+    tap_action:
+      action: more-info
+    type: custom:button-card
+  type: horizontal-stack
+card_mod:
+  style: "ha-card {\n  /* Style Glassmorphism Raffiné */\n  background: rgba(10, 15,\
+    \ 25, 0.8) !important;\n  backdrop-filter: blur(15px) !important;\n  -webkit-backdrop-filter:\
+    \ blur(15px) !important;\n  border-radius: 20px !important;\n  \n  /* Bordure\
+    \ Dynamique fine avec lueur orange si allumé */\n  border: 1px solid\n    {% if\
+    \ states('light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f') ==\
+    \ 'on' %}\n      rgba(255, 152, 0, 0.6)\n    {% else %}\n      rgba(255, 255,\
+    \ 255, 0.12)\n    {% endif %} !important;\n  \n  /* box-shadow profond */\n  box-shadow:\n\
+    \    {% if states('light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f')\
+    \ == 'on' %}\n      0 0 25px rgba(255, 152, 0, 0.25), 0 8px 32px rgba(0, 0, 0,\
+    \ 0.6)\n    {% else %}\n      0 8px 32px rgba(0, 0, 0, 0.5)\n    {% endif %} !important;\n\
+    \    \n  overflow: hidden !important;\n  margin-top: 8px !important;\n  padding:\
+    \ 0 !important;\n}\n"
+type: custom:mod-card

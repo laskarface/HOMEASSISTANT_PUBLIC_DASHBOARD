@@ -1,0 +1,19 @@
+- id: '1764317283011'
+  alias: Notification - Machine à laver terminée
+  description: Envoie une notification quand la machine est terminée
+  triggers:
+  - entity_id: input_boolean.machine_a_laver_terminee
+    from: 'off'
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - data:
+      title: Machine à laver
+      message: Le Lave Linge est terminé ✅
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Machine à laver
+      message: Le Lave Linge est terminé ✅
+    action: notify.mobile_app_iphone_daline
+  mode: single

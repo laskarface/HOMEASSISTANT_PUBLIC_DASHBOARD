@@ -1,0 +1,21 @@
+- id: '1769807065326'
+  alias: Éteindre imprimante après refroidissement buse
+  description: ''
+  triggers:
+  - entity_id: sensor.ratrig_vminion_current_print_state
+    to: complete
+    trigger: state
+  actions:
+  - wait_for_trigger:
+    - trigger: numeric_state
+      entity_id: sensor.ratrig_vminion_extruder_temperature
+      below: 46
+    timeout: 02:00:00
+  - action: switch.turn_off
+    target:
+      entity_id: switch.prise_imprimante_3d
+  - data:
+      title: "\U0001F5A8️ Imprimante 3D"
+      message: Impression terminée. Buse < 46°C → imprimante éteinte.
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  mode: single

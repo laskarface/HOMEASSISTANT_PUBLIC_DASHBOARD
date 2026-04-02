@@ -1,0 +1,36 @@
+- id: '1774209421080'
+  alias: Dashboard Maison - Gestion charge batterie 20-80
+  description: Allume l'alimentation du dashboard à 20% et la coupe à 80%
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.sm_t590_battery_level
+    below: 20
+    id: charge_on
+  - trigger: numeric_state
+    entity_id: sensor.sm_t590_battery_level
+    above: 80
+    id: charge_off
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: charge_on
+      - condition: state
+        entity_id: switch.alim_dashboard
+        state: 'off'
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.alim_dashboard
+    - conditions:
+      - condition: trigger
+        id: charge_off
+      - condition: state
+        entity_id: switch.alim_dashboard
+        state: 'on'
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.alim_dashboard
+  mode: single

@@ -1,0 +1,418 @@
+# =========================================
+# CARTE : attributes
+# VUE   : Lumieres
+# TYPE  : custom:mod-card (Carte monobloc)
+# DÉPENDANCES :
+#  - entity.attributes
+#  - entity.state
+#  - light.meross_mss710r_3de1_outlet
+#  - light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6
+#  - light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb
+#  - light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15
+#  - www.w3
+# =========================================
+
+card:
+  cards:
+  - card_mod:
+      style: "ha-card {\n  border-bottom: 1px solid rgba(255,255,255,0.08) !important;\n\
+        \  border-radius: 0 !important;\n}\n"
+    custom_fields:
+      t: "[[[\n  return `<div style=\"display:flex;align-items:center;gap:8px;\">\n\
+        \    <div style=\"width:3px;height:11px;border-radius:2px;background:linear-gradient(to\
+        \ bottom,rgba(255,255,255,0.6),rgba(255,255,255,0.1));\"></div>\n    <span\
+        \ style=\"font-size:10px;font-weight:900;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:2px;\"\
+        >Comptoir</span>\n  </div>`;\n]]]\n"
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - padding: 8px 14px
+      - height: auto
+      grid:
+      - grid-template-areas: '"t"'
+      - justify-items: start
+    styles_extra:
+      custom_fields:
+        t:
+        - justify-self: start
+        - width: 100%
+    tap_action:
+      action: none
+    type: custom:button-card
+  - cards:
+    - card_mod:
+        style: ':host { flex: 1 1 0 !important; max-width: 100px !important; }
+
+          '
+      custom_fields:
+        i: "[[[\n  const on = entity.state === 'on';\n  return `<svg viewBox=\"0 0\
+          \ 56 56\" width=\"50\" height=\"50\" xmlns=\"http://www.w3.org/2000/svg\"\
+          \ style=\"opacity:${on?'1':'0.25'};transition:opacity 0.4s;display:block;margin:auto;\"\
+          >\n    <line x1=\"28\" y1=\"2\" x2=\"28\" y2=\"10\" stroke=\"rgba(255,255,255,0.7)\"\
+          \ stroke-width=\"2\" stroke-linecap=\"round\"/>\n    <rect x=\"26\" y=\"\
+          10\" width=\"4\" height=\"6\" rx=\"1\" fill=\"rgba(255,255,255,0.35)\"/>\n\
+          \    <ellipse cx=\"28\" cy=\"16\" rx=\"10\" ry=\"3\" fill=\"rgba(255,255,255,0.25)\"\
+          \ stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1\"/>\n    <path d=\"\
+          M18,16 L12,38 Q28,44 44,38 L38,16 Z\" fill=\"rgba(255,255,255,0.1)\" stroke=\"\
+          rgba(255,255,255,0.45)\" stroke-width=\"1.5\"/>\n    <path d=\"M21,18 L15,36\
+          \ Q28,41 41,36 L35,18 Z\" fill=\"rgba(255,255,255,0.12)\"/>\n    <ellipse\
+          \ cx=\"28\" cy=\"38\" rx=\"16\" ry=\"3.5\" fill=\"rgba(255,255,255,0.2)\"\
+          \ stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1.2\"/>\n    <circle cx=\"\
+          28\" cy=\"26\" r=\"5\" fill=\"rgba(255,255,255,0.85)\"/>\n    <circle cx=\"\
+          26\" cy=\"24\" r=\"1.5\" fill=\"white\" opacity=\"0.7\"/>\n  </svg>`;\n\
+          ]]]\n"
+      entity: light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15
+      name: Spot 1
+      show_icon: false
+      show_name: true
+      styles:
+        card:
+        - background: "[[[\n  if (entity.state !== 'on') return 'transparent';\n \
+            \ const rgb = entity.attributes.rgb_color;\n  const c = rgb ? `${rgb[0]},${rgb[1]},${rgb[2]}`\
+            \ : '255,215,0';\n  const bri = entity.attributes.brightness || 255;\n\
+            \  const op = ((bri / 255) * 0.45).toFixed(2);\n  return `radial-gradient(ellipse\
+            \ at center, rgba(${c},${op}) 0%, transparent 80%)`;\n]]]\n"
+        - box-shadow: none
+        - border: none
+        - border-radius: 0
+        - padding: 10px 0 8px 0
+        - transition: background 0.5s ease
+        grid:
+        - grid-template-areas: '"i" "n"'
+        name:
+        - font-size: 9px
+        - font-weight: 800
+        - text-transform: uppercase
+        - color: rgba(255,255,255,0.85)
+        - margin-top: 4px
+      styles_extra:
+        custom_fields:
+          i:
+          - justify-self: center
+      tap_action:
+        action: toggle
+      type: custom:button-card
+    - card_mod:
+        style: ":host {\n  flex: 0 0 48px !important;\n  max-width: 48px !important;\n\
+          \  min-width: 48px !important;\n}\nha-card {\n  display: flex !important;\n\
+          \  align-items: center !important;\n  justify-content: center !important;\n\
+          }\n"
+      custom_fields:
+        m: "[[[\n  const on = entity.state === 'on';\n  const rgb = entity.attributes.rgb_color\
+          \ || [255,215,0];\n  const r = rgb[0], g = rgb[1], b = rgb[2];\n  const\
+          \ bri = entity.attributes.brightness || 255;\n  const op = on ? ((bri /\
+          \ 255) * 0.45).toFixed(2) : '0.06';\n  const bord = on ? ((bri / 255) *\
+          \ 0.85).toFixed(2) : '0.14';\n  return `<div style=\"width:34px;height:34px;border-radius:50%;background:rgba(${on?r+','+g+','+b:'255,255,255'},${op});border:1.5px\
+          \ solid rgba(${on?r+','+g+','+b:'255,255,255'},${bord});display:flex;align-items:center;justify-content:center;transition:background\
+          \ 0.3s,border 0.3s;\">\n    <svg viewBox=\"0 0 24 24\" width=\"14\" height=\"\
+          14\" fill=\"none\">\n      <circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"\
+          />\n      <path d=\"M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66\
+          \ 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\" stroke=\"\
+          rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\" stroke-width=\"\
+          1.5\" stroke-linecap=\"round\"/>\n    </svg>\n  </div>`;\n]]]\n"
+      entity: light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15
+      show_icon: false
+      show_name: false
+      styles:
+        card:
+        - background: transparent
+        - box-shadow: none
+        - border: none
+        - border-right: 1px solid rgba(255,255,255,0.1)
+        - border-radius: 0
+        - padding: 0
+        - height: 100%
+        grid:
+        - grid-template-areas: '"m"'
+        - align-items: center
+        - justify-items: left
+      tap_action:
+        action: more-info
+      type: custom:button-card
+    - card_mod:
+        style: ':host { flex: 1 1 0 !important; max-width: 100px !important; }
+
+          '
+      custom_fields:
+        i: "[[[\n  const on = entity.state === 'on';\n  return `<svg viewBox=\"0 0\
+          \ 56 56\" width=\"50\" height=\"50\" xmlns=\"http://www.w3.org/2000/svg\"\
+          \ style=\"opacity:${on?'1':'0.25'};transition:opacity 0.4s;display:block;margin:auto;\"\
+          >\n    <line x1=\"28\" y1=\"2\" x2=\"28\" y2=\"10\" stroke=\"rgba(255,255,255,0.7)\"\
+          \ stroke-width=\"2\" stroke-linecap=\"round\"/>\n    <rect x=\"26\" y=\"\
+          10\" width=\"4\" height=\"6\" rx=\"1\" fill=\"rgba(255,255,255,0.35)\"/>\n\
+          \    <ellipse cx=\"28\" cy=\"16\" rx=\"10\" ry=\"3\" fill=\"rgba(255,255,255,0.25)\"\
+          \ stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1\"/>\n    <path d=\"\
+          M18,16 L12,38 Q28,44 44,38 L38,16 Z\" fill=\"rgba(255,255,255,0.1)\" stroke=\"\
+          rgba(255,255,255,0.45)\" stroke-width=\"1.5\"/>\n    <path d=\"M21,18 L15,36\
+          \ Q28,41 41,36 L35,18 Z\" fill=\"rgba(255,255,255,0.12)\"/>\n    <ellipse\
+          \ cx=\"28\" cy=\"38\" rx=\"16\" ry=\"3.5\" fill=\"rgba(255,255,255,0.2)\"\
+          \ stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1.2\"/>\n    <circle cx=\"\
+          28\" cy=\"26\" r=\"5\" fill=\"rgba(255,255,255,0.85)\"/>\n    <circle cx=\"\
+          26\" cy=\"24\" r=\"1.5\" fill=\"white\" opacity=\"0.7\"/>\n  </svg>`;\n\
+          ]]]\n"
+      entity: light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb
+      name: Spot 2
+      show_icon: false
+      show_name: true
+      styles:
+        card:
+        - background: "[[[\n  if (entity.state !== 'on') return 'transparent';\n \
+            \ const rgb = entity.attributes.rgb_color;\n  const c = rgb ? `${rgb[0]},${rgb[1]},${rgb[2]}`\
+            \ : '255,215,0';\n  const bri = entity.attributes.brightness || 255;\n\
+            \  const op = ((bri / 255) * 0.45).toFixed(2);\n  return `radial-gradient(ellipse\
+            \ at center, rgba(${c},${op}) 0%, transparent 80%)`;\n]]]\n"
+        - box-shadow: none
+        - border: none
+        - border-radius: 0
+        - padding: 10px 0 8px 0
+        - transition: background 0.5s ease
+        grid:
+        - grid-template-areas: '"i" "n"'
+        name:
+        - font-size: 9px
+        - font-weight: 800
+        - text-transform: uppercase
+        - color: rgba(255,255,255,0.85)
+        - margin-top: 4px
+      styles_extra:
+        custom_fields:
+          i:
+          - justify-self: center
+      tap_action:
+        action: toggle
+      type: custom:button-card
+    - card_mod:
+        style: ":host {\n  flex: 0 0 48px !important;\n  max-width: 48px !important;\n\
+          \  min-width: 48px !important;\n}\nha-card {\n  display: flex !important;\n\
+          \  align-items: center !important;\n  justify-content: center !important;\n\
+          }\n"
+      custom_fields:
+        m: "[[[\n  const on = entity.state === 'on';\n  const rgb = entity.attributes.rgb_color\
+          \ || [255,215,0];\n  const r = rgb[0], g = rgb[1], b = rgb[2];\n  const\
+          \ bri = entity.attributes.brightness || 255;\n  const op = on ? ((bri /\
+          \ 255) * 0.45).toFixed(2) : '0.06';\n  const bord = on ? ((bri / 255) *\
+          \ 0.85).toFixed(2) : '0.14';\n  return `<div style=\"width:34px;height:34px;border-radius:50%;background:rgba(${on?r+','+g+','+b:'255,255,255'},${op});border:1.5px\
+          \ solid rgba(${on?r+','+g+','+b:'255,255,255'},${bord});display:flex;align-items:center;justify-content:center;transition:background\
+          \ 0.3s,border 0.3s;\">\n    <svg viewBox=\"0 0 24 24\" width=\"14\" height=\"\
+          14\" fill=\"none\">\n      <circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"\
+          />\n      <path d=\"M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66\
+          \ 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\" stroke=\"\
+          rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\" stroke-width=\"\
+          1.5\" stroke-linecap=\"round\"/>\n    </svg>\n  </div>`;\n]]]\n"
+      entity: light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb
+      show_icon: false
+      show_name: false
+      styles:
+        card:
+        - background: transparent
+        - box-shadow: none
+        - border: none
+        - border-right: 1px solid rgba(255,255,255,0.1)
+        - border-radius: 0
+        - padding: 0
+        - height: 100%
+        grid:
+        - grid-template-areas: '"m"'
+        - align-items: center
+        - justify-items: left
+      tap_action:
+        action: more-info
+      type: custom:button-card
+    - card_mod:
+        style: ':host { flex: 1 1 0 !important; max-width: 100px !important; }
+
+          '
+      custom_fields:
+        i: "[[[\n  const on = entity.state === 'on';\n  return `<svg viewBox=\"0 0\
+          \ 56 56\" width=\"50\" height=\"50\" xmlns=\"http://www.w3.org/2000/svg\"\
+          \ style=\"opacity:${on?'1':'0.25'};transition:opacity 0.4s;display:block;margin:auto;\"\
+          >\n    <line x1=\"28\" y1=\"2\" x2=\"28\" y2=\"10\" stroke=\"rgba(255,255,255,0.7)\"\
+          \ stroke-width=\"2\" stroke-linecap=\"round\"/>\n    <rect x=\"26\" y=\"\
+          10\" width=\"4\" height=\"6\" rx=\"1\" fill=\"rgba(255,255,255,0.35)\"/>\n\
+          \    <ellipse cx=\"28\" cy=\"16\" rx=\"10\" ry=\"3\" fill=\"rgba(255,255,255,0.25)\"\
+          \ stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1\"/>\n    <path d=\"\
+          M18,16 L12,38 Q28,44 44,38 L38,16 Z\" fill=\"rgba(255,255,255,0.1)\" stroke=\"\
+          rgba(255,255,255,0.45)\" stroke-width=\"1.5\"/>\n    <path d=\"M21,18 L15,36\
+          \ Q28,41 41,36 L35,18 Z\" fill=\"rgba(255,255,255,0.12)\"/>\n    <ellipse\
+          \ cx=\"28\" cy=\"38\" rx=\"16\" ry=\"3.5\" fill=\"rgba(255,255,255,0.2)\"\
+          \ stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"1.2\"/>\n    <circle cx=\"\
+          28\" cy=\"26\" r=\"5\" fill=\"rgba(255,255,255,0.85)\"/>\n    <circle cx=\"\
+          26\" cy=\"24\" r=\"1.5\" fill=\"white\" opacity=\"0.7\"/>\n  </svg>`;\n\
+          ]]]\n"
+      entity: light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6
+      name: Spot 3
+      show_icon: false
+      show_name: true
+      styles:
+        card:
+        - background: "[[[\n  if (entity.state !== 'on') return 'transparent';\n \
+            \ const rgb = entity.attributes.rgb_color;\n  const c = rgb ? `${rgb[0]},${rgb[1]},${rgb[2]}`\
+            \ : '255,215,0';\n  const bri = entity.attributes.brightness || 255;\n\
+            \  const op = ((bri / 255) * 0.45).toFixed(2);\n  return `radial-gradient(ellipse\
+            \ at center, rgba(${c},${op}) 0%, transparent 80%)`;\n]]]\n"
+        - box-shadow: none
+        - border: none
+        - border-radius: 0
+        - padding: 10px 0 8px 0
+        - transition: background 0.5s ease
+        grid:
+        - grid-template-areas: '"i" "n"'
+        name:
+        - font-size: 9px
+        - font-weight: 800
+        - text-transform: uppercase
+        - color: rgba(255,255,255,0.85)
+        - margin-top: 4px
+      styles_extra:
+        custom_fields:
+          i:
+          - justify-self: center
+      tap_action:
+        action: toggle
+      type: custom:button-card
+    - card_mod:
+        style: ":host {\n  flex: 0 0 48px !important;\n  max-width: 48px !important;\n\
+          \  min-width: 48px !important;\n}\nha-card {\n  display: flex !important;\n\
+          \  align-items: center !important;\n  justify-content: center !important;\n\
+          }\n"
+      custom_fields:
+        m: "[[[\n  const on = entity.state === 'on';\n  const rgb = entity.attributes.rgb_color\
+          \ || [255,215,0];\n  const r = rgb[0], g = rgb[1], b = rgb[2];\n  const\
+          \ bri = entity.attributes.brightness || 255;\n  const op = on ? ((bri /\
+          \ 255) * 0.45).toFixed(2) : '0.06';\n  const bord = on ? ((bri / 255) *\
+          \ 0.85).toFixed(2) : '0.14';\n  return `<div style=\"width:34px;height:34px;border-radius:50%;background:rgba(${on?r+','+g+','+b:'255,255,255'},${op});border:1.5px\
+          \ solid rgba(${on?r+','+g+','+b:'255,255,255'},${bord});display:flex;align-items:center;justify-content:center;transition:background\
+          \ 0.3s,border 0.3s;\">\n    <svg viewBox=\"0 0 24 24\" width=\"14\" height=\"\
+          14\" fill=\"none\">\n      <circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"\
+          />\n      <path d=\"M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66\
+          \ 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\" stroke=\"\
+          rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\" stroke-width=\"\
+          1.5\" stroke-linecap=\"round\"/>\n    </svg>\n  </div>`;\n]]]\n"
+      entity: light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6
+      show_icon: false
+      show_name: false
+      styles:
+        card:
+        - background: transparent
+        - box-shadow: none
+        - border: none
+        - border-right: 1px solid rgba(255,255,255,0.1)
+        - border-radius: 0
+        - padding: 0
+        - height: 100%
+        grid:
+        - grid-template-areas: '"m"'
+        - align-items: center
+        - justify-items: left
+      tap_action:
+        action: more-info
+      type: custom:button-card
+    - card_mod:
+        style: ":host {\n  flex: 0 0 1px !important;\n  max-width: 1px !important;\n\
+          \  min-width: 1px !important;\n}\nha-card {\n  background: linear-gradient(to\
+          \ bottom, transparent, rgba(255,255,255,0.15), transparent) !important;\n\
+          \  box-shadow: none !important;\n  border: none !important;\n  border-radius:\
+          \ 0 !important;\n}\n"
+      show_icon: false
+      show_name: false
+      styles:
+        card:
+        - padding: 0
+      tap_action:
+        action: none
+      type: custom:button-card
+    - card_mod:
+        style: ':host { flex: 1 1 0 !important; max-width: 100px !important; }
+
+          '
+      custom_fields:
+        i: "[[[\n  const on = entity.state === 'on';\n  return `<svg viewBox=\"0 0\
+          \ 56 48\" width=\"50\" height=\"44\" xmlns=\"http://www.w3.org/2000/svg\"\
+          \ style=\"opacity:${on?'1':'0.25'};transition:opacity 0.4s;display:block;margin:auto;\"\
+          >\n    <!-- Corps du piano -->\n    <rect x=\"4\" y=\"8\" width=\"48\" height=\"\
+          32\" rx=\"3\" fill=\"rgba(255,255,255,0.1)\" stroke=\"rgba(255,255,255,0.45)\"\
+          \ stroke-width=\"1.5\"/>\n    <!-- Touches blanches -->\n    <rect x=\"\
+          6\" y=\"10\" width=\"6\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <rect x=\"\
+          13\" y=\"10\" width=\"6\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <rect x=\"\
+          20\" y=\"10\" width=\"6\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <rect x=\"\
+          27\" y=\"10\" width=\"6\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <rect x=\"\
+          34\" y=\"10\" width=\"6\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <rect x=\"\
+          41\" y=\"10\" width=\"6\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <rect x=\"\
+          48\" y=\"10\" width=\"4\" height=\"20\" rx=\"1\" fill=\"rgba(255,255,255,0.85)\"\
+          \ stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"0.5\"/>\n    <!-- Touches\
+          \ noires -->\n    <rect x=\"10\" y=\"10\" width=\"4\" height=\"13\" rx=\"\
+          1\" fill=\"rgba(30,40,60,0.95)\" stroke=\"rgba(255,255,255,0.2)\" stroke-width=\"\
+          0.5\"/>\n    <rect x=\"17\" y=\"10\" width=\"4\" height=\"13\" rx=\"1\"\
+          \ fill=\"rgba(30,40,60,0.95)\" stroke=\"rgba(255,255,255,0.2)\" stroke-width=\"\
+          0.5\"/>\n    <rect x=\"31\" y=\"10\" width=\"4\" height=\"13\" rx=\"1\"\
+          \ fill=\"rgba(30,40,60,0.95)\" stroke=\"rgba(255,255,255,0.2)\" stroke-width=\"\
+          0.5\"/>\n    <rect x=\"38\" y=\"10\" width=\"4\" height=\"13\" rx=\"1\"\
+          \ fill=\"rgba(30,40,60,0.95)\" stroke=\"rgba(255,255,255,0.2)\" stroke-width=\"\
+          0.5\"/>\n    <rect x=\"45\" y=\"10\" width=\"4\" height=\"13\" rx=\"1\"\
+          \ fill=\"rgba(30,40,60,0.95)\" stroke=\"rgba(255,255,255,0.2)\" stroke-width=\"\
+          0.5\"/>\n    <!-- Panneau bas -->\n    <rect x=\"4\" y=\"32\" width=\"48\"\
+          \ height=\"8\" rx=\"0\" fill=\"rgba(255,255,255,0.06)\" stroke=\"rgba(255,255,255,0.15)\"\
+          \ stroke-width=\"0.5\"/>\n    <!-- Pieds -->\n    <rect x=\"8\" y=\"40\"\
+          \ width=\"4\" height=\"6\" rx=\"1\" fill=\"rgba(255,255,255,0.2)\"/>\n \
+          \   <rect x=\"44\" y=\"40\" width=\"4\" height=\"6\" rx=\"1\" fill=\"rgba(255,255,255,0.2)\"\
+          />\n  </svg>`;\n]]]\n"
+      entity: light.meross_mss710r_3de1_outlet
+      name: Piano
+      show_icon: false
+      show_name: true
+      styles:
+        card:
+        - background: "[[[\n  if (entity.state !== 'on') return 'transparent';\n \
+            \ return 'radial-gradient(ellipse at center, rgba(255,220,100,0.35) 0%,\
+            \ transparent 80%)';\n]]]\n"
+        - box-shadow: none
+        - border: none
+        - border-radius: 0
+        - padding: 10px 0 8px 0
+        - transition: background 0.5s ease
+        grid:
+        - grid-template-areas: '"i" "n"'
+        name:
+        - font-size: 9px
+        - font-weight: 800
+        - text-transform: uppercase
+        - color: rgba(255,255,255,0.85)
+        - margin-top: 4px
+      styles_extra:
+        custom_fields:
+          i:
+          - justify-self: center
+      tap_action:
+        action: toggle
+      type: custom:button-card
+    type: horizontal-stack
+  type: vertical-stack
+card_mod:
+  style: "ha-card {\n  /* Style Glassmorphism Raffiné */\n  background: rgba(10, 15,\
+    \ 25, 0.8) !important;\n  backdrop-filter: blur(15px) !important;\n  -webkit-backdrop-filter:\
+    \ blur(15px) !important;\n  border-radius: 20px !important;\n  \n  /* Bordure\
+    \ Dynamique fine avec lueur orange si allumé */\n  border: 1px solid\n    {% if\
+    \ states('light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15') == 'on'\n  \
+    \     or states('light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb') == 'on'\n\
+    \       or states('light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6') ==\
+    \ 'on'\n       or states('light.meross_mss710r_3de1_outlet') == 'on' %}\n    \
+    \  rgba(255, 152, 0, 0.6)\n    {% else %}\n      rgba(255, 255, 255, 0.12)\n \
+    \   {% endif %} !important;\n  \n  /* box-shadow profond */\n  box-shadow:\n \
+    \   {% if states('light.smart_rgb_bulb_2402268250114452050348e1e9ed8d15') == 'on'\n\
+    \       or states('light.smart_rgb_bulb_2402266566692052050348e1e9ed79eb') ==\
+    \ 'on'\n       or states('light.smart_rgb_bulb_2401021328074052050248e1e9e8daa6')\
+    \ == 'on'\n       or states('light.meross_mss710r_3de1_outlet') == 'on' %}\n \
+    \     0 0 25px rgba(255, 152, 0, 0.25), 0 8px 32px rgba(0, 0, 0, 0.6)\n    {%\
+    \ else %}\n      0 8px 32px rgba(0, 0, 0, 0.5)\n    {% endif %} !important;\n\
+    \    \n  overflow: hidden !important;\n  padding: 0 !important;\n}\n"
+type: custom:mod-card

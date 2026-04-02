@@ -1,0 +1,2068 @@
+- id: '1763111057401'
+  alias: Quand la machine démarre (reset état terminée)
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.machine_a_laver_en_cours
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.machine_a_laver_terminee
+    data: {}
+  - action: timer.cancel
+    target:
+      entity_id: timer.machine_a_laver_fin
+    data: {}
+  mode: single
+- id: '1763111347577'
+  alias: Fin de machine (0 W pendant 5 minutes)
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.machine_a_laver_en_cours
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.machine_a_laver_terminee
+    data: {}
+  - action: timer.start
+    target:
+      entity_id: timer.machine_a_laver_fin
+    data: {}
+  mode: single
+- id: '1763114905068'
+  alias: "\U0001F9FA Sèche-linge — Reset au lancement"
+  description: Éteint le témoin terminé dès que la machine quitte l'état Finished
+  triggers:
+  - trigger: state
+    entity_id: sensor.seche_linge_mode
+    from: Finished
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  mode: single
+- id: '1763114933958'
+  alias: "\U0001F9FA Sèche-linge — Signal fin (Mode Finished)"
+  description: Passe en terminé et lance le timer de sécurité
+  triggers:
+  - trigger: state
+    entity_id: sensor.seche_linge_mode
+    to: Finished
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  - action: timer.start
+    target:
+      entity_id: timer.seche_linge_fin
+  mode: single
+- id: notif_machine_terminee
+  alias: Machine à laver - rappels tant que non vidée
+  description: Envoie une notification toutes les 2h tant que la porte n'a pas été
+    ouverte
+  triggers:
+  - entity_id: input_boolean.machine_a_laver_terminee
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: time
+          after: '22:00:00'
+        - condition: time
+          before: 06:00:00
+      sequence:
+      - wait_for_trigger:
+        - at: 06:00:00
+          trigger: time
+  - repeat:
+      until:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.capteur_ouverture_lave_linge_contact
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.machine_a_laver_terminee
+          state: 'off'
+      sequence:
+      - if:
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: input_boolean.machine_a_laver_terminee
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.capteur_ouverture_lave_linge_contact
+            state: 'off'
+          - condition: time
+            after: 06:00:00
+            before: '22:00:00'
+        then:
+        - target:
+            entity_id: input_boolean.notif_ml_vidage_envoyee
+          action: input_boolean.turn_on
+        - data:
+            title: Machine à laver
+            message: ⚠️ Pensez à vider la machine
+          action: notify.mobile_app_iphone_16_pro_de_kristensen
+        - data:
+            title: Machine à laver
+            message: ⚠️ Pensez à vider la machine
+          action: notify.mobile_app_iphone_daline
+      - delay:
+          hours: 2
+  mode: restart
+- id: notif_seche_linge_termine
+  alias: Notification - Sèche-linge terminé
+  description: Envoie une notification à Chris et Aline quand le sèche-linge est terminé
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.seche_linge_termine
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: Sèche-linge
+      message: Le sèche-linge est terminé ✅
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: Sèche-linge
+      message: Le sèche-linge est terminé ✅
+  - action: notify.mobile_app_iphone_de_marley
+    data:
+      title: Sèche-linge
+      message: Le sèche-linge est terminé ✅
+  mode: single
+- id: notif_suivi_greffe_mobile
+  alias: Notif Suivi Greffe - iPhone 6h
+  description: Notification quotidienne du suivi greffe envoyée à l'iPhone de Kristensen
+  initial_state: true
+  triggers:
+  - trigger: time
+    at: 06:00:00
+  conditions: []
+  actions:
+  - delay: 00:00:10
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: Suivi post-greffe - {{ states('sensor.suivi_greffe_jour') }}
+      message: "{% set days = state_attr('sensor.suivi_greffe_jour','days_since_start')
+        | int(-1) %}\n{% set vit = state_attr('sensor.suivi_greffe_jour','vitamine_aujourdhui')
+        %}\n{% set sham = state_attr('sensor.suivi_greffe_jour','shampoing_aujourdhui')
+        %}\n{% set ozone = state_attr('sensor.suivi_greffe_jour','serum_ozone_aujourdhui')
+        %}\n{% set derma = state_attr('sensor.suivi_greffe_jour','dermaroller_serum_aujourdhui')
+        %}\n{% set huile = state_attr('sensor.suivi_greffe_jour','huile_capillaire_aujourdhui')
+        %}\n{% set massage = state_attr('sensor.suivi_greffe_jour','massage_cuir_chevelu_aujourdhui')
+        %}\n{% if days < 0 %}\n  Protocole non démarré (avant J0).\n{% elif days >
+        365 %}\n  Protocole terminé.\n{% else %}\n  {% set msg = 'Jour J+' ~ days
+        %}\n  {% if vit in [true, 'true', 'True', 1] %}{% set msg = msg ~ ' | Vitamines'
+        %}{% endif %}\n  {% if sham in [true, 'true', 'True', 1] %}{% set msg = msg
+        ~ ' | Shampoing' %}{% endif %}\n  {% if ozone in [true, 'true', 'True', 1]
+        %}{% set msg = msg ~ ' | Sérum huile ozonée' %}{% endif %}\n  {% if derma
+        in [true, 'true', 'True', 1] %}{% set msg = msg ~ ' | Dermaroller + sérum'
+        %}{% endif %}\n  {% if huile in [true, 'true', 'True', 1] %}{% set msg = msg
+        ~ ' | Huile capillaire' %}{% endif %}\n  {% if massage in [true, 'true', 'True',
+        1] %}{% set msg = msg ~ ' | Massage cuir chevelu' %}{% endif %}\n  {{ msg
+        }}\n{% endif %}\n"
+  mode: single
+- id: '1764079641247'
+  alias: Sèche-linge - Reset et Notification sur Ouverture Porte
+  description: Acquitte le cycle et notifie quand la porte du sèche-linge est ouverte.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.seche_linge_door_status
+    to: 'on'
+  conditions:
+  - condition: state
+    entity_id: input_boolean.seche_linge_termine
+    state: 'on'
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: "Sèche-linge vidé \U0001F9FA"
+      message: Le sèche-linge a été vidé
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: "Sèche-linge vidé \U0001F9FA"
+      message: Le sèche-linge a été vidé
+  mode: single
+- id: '1764160666075'
+  alias: PSG - Match aujourd'hui à 8h
+  description: Envoie une notification le matin du match du PSG
+  triggers:
+  - at: 08:00:00
+    trigger: time
+  conditions:
+  - condition: template
+    value_template: "{% set start = state_attr('calendar.paris_saint_germain', 'start_time')
+      %} {% if not start %}\n  false\n{% else %}\n  {{ as_datetime(start).date() ==
+      now().date() }}\n{% endif %}\n"
+  actions:
+  - variables:
+      event_summary: '{{ state_attr(''calendar.paris_saint_germain'',''message'')
+        }}'
+      event_location: '{{ state_attr(''calendar.paris_saint_germain'',''location'')
+        }}'
+      event_start: '{% set s = state_attr(''calendar.paris_saint_germain'',''start_time'')
+        %} {{ as_datetime(s).strftime(''%H:%M'') if s else '''' }}'
+      event_end: '{% set e = state_attr(''calendar.paris_saint_germain'',''end_time'')
+        %} {{ as_datetime(e).strftime(''%H:%M'') if e else '''' }}'
+  - data:
+      title: Match du PSG aujourd'hui ⚽️
+      message: '{{ event_summary }} à {{ event_start }} (fin {{ event_end }}) {% if
+        event_location %}- {{ event_location }}{% endif %}'
+    action: notify.mobile_app_iphone_daline
+  - data:
+      title: Match du PSG aujourd'hui ⚽️
+      message: '{{ event_summary }} à {{ event_start }} (fin {{ event_end }}) {% if
+        event_location %}- {{ event_location }}{% endif %}'
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Match du PSG aujourd'hui ⚽️
+      message: '{{ event_summary }} à {{ event_start }} (fin {{ event_end }}) {% if
+        event_location %}- {{ event_location }}{% endif %}'
+    action: notify.mobile_app_iphone_de_marley
+  mode: single
+- id: '1764160807774'
+  alias: PSG - Match demain à 8h
+  description: Préviens la veille du match du PSG
+  triggers:
+  - at: 08:00:00
+    trigger: time
+  conditions:
+  - condition: template
+    value_template: "{% set start = state_attr('calendar.paris_saint_germain', 'start_time')
+      %} {% if not start %}\n  false\n{% else %}\n  {{ as_datetime(start).date() ==
+      (now() + timedelta(days=1)).date() }}\n{% endif %}\n"
+  actions:
+  - variables:
+      event_start: '{% set s = state_attr(''calendar.paris_saint_germain'',''start_time'')
+        %} {{ as_datetime(s).strftime(''%H:%M'') if s else '''' }}'
+  - data:
+      title: Rappel match PSG ⚽️
+      message: Match du PSG demain à {{ event_start }}
+    action: notify.mobile_app_iphone_daline
+  - data:
+      title: Rappel match PSG ⚽️
+      message: Match du PSG demain à {{ event_start }}
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Rappel match PSG ⚽️
+      message: Match du PSG demain à {{ event_start }}
+    action: notify.mobile_app_iphone_de_marley
+  mode: single
+- id: '1764317283011'
+  alias: Notification - Machine à laver terminée
+  description: Envoie une notification quand la machine est terminée
+  triggers:
+  - entity_id: input_boolean.machine_a_laver_terminee
+    from: 'off'
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - data:
+      title: Machine à laver
+      message: Le Lave Linge est terminé ✅
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Machine à laver
+      message: Le Lave Linge est terminé ✅
+    action: notify.mobile_app_iphone_daline
+  mode: single
+- id: '1764332380766'
+  alias: Porte garage - Alerte ouverture + notif fermeture
+  description: Alerte si porte ouverte 5 min
+  triggers:
+  - id: garage_ouverte_5min
+    entity_id: binary_sensor.capteur_porte_garage_contact
+    from: 'off'
+    to: 'on'
+    for: 00:05:00
+    trigger: state
+  - id: garage_fermee
+    entity_id: binary_sensor.capteur_porte_garage_contact
+    from: 'on'
+    to: 'off'
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: garage_ouverte_5min
+      sequence:
+      - target:
+          entity_id: input_boolean.alerte_porte_garage_envoyee
+        action: input_boolean.turn_on
+      - data:
+          title: Porte Garage
+          message: ⚠️ La porte du garage est restée ouverte !
+        action: notify.mobile_app_iphone_16_pro_de_kristensen
+      - data:
+          title: Porte Garage
+          message: ⚠️ La porte du garage est restée ouverte !
+        action: notify.mobile_app_iphone_daline
+    - conditions:
+      - condition: trigger
+        id: garage_fermee
+      - condition: state
+        entity_id: input_boolean.alerte_porte_garage_envoyee
+        state: 'on'
+      sequence:
+      - data:
+          title: Porte Garage
+          message: ✅ Porte du garage fermée.
+        action: notify.mobile_app_iphone_16_pro_de_kristensen
+      - data:
+          title: Porte Garage
+          message: ✅ Porte du garage fermée.
+        action: notify.mobile_app_iphone_daline
+      - target:
+          entity_id: input_boolean.alerte_porte_garage_envoyee
+        action: input_boolean.turn_off
+  mode: single
+- id: '1764544957516'
+  alias: 17TRACK - Archiver colis livrés après 2h
+  description: ''
+  triggers:
+  - minutes: /30
+    trigger: time_pattern
+  conditions: []
+  actions:
+  - action: seventeentrack.get_packages
+    data:
+      config_entry_id: 01KBBEN2MB5F9B7Y2BA03EVAC
+      package_state:
+      - delivered
+    response_variable: colis_livres
+  - repeat:
+      for_each: '{{ colis_livres.packages | default([]) }}'
+      sequence:
+      - variables:
+          ts: '{{ repeat.item.timestamp | default(None) }}'
+      - condition: template
+        value_template: '{{ ts is not none and (now() - as_datetime(ts)).total_seconds()
+          > 2 * 3600 }}'
+      - action: seventeentrack.archive_package
+        data:
+          config_entry_id: 01KBBEN2MB5F9B7Y2BA03EVAC
+          package_tracking_number: '{{ repeat.item.tracking_number }}'
+  mode: single
+- id: '1764791081679'
+  alias: 17TRACK - Notification nouveaux colis livrés
+  description: Notifier quand un colis vient de passer en livré
+  triggers:
+  - trigger: time_pattern
+    minutes: /10
+  conditions: []
+  actions:
+  - action: seventeentrack.get_packages
+    data:
+      config_entry_id: 01KBBEN2MB5F9B7Y2BA03EVAC
+      package_state:
+      - delivered
+    response_variable: colis_livres_notif
+  - repeat:
+      for_each: '{{ colis_livres_notif.packages | default([]) }}'
+      sequence:
+      - variables:
+          ts: '{{ repeat.item.timestamp | default(None) }}'
+      - condition: template
+        value_template: '{{ ts is not none and (now() - as_datetime(ts)).total_seconds()
+          <= 3600 }}'
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: "\U0001F4E6 Colis livré"
+          message: '{{ repeat.item.friendly_name | default(''Colis'') }} est maintenant
+            à l’état "{{ repeat.item.status | default(''delivered'') }}". (Suivi :
+            {{ repeat.item.tracking_number }})'
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: "\U0001F4E6 Colis livré"
+          message: '{{ repeat.item.friendly_name | default(''Colis'') }} est maintenant
+            à l’état "{{ repeat.item.status | default(''delivered'') }}". (Suivi :
+            {{ repeat.item.tracking_number }})'
+  mode: single
+- id: '1765876584300'
+  alias: Machine à laver - notif Machine vidée
+  description: Reset le statut dès l'ouverture
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_ouverture_lave_linge_contact
+    to: 'on'
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.notif_ml_vidage_envoyee
+        state: 'on'
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: Machine à laver
+          message: ✅ Machine vidée.
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: Machine à laver
+          message: ✅ Machine vidée.
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.notif_ml_vidage_envoyee
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.machine_a_laver_terminee
+  mode: single
+- id: '1765901461856'
+  alias: Eteint à Minuit si pas de mouvement au bar
+  description: ''
+  triggers:
+  - trigger: time
+    at: 00:00:00
+  conditions:
+  - type: is_no_motion
+    condition: device
+    device_id: 1004033e1949649d39be21ebd8ff9e98
+    entity_id: 90b780d7f85d92c836dbf945c0826d03
+    domain: binary_sensor
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.lumieres_maison
+  mode: single
+- id: '1765901889439'
+  alias: Allume prises sdb le matin
+  description: ''
+  triggers:
+  - trigger: time
+    at: 05:00:00
+  conditions: []
+  actions:
+  - action: switch.turn_on
+    target:
+      entity_id:
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_1
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_2
+  - action: switch.turn_off
+    target:
+      entity_id: switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_3
+  mode: single
+- id: '1765902011717'
+  alias: Charge tondeuse le jeudi
+  description: ''
+  triggers:
+  - trigger: time
+    at: 05:00:00
+    weekday:
+    - thu
+  conditions: []
+  actions:
+  - action: switch.turn_on
+    target:
+      entity_id:
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_4
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_5
+  mode: single
+- id: '1765902116284'
+  alias: Arret charge tondeuse
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:00:00
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    target:
+      entity_id:
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_4
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_5
+  mode: single
+- id: '1765902795277'
+  alias: Bar Auto - ON (presence + nuit élargie)
+  triggers:
+  - entity_id: binary_sensor.capteur_presence_bar_z_occupancy
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: or
+    conditions:
+    - condition: sun
+      after: sunset
+      after_offset: -00:45:00
+    - condition: sun
+      before: sunrise
+      before_offset: +00:45:00
+  actions:
+  - target:
+      entity_id: light.bar
+    action: light.turn_on
+  mode: restart
+- id: '1765959938733'
+  alias: Bar Auto - OFF (absence)
+  triggers:
+  - entity_id: binary_sensor.capteur_presence_bar_z_occupancy
+    to: 'off'
+    for: 00:01:00
+    trigger: state
+  actions:
+  - target:
+      entity_id: light.bar
+    action: light.turn_off
+  mode: single
+- id: '1765969403142'
+  alias: Bar Auto - OFF (sortie plage nuit)
+  description: ''
+  triggers:
+  - event: sunrise
+    offset: +00:45:00
+    trigger: sun
+  conditions:
+  - condition: state
+    entity_id: light.bar
+    state: 'on'
+  actions:
+  - target:
+      entity_id: light.bar
+    action: light.turn_off
+  mode: single
+- id: '1765969558363'
+  alias: Salon - ON 45 min avant coucher du soleil / OFF à minuit
+  description: ''
+  triggers:
+  - event: sunset
+    offset: -00:45:00
+    trigger: sun
+  - at: 00:00:00
+    trigger: time
+  actions:
+  - choose:
+    - conditions:
+      - condition: sun
+        after: sunset
+        after_offset: -00:45:00
+      sequence:
+      - target:
+          entity_id: light.salon
+        action: light.turn_on
+    default:
+    - target:
+        entity_id: light.salon
+      action: light.turn_off
+  mode: single
+- id: '1766395799546'
+  alias: ⚠️ Home Assistant - Alertes système (hors mises à jour)
+  description: Push iPhone sur toute persistent_notification.created
+  triggers:
+  - event_type: persistent_notification.created
+    trigger: event
+  conditions:
+  - condition: template
+    value_template: '{% set t = (trigger.event.data.title | default('''') | lower)
+      %} {% set m = (trigger.event.data.message | default('''') | lower) %}  {{ not
+      (''update'' in t or ''mise à jour'' in t or ''upgrade'' in t or ''nouvelle version''
+      in t or ''update'' in m or ''mise à jour'' in m or ''upgrade'' in m or ''nouvelle
+      version'' in m or ''supervisor'' in t or ''home assistant core'' in t or ''home
+      assistant os'' in t or ''hacs'' in t or ''supervisor'' in m or ''home assistant
+      core'' in m or ''home assistant os'' in m or ''hacs'' in m) }}
+
+      '
+  actions:
+  - data:
+      title: ⚠️ Home Assistant
+      message: '{{ trigger.event.data.title | default(''Alerte système'') }} {% if
+        trigger.event.data.message %} - {{ trigger.event.data.message }} {% endif
+        %}'
+      data:
+        push:
+          sound: default
+        interruption-level: time-sensitive
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  mode: queued
+- id: '1766430537075'
+  alias: Bascule toilettes
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: f2d957196da2dd76f26c8bd803da0212
+    type: action
+    subtype: 'on'
+    trigger: device
+  conditions: []
+  actions:
+  - action: switch.toggle
+    target:
+      entity_id: switch.inter_toilettes_z
+  mode: single
+- id: '1767607610603'
+  alias: Fenêtre Lison refermée après alerte
+  triggers:
+  - entity_id: binary_sensor.fenetre_lison_contact
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: input_boolean.fenetre_lison_notifiee
+    state: 'on'
+  actions:
+  - data:
+      title: Fenêtre Lison refermée
+      message: La fenêtre a été refermée, le chauffage peut fonctionner normalement.
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Fenêtre Lison refermée
+      message: La fenêtre a été refermée, le chauffage peut fonctionner normalement.
+    action: notify.mobile_app_iphone_daline
+  - target:
+      entity_id: input_boolean.fenetre_lison_notifiee
+    action: input_boolean.turn_off
+  mode: single
+- id: '1767954093158'
+  alias: Tesla - Slider -> Temp consigne
+  triggers:
+  - entity_id: input_number.tesla_temp_cible
+    trigger: state
+  actions:
+  - target:
+      entity_id: climate.tesla_model_3_climate
+    data:
+      temperature: '{{ states(''input_number.tesla_temp_cible'') | float }}'
+    action: climate.set_temperature
+  mode: restart
+- id: '1768307208201'
+  alias: Poubelles - Sortie ce soir 20h (Chris + Aline)
+  triggers:
+  - at: '20:00:00'
+    trigger: time
+  actions:
+  - target:
+      entity_id: calendar.chris_billet_gmail_com
+    data:
+      start_date_time: '{{ now().replace(hour=19, minute=55).isoformat() }}'
+      end_date_time: '{{ now().replace(hour=20, minute=20).isoformat() }}'
+    response_variable: cal
+    action: calendar.get_events
+  - variables:
+      events: '{{ cal[''calendar.chris_billet_gmail_com''][''events''] | default([])
+        }}'
+      poubelles_list: '{{ events | selectattr(''summary'', ''defined'') | selectattr(''summary'',
+        ''search'', ''(?i)sortir\\s+poubelle'') | map(attribute=''summary'') | list
+        }}'
+      message_poubelles: '{{ poubelles_list | map(''regex_replace'', ''(?i)^sortir\\s+poubelle\\s*[:\\-]?\\s*'',
+        '''') | join(''\n'') }}'
+  - condition: template
+    value_template: '{{ poubelles_list | length > 0 }}'
+  - data:
+      title: "Poubelles \U0001F5D1️"
+      message: '{{ message_poubelles }}'
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: "Poubelles \U0001F5D1️"
+      message: '{{ message_poubelles }}'
+    action: notify.mobile_app_iphone_daline
+  mode: single
+- id: '1769198801749'
+  alias: "\U0001F4A1 Chambre Morgan : Extinction Auto (Absence)"
+  description: Éteint le plafonnier et les LEDs dès que Morgan quitte la maison.
+  triggers:
+  - trigger: state
+    entity_id: person.morgan
+    from: home
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.lumieres_morgan
+      - light.leds_morgan_v2
+  mode: single
+- id: '1769807065326'
+  alias: Éteindre imprimante après refroidissement buse
+  description: ''
+  triggers:
+  - entity_id: sensor.ratrig_vminion_current_print_state
+    to: complete
+    trigger: state
+  actions:
+  - wait_for_trigger:
+    - trigger: numeric_state
+      entity_id: sensor.ratrig_vminion_extruder_temperature
+      below: 46
+    timeout: 02:00:00
+  - action: switch.turn_off
+    target:
+      entity_id: switch.prise_imprimante_3d
+  - data:
+      title: "\U0001F5A8️ Imprimante 3D"
+      message: Impression terminée. Buse < 46°C → imprimante éteinte.
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  mode: single
+- id: '1770138883430'
+  alias: Diffuseur huile - timer terminé => OFF
+  triggers:
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.diffuseur_huile
+    trigger: event
+  actions:
+  - action: select.select_option
+    target:
+      entity_id: select.smart_humidifier_diffuser_spray
+    data:
+      option: 'off'
+  mode: single
+- id: '1770140041798'
+  alias: Lumière Morgan - Extinction 10h (mar-ven) + minuit (tous les jours)
+  description: 'Éteint light.pilote_led_morgan à 10h du mardi au vendredi et à minuit
+    tous les jours
+
+    '
+  triggers:
+  - at: 00:00:00
+    id: minuit
+    trigger: time
+  - at: '10:00:00'
+    id: dix_heures
+    trigger: time
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: minuit
+      sequence:
+      - target:
+          entity_id: light.pilote_led_morgan
+        action: light.turn_off
+    - conditions:
+      - condition: trigger
+        id: dix_heures
+      - condition: time
+        weekday:
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - target:
+          entity_id: light.pilote_led_morgan
+        action: light.turn_off
+  mode: single
+- id: '1771076261767'
+  alias: 'Lison : Contrôle Intelligent Chauffage (Prise & Sonde)'
+  description: Pilote la prise en ON/OFF selon la température cible (20.5°C ou 17°C)
+    avec 0.3°C d'hystérésis pour chauffer de 20.2°C à 20.5°C.
+  triggers:
+  - trigger: state
+    entity_id: sensor.capteur_lison_z_temperature
+  - trigger: state
+    entity_id:
+    - input_boolean.lison_heater_force_manual
+    - input_boolean.lison_heater_force_schedule
+    - binary_sensor.fenetre_lison_contact
+    - calendar.chris_billet_gmail_com
+  actions:
+  - variables:
+      cal_state: '{{ is_state(''calendar.chris_billet_gmail_com'', ''on'') }}'
+      cal_msg: '{{ state_attr(''calendar.chris_billet_gmail_com'', ''message'')|lower
+        if state_attr(''calendar.chris_billet_gmail_com'', ''message'') is not none
+        else '''' }}'
+      lison_presente: '{{ cal_state and (''papa'' in cal_msg or ''vacances'' in cal_msg
+        or ''lison'' in cal_msg) }}'
+      now_ts: '{{ as_timestamp(now()) }}'
+      start_ts: '{{ as_timestamp(states(''input_datetime.lison_heater_force_start''))
+        }}'
+      end_ts: '{{ as_timestamp(states(''input_datetime.lison_heater_force_end''))
+        }}'
+      planning_actif: '{{ is_state(''input_boolean.lison_heater_force_schedule'',
+        ''on'') and now_ts >= start_ts and now_ts <= end_ts }}'
+      forcage_manuel: '{{ is_state(''input_boolean.lison_heater_force_manual'', ''on'')
+        }}'
+      target_temp: "{% if is_state('binary_sensor.fenetre_lison_contact', 'on') %}\n
+        \ 5\n{% elif forcage_manuel or planning_actif or lison_presente %}\n  20.5\n{%
+        else %}\n  17\n{% endif %}\n"
+      current_temp: '{{ states(''sensor.capteur_lison_z_temperature'') | float(0)
+        }}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ current_temp < (target_temp - 0.2) }}'
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.chauffage_lison_z
+    - conditions:
+      - condition: template
+        value_template: '{{ current_temp >= target_temp }}'
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.chauffage_lison_z
+  mode: restart
+- id: chloe_humidity_notification
+  alias: Notification Humidité Chambre Chloé
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.smart_temp_humidity_sensor_39000e5be749_humidity
+    above: 67
+    id: high
+  - trigger: numeric_state
+    entity_id: sensor.smart_temp_humidity_sensor_39000e5be749_humidity
+    below: 65
+    id: normal
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: high
+      sequence:
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: "Humidité élevée \U0001F4A7"
+          message: Ta chambre est trop humide ({{ states('sensor.smart_temp_humidity_sensor_39000e5be749_humidity')
+            }}%), il faut aérer !
+    - conditions:
+      - condition: trigger
+        id: normal
+      sequence:
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: Humidité OK ✅
+          message: L'humidité est redevenue normale.
+- id: chloe_humidity_window_opened
+  alias: 'Chloé : Notification Humidité Fenêtre Ouverte'
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_fenetre_chloe_contact
+    from: 'off'
+    to: 'on'
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.smart_temp_humidity_sensor_39000e5be749_humidity
+    above: 65
+  actions:
+  - action: notify.mobile_app_iphone_de_chloe
+    data:
+      title: "\U0001F33F Humidité élevée"
+      message: Bonne idée d'ouvrir la fenêtre !
+- id: notif_ouvertures_depart_chris_aline
+  alias: 'Sécurité : Notification ouvertures au départ'
+  triggers:
+  - trigger: state
+    entity_id:
+    - person.chris
+    - person.aline
+    from: home
+    to: not_home
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.ouvertures_count
+    above: 0
+  - condition: state
+    entity_id: person.chris
+    state: not_home
+  - condition: state
+    entity_id: person.aline
+    state: not_home
+  actions:
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: "\U0001F6AB Ouverture détectée !"
+      message: 'Chris et Aline viennent de quitter la maison. Attention, {{ states(''sensor.ouvertures_count'')
+        }} ouverture(s) sont encore détectées.
+
+        '
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: "\U0001F6AB Ouverture détectée !"
+      message: 'Chris et Aline viennent de quitter la maison. Attention, {{ states(''sensor.ouvertures_count'')
+        }} ouverture(s) sont encore détectées.
+
+        '
+  mode: single
+- id: morgan_heating_final_production
+  alias: 'Morgan : Contrôle Intelligent Chauffage'
+  description: 'Logic: Arrêt > Sensors > Démarrage > Planning > Presence'
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.arret_force_chauffage_morgan
+    - input_boolean.forcage_manuel_morgan
+    - input_boolean.planning_chauffage_morgan
+    - person.morgan
+    - binary_sensor.capteur_fenetre_morgan_contact
+    - binary_sensor.capteur_porte_morgan_contact
+    - sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+  - trigger: time
+    at:
+    - 08:00:00
+    - '13:00:00'
+    - '16:00:00'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.arret_force_chauffage_morgan
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.capteur_fenetre_morgan_contact
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.capteur_porte_morgan_contact
+          state: 'on'
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.chauffage_morgan
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: numeric_state
+          entity_id: sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+          below: 19.5
+        - condition: and
+          conditions:
+          - condition: numeric_state
+            entity_id: sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+            below: 20
+          - condition: state
+            entity_id: switch.chauffage_morgan
+            state: 'on'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.forcage_manuel_morgan
+          state: 'on'
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: person.morgan
+            state: home
+          - condition: template
+            value_template: '{% set planning = is_state(''input_boolean.planning_chauffage_morgan'',
+              ''on'') %} {% set jour = now().weekday() %} {% set heure = now().hour
+              %}
+
+              {# Définition stricte des heures d''école (Coupure) #} {# Lundi (0)
+              n''est PAS dans [1,2,3] et n''est PAS 4, donc il n''est jamais coupé
+              #} {% set est_ecole = (jour in [1, 2, 3] and 8 <= heure < 16) or (jour
+              == 4 and 8 <= heure < 13) %}
+
+              {# On autorise le chauffage si planning OFF ou si on est HORS heures
+              d''école #} {{ not planning or not est_ecole }}
+
+              '
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.chauffage_morgan
+    default:
+    - action: switch.turn_off
+      target:
+        entity_id: switch.chauffage_morgan
+  mode: restart
+- id: '1773250392627'
+  alias: 'SDB Parents : Synchronisation Miroir'
+  description: Le miroir suit l'état de l'interrupteur principal
+  triggers:
+  - entity_id: switch.sdb_parent_z
+    trigger: state
+    to:
+    - 'on'
+    - 'off'
+  actions:
+  - action: switch.turn_{{ trigger.to_state.state }}
+    target:
+      entity_id: switch.miroir_sdb_parents
+  mode: restart
+- id: '1773266632551'
+  alias: Toilettes - Lumière auto selon soleil
+  description: Allume sur présence de 30 min avant le coucher du soleil à 30 min après
+    le lever, puis éteint 2 min après absence
+  triggers:
+  - entity_id: binary_sensor.mouvement_toilettes_z_occupancy
+    to: 'on'
+    id: presence_on
+    trigger: state
+  - entity_id: binary_sensor.mouvement_toilettes_z_occupancy
+    to: 'off'
+    for: 00:02:00
+    id: presence_off
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: presence_on
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:30:00
+        - condition: sun
+          before: sunrise
+          before_offset: +00:30:00
+      sequence:
+      - target:
+          entity_id: switch.inter_toilettes_z
+        action: switch.turn_on
+    - conditions:
+      - condition: trigger
+        id: presence_off
+      sequence:
+      - target:
+          entity_id: switch.inter_toilettes_z
+        action: switch.turn_off
+  mode: restart
+- id: '1773266750888'
+  alias: Lumiere cuisine presence
+  description: Allume la lumière sur présence seulement la nuit et l'éteint après
+    2s sans présence
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_cuisine_occupancy
+    to: 'on'
+    id: presence_on
+  - trigger: state
+    entity_id: binary_sensor.capteur_cuisine_occupancy
+    to: 'off'
+    for: 00:00:02
+    id: presence_off
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: presence_on
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:30:00
+        - condition: sun
+          before: sunrise
+          before_offset: +00:30:00
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.inter_cuisine
+    - conditions:
+      - condition: trigger
+        id: presence_off
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.inter_cuisine
+  mode: restart
+- id: '1773266811205'
+  alias: "\U0001F697 Notification Trafic : Trajet Aline"
+  description: Alerte Aline si le trajet vers le travail est plus bouché que d'habitude
+    (comparé à S-1 même heure).
+  triggers:
+  - at: 07:20:00
+    trigger: time
+  conditions:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: template
+    value_template: '{% set actuel = states(''sensor.trajet_maison_travail_aline'')
+      | float(0) %} {% set s1 = states(''sensor.trajet_aline_semaine_derniere'') |
+      float(0) %} {# On ne notifie que si le capteur S1 est valide et que le trajet
+      est 10% plus long #} {{ s1 > 0 and actuel > (s1 * 1.1) }}
+
+      '
+  actions:
+  - data:
+      title: ⚠️ Alerte Trafic Trajet
+      message: "Le trajet vers ton travail est plus long ce matin !  \U0001F697 Actuel
+        : {{ states('sensor.trajet_maison_travail_aline') | round(0) }} min \U0001F4CA
+        Semaine dernière : {{ states('sensor.trajet_aline_semaine_derniere') | round(0)
+        }} min\n"
+      data:
+        push:
+          sound: default
+        url: https://www.waze.com/ul?ll=48.598,2.425&navigate=yes
+    action: notify.mobile_app_iphone_daline
+  mode: single
+- id: '1773266877416'
+  alias: Auto-Update HA Core (Backup)
+  description: Met à jour le cœur de HA automatiquement sur l'instance de secours
+  triggers:
+  - entity_id: update.home_assistant_core_update
+    to: 'on'
+    for:
+      hours: 2
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: update.home_assistant_core_update
+    data:
+      backup: true
+    action: update.install
+  mode: single
+- id: '1773266899991'
+  alias: Auto-Update HA Supervisor (Backup)
+  description: Met à jour le Supervisor automatiquement
+  triggers:
+  - entity_id: update.home_assistant_supervisor_update
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: update.home_assistant_supervisor_update
+    action: update.install
+  mode: single
+- id: '1773266965541'
+  alias: Diffuseur OFF -> Stop timer
+  description: Annule le timer quand le diffuseur est mis sur OFF
+  triggers:
+  - entity_id: select.smart_humidifier_24080828541213641101c4e7ae093c61_spray
+    to: 'off'
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: timer.diffuseur_huile
+    action: timer.cancel
+  mode: single
+- id: '1773267036012'
+  alias: Fenêtre Lison 5 min + radiateur chauffe + consigne non atteinte
+  description: ''
+  triggers:
+  - entity_id: binary_sensor.fenetre_lison_contact
+    to: 'on'
+    for: 00:05:00
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.fenetre_lison_contact
+    state: 'on'
+  - condition: state
+    entity_id: climate.smart_thermostat_valve_0300d436
+    state: heat
+  - condition: template
+    value_template: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''hvac_action'')
+      == ''heating'' }}
+
+      '
+  - condition: template
+    value_template: '{% set target = state_attr(''climate.smart_thermostat_valve_0300d436'',''temperature'')
+      %} {% set current = state_attr(''climate.smart_thermostat_valve_0300d436'',''current_temperature'')
+      %} {{ target is number and current is number and (current|float < target|float)
+      }}
+
+      '
+  actions:
+  - repeat:
+      while:
+      - condition: state
+        entity_id: binary_sensor.fenetre_lison_contact
+        state: 'on'
+      - condition: state
+        entity_id: climate.smart_thermostat_valve_0300d436
+        state: heat
+      - condition: template
+        value_template: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''hvac_action'')
+          == ''heating'' }}
+
+          '
+      - condition: template
+        value_template: '{% set target = state_attr(''climate.smart_thermostat_valve_0300d436'',''temperature'')
+          %} {% set current = state_attr(''climate.smart_thermostat_valve_0300d436'',''current_temperature'')
+          %} {{ target is number and current is number and (current|float < target|float)
+          }}
+
+          '
+      sequence:
+      - variables:
+          target: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''temperature'')
+            }}'
+          current: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''current_temperature'')
+            }}'
+      - target:
+          entity_id: input_boolean.fenetre_lison_notifiee
+        action: input_boolean.turn_on
+      - data:
+          title: Fenêtre Lison ouverte + chauffage
+          message: 'Fenêtre ouverte alors que le radiateur chauffe. Actuel : {{ current
+            }}°C / Consigne : {{ target }}°C
+
+            '
+        action: notify.mobile_app_iphone_16_pro_de_kristensen
+      - data:
+          title: Fenêtre Lison ouverte + chauffage
+          message: 'Fenêtre ouverte alors que le radiateur chauffe. Actuel : {{ current
+            }}°C / Consigne : {{ target }}°C
+
+            '
+        action: notify.mobile_app_iphone_daline
+      - delay: 00:20:00
+  mode: restart
+- id: '1773267087851'
+  alias: 'Lison : Nettoyage Forçage Planifié'
+  description: Désactive le mode planification une fois la date de fin passée.
+  triggers:
+  - minutes: /5
+    trigger: time_pattern
+  conditions:
+  - condition: state
+    entity_id: input_boolean.lison_heater_force_schedule
+    state: 'on'
+  - condition: template
+    value_template: '{% set now_ts = as_timestamp(now()) %} {% set end_ts = as_timestamp(states(''input_datetime.lison_heater_force_end''))
+      %} {{ now_ts > end_ts }}
+
+      '
+  actions:
+  - target:
+      entity_id: input_boolean.lison_heater_force_schedule
+    action: input_boolean.turn_off
+  mode: single
+- id: '1773267674927'
+  alias: OpenUV - Init quotidienne 00h00 (reset + intervalle)
+  triggers:
+  - at: 00:00:00
+    trigger: time
+  actions:
+  - target:
+      entity_id: counter.openuv_updates_today
+    action: counter.reset
+  - target:
+      entity_id: input_datetime.openuv_last_update
+    data:
+      datetime: '{{ now().isoformat() }}'
+    action: input_datetime.set_datetime
+  - target:
+      entity_id: input_number.openuv_interval_seconds
+    data:
+      value: "{% set ss_dt = as_datetime(state_attr('sun.sun','next_setting')) %}
+        {% set nr_dt = as_datetime(state_attr('sun.sun','next_rising')) %}\n{% if
+        ss_dt and nr_dt %}\n  {% if is_state('sun.sun','above_horizon') %}\n    {#
+        En journée: next_rising est demain -> lever de ce matin #}\n    {% set sr_dt
+        = nr_dt - timedelta(days=1) %}\n  {% else %}\n    {# Avant lever: next_rising
+        est bien le lever du jour #}\n    {% set sr_dt = nr_dt %}\n  {% endif %}\n\n
+        \ {% set duration = (ss_dt - sr_dt).total_seconds() %}\n  {% set interval
+        = (duration / 50) | int %}\n\n  {{ [60, [interval, 3000] | min] | max }}\n{%
+        else %}\n  900\n{% endif %}"
+    action: input_number.set_value
+  mode: single
+- id: '1773267939802'
+  alias: OpenUV - MAJ réparties (40/jour max)
+  description: ''
+  triggers:
+  - minutes: /1
+    trigger: time_pattern
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
+  - condition: template
+    value_template: '{{ states(''counter.openuv_updates_today'')|int(0) < 40 }}'
+  - condition: template
+    value_template: "{% set last_ts = states('input_number.openuv_last_update_ts')|int(0)
+      %} {% set interval = states('input_number.openuv_interval_seconds')|int(900)
+      %} {% if last_ts > 0 %}\n  {{ (as_timestamp(now()) - last_ts) >= interval }}\n{%
+      else %}\n  true\n{% endif %}"
+  actions:
+  - target:
+      entity_id: sensor.openuv_maison_indice_uv_actuel
+    action: homeassistant.update_entity
+  - delay: 00:00:05
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ states('sensor.openuv_maison_niveau_uv_actuel')\n   not
+          in ['unknown','unavailable',''] }}\n"
+      sequence:
+      - target:
+          entity_id: counter.openuv_updates_today
+        action: counter.increment
+      - target:
+          entity_id: input_datetime.openuv_last_update
+        data:
+          datetime: '{{ now().isoformat() }}'
+        action: input_datetime.set_datetime
+      - target:
+          entity_id: input_number.openuv_last_update_ts
+        data:
+          value: '{{ as_timestamp(now()) | int }}'
+        action: input_number.set_value
+  mode: restart
+- id: '1773268008474'
+  alias: OpenUV - Première MAJ au lever (compte dans les 40)
+  description: ''
+  triggers:
+  - event: sunrise
+    trigger: sun
+  conditions:
+  - condition: template
+    value_template: '{{ states(''counter.openuv_updates_today'')|int < 40 }}'
+  actions:
+  - target:
+      entity_id: sensor.openuv_maison_indice_uv_actuel
+    action: homeassistant.update_entity
+  - delay: 00:00:05
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ states('sensor.openuv_maison_niveau_uv_actuel')\n   not
+          in ['unknown','unavailable',''] }}\n"
+      sequence:
+      - target:
+          entity_id: counter.openuv_updates_today
+        action: counter.increment
+      - target:
+          entity_id: input_datetime.openuv_last_update
+        data:
+          datetime: '{{ now().isoformat() }}'
+        action: input_datetime.set_datetime
+      - target:
+          entity_id: input_number.openuv_last_update_ts
+        data:
+          value: '{{ as_timestamp(now()) | int }}'
+        action: input_number.set_value
+  mode: single
+- id: '1773268668732'
+  alias: Diffuseur huile - Lumière suit la diffusion
+  description: ''
+  triggers:
+  - entity_id: select.smart_humidifier_24080828541213641101c4e7ae093c61_spray
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.to_state.state in [''eco'', ''on''] }}
+
+          '
+      sequence:
+      - target:
+          entity_id: light.smart_humidifier_24080828541213641101c4e7ae093c61
+        action: light.turn_on
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.to_state.state == ''off'' }}
+
+          '
+      sequence:
+      - target:
+          entity_id: light.smart_humidifier_24080828541213641101c4e7ae093c61
+        action: light.turn_off
+  mode: restart
+- id: '1773269578672'
+  alias: Prolonger toilettes
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: f2d957196da2dd76f26c8bd803da0212
+    type: action
+    subtype: 'on'
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 39146e2a0a39cbb1b5f0a7ba6cf97195
+    entity_id: 73cee160ad3da187704c98efe0935767
+    domain: switch
+  mode: single
+- id: '1773651453105'
+  alias: Lumiere Bureau Présence
+  description: Allume la lumière sur présence seulement la nuit et l'éteint après
+    2s sans présence
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_bureau_occupancy
+    to: 'on'
+    id: presence_on
+  - trigger: state
+    entity_id: binary_sensor.capteur_bureau_occupancy
+    to: 'off'
+    for: 00:00:01
+    id: presence_off
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: presence_on
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:30:00
+        - condition: sun
+          before: sunrise
+          before_offset: +00:30:00
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.bureau_z
+    - conditions:
+      - condition: trigger
+        id: presence_off
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.bureau_z
+  mode: restart
+- id: '1773655501495'
+  alias: 'Diffuseur : Arrêt Automatique via Timer'
+  description: Éteint le diffuseur quand le chrono se termine ou est annulé
+  triggers:
+  - trigger: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.diffuseur_huile
+  - trigger: event
+    event_type: timer.cancelled
+    event_data:
+      entity_id: timer.diffuseur_huile
+  conditions: []
+  actions:
+  - action: select.select_option
+    target:
+      entity_id: select.smart_humidifier_24080828541213641101c4e7ae093c61_spray
+    data:
+      option: 'off'
+  mode: restart
+- id: '1773844821337'
+  alias: Notification départ Morgan de la zone ITEP
+  description: Envoie une notification à Aline et Kristensen quand Morgan quitte l'ITEP
+  triggers:
+  - trigger: state
+    entity_id: person.morgan
+    from: ITEP
+    for: 00:01:00
+  conditions:
+  - condition: template
+    value_template: '{{ trigger.to_state.state not in [''unknown'', ''unavailable'']
+      }}'
+  actions:
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: Départ ITEP
+      message: Morgan a quitté l'ITEP
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: Départ ITEP
+      message: 'Morgan a quitté l''ITEP '
+  mode: single
+- id: '1773944750959'
+  alias: Cellier - Extinction automatique 2 min
+  description: Éteint le cellier 2 minutes après activation
+  triggers:
+  - entity_id: switch.inter_cellier
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - delay: 00:02:00
+  - condition: state
+    entity_id: switch.inter_cellier
+    state: 'on'
+  - target:
+      entity_id: switch.inter_cellier
+    action: switch.turn_off
+  mode: restart
+- id: '1774026330867'
+  alias: Éteint lumière Marley quand Marley absent
+  description: ''
+  triggers:
+  - entity_id: person.marley
+    from: home
+    trigger: state
+  actions:
+  - target:
+      entity_id: light.smart_rgb_pro_led_strip_24060640872589560f01c4e7ae04b91f
+    action: light.turn_off
+  mode: single
+- id: '1774183468414'
+  alias: Lave-linge - Suivi des Phases
+  description: Change la phase en fonction des Watts
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.prise_machine_a_laver_z_power
+    above: 1000
+    id: chauffe
+  - trigger: numeric_state
+    entity_id: sensor.prise_machine_a_laver_z_power
+    below: 1000
+    for:
+      minutes: 3
+    id: rincage
+  - trigger: state
+    entity_id: input_boolean.machine_a_laver_terminee
+    to: 'on'
+    id: fin
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: chauffe
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.phase_machine_a_laver
+        data:
+          option: Lavage (Chauffe)
+    - conditions:
+      - condition: trigger
+        id: rincage
+      - condition: state
+        entity_id: input_select.phase_machine_a_laver
+        state: Lavage (Chauffe)
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.phase_machine_a_laver
+        data:
+          option: Rinçage et Essorage
+    - conditions:
+      - condition: trigger
+        id: fin
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.phase_machine_a_laver
+        data:
+          option: En attente
+  mode: single
+- id: '1774209421080'
+  alias: Dashboard Maison - Gestion charge batterie 20-80
+  description: Allume l'alimentation du dashboard à 20% et la coupe à 80%
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.sm_t590_battery_level
+    below: 20
+    id: charge_on
+  - trigger: numeric_state
+    entity_id: sensor.sm_t590_battery_level
+    above: 80
+    id: charge_off
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: charge_on
+      - condition: state
+        entity_id: switch.alim_dashboard
+        state: 'off'
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.alim_dashboard
+    - conditions:
+      - condition: trigger
+        id: charge_off
+      - condition: state
+        entity_id: switch.alim_dashboard
+        state: 'on'
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.alim_dashboard
+  mode: single
+- id: '1774356356205'
+  alias: ⚠️ Alerte PC Morgan Allumé
+  description: ''
+  triggers:
+  - entity_id:
+    - switch.pc_morgan
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    trigger: state
+  - entity_id:
+    - person.morgan
+    to: not_home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: switch.pc_morgan
+    state: 'on'
+  - condition: state
+    entity_id: person.morgan
+    state: not_home
+  actions:
+  - data:
+      title: ⚠️ PC de Morgan
+      message: Le PC tourne alors que Morgan n'est pas là ! Tu peux l'éteindre depuis
+        le Dashboard.
+    action: notify.mobile_app_iphone_daline
+  - data:
+      title: ⚠️ PC de Morgan
+      message: Le PC tourne alors que Morgan n'est pas là ! Tu peux l'éteindre depuis
+        le Dashboard.
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  mode: single
+- id: '1774440605959'
+  alias: PC Morgan - Alerte surchauffe CPU
+  description: Envoie une notification si le CPU du NUC9i9QNX reste trop chaud
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.pcmorgan_cpu_temperature
+    above: 92
+    for: 00:10:00
+    id: warning
+  - trigger: numeric_state
+    entity_id: sensor.pcmorgan_cpu_temperature
+    above: 97
+    for: 00:02:00
+    id: critical
+  conditions:
+  - condition: template
+    value_template: '{{ states(''sensor.pcmorgan_cpu_temperature'') not in [''unknown'',
+      ''unavailable'', ''none'', ''''] }}'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: critical
+      sequence:
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: Surchauffe critique CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 2 minutes. Température critique.
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: Surchauffe critique CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 2 minutes. Température critique.
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: Surchauffe critique CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 2 minutes. Température critique.
+    - conditions:
+      - condition: trigger
+        id: warning
+      sequence:
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: Alerte température CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 10 minutes.
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: Alerte température CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 10 minutes.
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: Alerte température CPU
+          message: Le CPU du PC Morgan (NUC9i9QNX) est à {{ states('sensor.pcmorgan_cpu_temperature')
+            }} °C depuis au moins 10 minutes.
+  mode: single
+- id: '1774605646977'
+  alias: "\U0001F3E0 Sécurité : Gestion Automatique Présent/Absent"
+  description: Gère la base Eufy (Alarm) et les caméras Tapo (Détection)
+  triggers:
+  - trigger: state
+    entity_id:
+    - person.chris
+    - person.aline
+    - person.marley
+    - person.chloe
+    - person.morgan
+    to: home
+  - trigger: state
+    entity_id:
+    - person.chris
+    - person.aline
+    - person.marley
+    - person.chloe
+    - person.morgan
+    from: home
+    to: not_home
+    for: 00:02:00
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{% set people = [''person.chris'', ''person.aline'', ''person.marley'',
+          ''person.chloe'', ''person.morgan''] %} {{ expand(people) | selectattr(''state'',
+          ''eq'', ''home'') | list | count > 0 }}
+
+          '
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id:
+          - select.camera_salon_motion_detection
+          - select.camera_salon_person_detection
+          - select.camera_bureau_motion_detection
+          - select.camera_bureau_person_detection
+        data:
+          option: 'off'
+      - action: alarm_control_panel.alarm_arm_home
+        target:
+          entity_id: alarm_control_panel.eufy_homebase2
+    - conditions:
+      - condition: template
+        value_template: '{% set people = [''person.chris'', ''person.aline'', ''person.marley'',
+          ''person.chloe'', ''person.morgan''] %} {{ expand(people) | selectattr(''state'',
+          ''eq'', ''home'') | list | count == 0 }}
+
+          '
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id:
+          - select.camera_salon_motion_detection
+          - select.camera_salon_person_detection
+          - select.camera_bureau_motion_detection
+          - select.camera_bureau_person_detection
+        data:
+          option: high
+      - action: alarm_control_panel.alarm_arm_away
+        target:
+          entity_id: alarm_control_panel.eufy_homebase2
+  mode: restart
+- id: '1774617444422'
+  alias: "\U0001F514 Sécurité : Notifications Alarme"
+  description: Notifie la famille à chaque changement d'état de l'alarme (hors intrusion)
+  triggers:
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_home
+    id: alarme_presente
+    for: 00:00:15
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_away
+    id: alarme_absente
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: disarmed
+    id: alarme_desactivee
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: alarme_presente
+      - condition: template
+        value_template: '{{ trigger.from_state.state not in [''unavailable'', ''unknown'']
+          }}
+
+          '
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_de_marley
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+    - conditions:
+      - condition: trigger
+        id: alarme_absente
+      - condition: template
+        value_template: '{{ trigger.from_state.state not in [''triggered'', ''unavailable'',
+          ''unknown''] }}
+
+          '
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_de_marley
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+    - conditions:
+      - condition: trigger
+        id: alarme_desactivee
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_de_marley
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+  mode: single
+- id: '1774619594508'
+  alias: "\U0001F6A8 Fermer popup alarme auto"
+  description: Ferme automatiquement le dialog HA quand l'alarme se déclenche
+  triggers:
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: triggered
+  actions:
+  - delay: 00:00:01
+  - action: browser_mod.close_popup
+    data: {}
+  mode: single
+- id: '1774696938176'
+  alias: "\U0001F6A8 Sécurité : Détection Intrusion Capteurs"
+  description: Déclenche l'alarme Eufy et notifie la famille (Priorité Critique Chris/Aline)
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.camera_bureau_cell_motion_detection
+    - binary_sensor.camera_bureau_person_detection
+    - binary_sensor.camera_salon_cell_motion_detection
+    - binary_sensor.camera_salon_person_detection
+    - binary_sensor.capteur_fenetre_chloe_contact
+    - binary_sensor.capteur_fenetre_morgan_contact
+    - binary_sensor.capteur_porte_garage_contact
+    - binary_sensor.capteur_porte_morgan_contact
+    - binary_sensor.capteur_cuisine_occupancy
+    - binary_sensor.capteur_bureau_occupancy
+    - binary_sensor.capteur_presence_bar_z_occupancy
+    to: 'on'
+    id: intrusion_trigger
+  conditions:
+  - condition: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    state: armed_away
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.eufy_homebase2
+      state: triggered
+  - condition: template
+    value_template: "{% set people = ['person.chris', 'person.aline', 'person.marley',
+      'person.chloe', 'person.morgan'] %} {{ expand(people) | selectattr('state',
+      'eq', 'home') \n   | selectattr('last_changed', 'gt', now() - timedelta(seconds=30))
+      \n   | list | count == 0 }}\n"
+  - condition: template
+    value_template: "{% if trigger.id == 'capteur_bureau_occupancy' %}\n  {{ states('binary_sensor.camera_bureau_cell_motion_detection')
+      in ['unavailable', 'unknown']\n     and states('binary_sensor.camera_bureau_person_detection')
+      in ['unavailable', 'unknown'] }}\n{% elif trigger.id == 'capteur_presence_bar_z_occupancy'
+      %}\n  {{ states('binary_sensor.camera_salon_cell_motion_detection') in ['unavailable',
+      'unknown']\n     and states('binary_sensor.camera_salon_person_detection') in
+      ['unavailable', 'unknown'] }}\n{% else %}\n  true\n{% endif %}\n"
+  actions:
+  - action: alarm_control_panel.alarm_trigger
+    target:
+      entity_id: alarm_control_panel.eufy_homebase2
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: "\U0001F6A8 INTRUSION DÉTECTÉE !"
+      message: '{% set name = trigger.to_state.attributes.friendly_name %}  {{ name.split(''
+        Cell'')[0].split('' Person'')[0] }} a détecté une intrusion !
+
+        '
+      data:
+        push:
+          interruption-level: critical
+          sound: default
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: "\U0001F6A8 INTRUSION DÉTECTÉE !"
+      message: '{% set name = trigger.to_state.attributes.friendly_name %}  {{ name.split(''
+        Cell'')[0].split('' Person'')[0] }} a détecté une intrusion !
+
+        '
+      data:
+        push:
+          interruption-level: critical
+          sound: default
+  - action: notify.mobile_app_iphone_de_chloe
+    data:
+      title: "\U0001F6A8 Alerte Sécurité"
+      message: Une présence a été détectée dans la maison.
+      data:
+        push:
+          interruption-level: active
+  - action: notify.mobile_app_iphone_de_marley
+    data:
+      title: "\U0001F6A8 Alerte Sécurité"
+      message: Une présence a été détectée dans la maison.
+      data:
+        push:
+          interruption-level: active
+  - action: notify.mobile_app_iphone_de_morgan
+    data:
+      title: "\U0001F6A8 Alerte Sécurité"
+      message: Une présence a été détectée dans la maison.
+      data:
+        push:
+          interruption-level: active
+  mode: single
+  max_exceeded: silent
+- id: '1774698891549'
+  alias: "\U0001F4F7 Caméras : Détection selon mode alarme"
+  description: Active/désactive la détection Tapo selon présence/absence
+  triggers:
+  - trigger: homeassistant
+    event: start
+    id: demarrage
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_away
+    id: absent
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_home
+    id: present
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: disarmed
+    id: present
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: absent
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id:
+          - select.camera_salon_motion_detection
+          - select.camera_salon_person_detection
+          - select.camera_bureau_motion_detection
+          - select.camera_bureau_person_detection
+        data:
+          option: high
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id in ['present', 'demarrage'] and\n   states('alarm_control_panel.eufy_homebase2')
+          in ['armed_home', 'disarmed'] }}\n"
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id:
+          - select.camera_salon_motion_detection
+          - select.camera_salon_person_detection
+          - select.camera_bureau_motion_detection
+          - select.camera_bureau_person_detection
+        data:
+          option: 'off'
+  mode: single
+- id: '1774784641871'
+  alias: "\U0001F9FA Sèche-linge — Reset sur fin Timer"
+  description: Reset automatique après 1h si on oublie
+  triggers:
+  - trigger: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.seche_linge_fin
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  mode: single

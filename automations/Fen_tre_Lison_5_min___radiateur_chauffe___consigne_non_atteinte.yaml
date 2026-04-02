@@ -1,0 +1,73 @@
+- id: '1773267036012'
+  alias: Fenêtre Lison 5 min + radiateur chauffe + consigne non atteinte
+  description: ''
+  triggers:
+  - entity_id: binary_sensor.fenetre_lison_contact
+    to: 'on'
+    for: 00:05:00
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.fenetre_lison_contact
+    state: 'on'
+  - condition: state
+    entity_id: climate.smart_thermostat_valve_0300d436
+    state: heat
+  - condition: template
+    value_template: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''hvac_action'')
+      == ''heating'' }}
+
+      '
+  - condition: template
+    value_template: '{% set target = state_attr(''climate.smart_thermostat_valve_0300d436'',''temperature'')
+      %} {% set current = state_attr(''climate.smart_thermostat_valve_0300d436'',''current_temperature'')
+      %} {{ target is number and current is number and (current|float < target|float)
+      }}
+
+      '
+  actions:
+  - repeat:
+      while:
+      - condition: state
+        entity_id: binary_sensor.fenetre_lison_contact
+        state: 'on'
+      - condition: state
+        entity_id: climate.smart_thermostat_valve_0300d436
+        state: heat
+      - condition: template
+        value_template: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''hvac_action'')
+          == ''heating'' }}
+
+          '
+      - condition: template
+        value_template: '{% set target = state_attr(''climate.smart_thermostat_valve_0300d436'',''temperature'')
+          %} {% set current = state_attr(''climate.smart_thermostat_valve_0300d436'',''current_temperature'')
+          %} {{ target is number and current is number and (current|float < target|float)
+          }}
+
+          '
+      sequence:
+      - variables:
+          target: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''temperature'')
+            }}'
+          current: '{{ state_attr(''climate.smart_thermostat_valve_0300d436'',''current_temperature'')
+            }}'
+      - target:
+          entity_id: input_boolean.fenetre_lison_notifiee
+        action: input_boolean.turn_on
+      - data:
+          title: Fenêtre Lison ouverte + chauffage
+          message: 'Fenêtre ouverte alors que le radiateur chauffe. Actuel : {{ current
+            }}°C / Consigne : {{ target }}°C
+
+            '
+        action: notify.mobile_app_iphone_16_pro_de_kristensen
+      - data:
+          title: Fenêtre Lison ouverte + chauffage
+          message: 'Fenêtre ouverte alors que le radiateur chauffe. Actuel : {{ current
+            }}°C / Consigne : {{ target }}°C
+
+            '
+        action: notify.mobile_app_iphone_daline
+      - delay: 00:20:00
+  mode: restart

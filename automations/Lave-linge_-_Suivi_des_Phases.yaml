@@ -1,0 +1,52 @@
+- id: '1774183468414'
+  alias: Lave-linge - Suivi des Phases
+  description: Change la phase en fonction des Watts
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.prise_machine_a_laver_z_power
+    above: 1000
+    id: chauffe
+  - trigger: numeric_state
+    entity_id: sensor.prise_machine_a_laver_z_power
+    below: 1000
+    for:
+      minutes: 3
+    id: rincage
+  - trigger: state
+    entity_id: input_boolean.machine_a_laver_terminee
+    to: 'on'
+    id: fin
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: chauffe
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.phase_machine_a_laver
+        data:
+          option: Lavage (Chauffe)
+    - conditions:
+      - condition: trigger
+        id: rincage
+      - condition: state
+        entity_id: input_select.phase_machine_a_laver
+        state: Lavage (Chauffe)
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.phase_machine_a_laver
+        data:
+          option: Rinçage et Essorage
+    - conditions:
+      - condition: trigger
+        id: fin
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.phase_machine_a_laver
+        data:
+          option: En attente
+  mode: single

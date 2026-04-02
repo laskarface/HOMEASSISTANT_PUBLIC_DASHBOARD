@@ -1,0 +1,27 @@
+- id: '1773268668732'
+  alias: Diffuseur huile - Lumière suit la diffusion
+  description: ''
+  triggers:
+  - entity_id: select.smart_humidifier_24080828541213641101c4e7ae093c61_spray
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.to_state.state in [''eco'', ''on''] }}
+
+          '
+      sequence:
+      - target:
+          entity_id: light.smart_humidifier_24080828541213641101c4e7ae093c61
+        action: light.turn_on
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.to_state.state == ''off'' }}
+
+          '
+      sequence:
+      - target:
+          entity_id: light.smart_humidifier_24080828541213641101c4e7ae093c61
+        action: light.turn_off
+  mode: restart

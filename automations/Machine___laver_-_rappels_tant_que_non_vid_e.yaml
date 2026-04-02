@@ -1,0 +1,60 @@
+- id: notif_machine_terminee
+  alias: Machine à laver - rappels tant que non vidée
+  description: Envoie une notification toutes les 2h tant que la porte n'a pas été
+    ouverte
+  triggers:
+  - entity_id: input_boolean.machine_a_laver_terminee
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: time
+          after: '22:00:00'
+        - condition: time
+          before: 06:00:00
+      sequence:
+      - wait_for_trigger:
+        - at: 06:00:00
+          trigger: time
+  - repeat:
+      until:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.capteur_ouverture_lave_linge_contact
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.machine_a_laver_terminee
+          state: 'off'
+      sequence:
+      - if:
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: input_boolean.machine_a_laver_terminee
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.capteur_ouverture_lave_linge_contact
+            state: 'off'
+          - condition: time
+            after: 06:00:00
+            before: '22:00:00'
+        then:
+        - target:
+            entity_id: input_boolean.notif_ml_vidage_envoyee
+          action: input_boolean.turn_on
+        - data:
+            title: Machine à laver
+            message: ⚠️ Pensez à vider la machine
+          action: notify.mobile_app_iphone_16_pro_de_kristensen
+        - data:
+            title: Machine à laver
+            message: ⚠️ Pensez à vider la machine
+          action: notify.mobile_app_iphone_daline
+      - delay:
+          hours: 2
+  mode: restart

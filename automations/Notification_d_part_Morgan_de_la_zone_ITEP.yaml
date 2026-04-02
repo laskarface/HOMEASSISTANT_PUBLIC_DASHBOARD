@@ -1,0 +1,22 @@
+- id: '1773844821337'
+  alias: Notification départ Morgan de la zone ITEP
+  description: Envoie une notification à Aline et Kristensen quand Morgan quitte l'ITEP
+  triggers:
+  - trigger: state
+    entity_id: person.morgan
+    from: ITEP
+    for: 00:01:00
+  conditions:
+  - condition: template
+    value_template: '{{ trigger.to_state.state not in [''unknown'', ''unavailable'']
+      }}'
+  actions:
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: Départ ITEP
+      message: Morgan a quitté l'ITEP
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: Départ ITEP
+      message: 'Morgan a quitté l''ITEP '
+  mode: single

@@ -1,0 +1,49 @@
+- id: '1774698891549'
+  alias: "\U0001F4F7 Caméras : Détection selon mode alarme"
+  description: Active/désactive la détection Tapo selon présence/absence
+  triggers:
+  - trigger: homeassistant
+    event: start
+    id: demarrage
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_away
+    id: absent
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_home
+    id: present
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: disarmed
+    id: present
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: absent
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id:
+          - select.camera_salon_motion_detection
+          - select.camera_salon_person_detection
+          - select.camera_bureau_motion_detection
+          - select.camera_bureau_person_detection
+        data:
+          option: high
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id in ['present', 'demarrage'] and\n   states('alarm_control_panel.eufy_homebase2')
+          in ['armed_home', 'disarmed'] }}\n"
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id:
+          - select.camera_salon_motion_detection
+          - select.camera_salon_person_detection
+          - select.camera_bureau_motion_detection
+          - select.camera_bureau_person_detection
+        data:
+          option: 'off'
+  mode: single

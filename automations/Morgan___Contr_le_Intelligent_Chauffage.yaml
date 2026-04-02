@@ -1,0 +1,84 @@
+- id: morgan_heating_final_production
+  alias: 'Morgan : Contrôle Intelligent Chauffage'
+  description: 'Logic: Arrêt > Sensors > Démarrage > Planning > Presence'
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.arret_force_chauffage_morgan
+    - input_boolean.forcage_manuel_morgan
+    - input_boolean.planning_chauffage_morgan
+    - person.morgan
+    - binary_sensor.capteur_fenetre_morgan_contact
+    - binary_sensor.capteur_porte_morgan_contact
+    - sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+  - trigger: time
+    at:
+    - 08:00:00
+    - '13:00:00'
+    - '16:00:00'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.arret_force_chauffage_morgan
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.capteur_fenetre_morgan_contact
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.capteur_porte_morgan_contact
+          state: 'on'
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.chauffage_morgan
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: numeric_state
+          entity_id: sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+          below: 19.5
+        - condition: and
+          conditions:
+          - condition: numeric_state
+            entity_id: sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+            below: 20
+          - condition: state
+            entity_id: switch.chauffage_morgan
+            state: 'on'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.forcage_manuel_morgan
+          state: 'on'
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: person.morgan
+            state: home
+          - condition: template
+            value_template: '{% set planning = is_state(''input_boolean.planning_chauffage_morgan'',
+              ''on'') %} {% set jour = now().weekday() %} {% set heure = now().hour
+              %}
+
+              {# Définition stricte des heures d''école (Coupure) #} {# Lundi (0)
+              n''est PAS dans [1,2,3] et n''est PAS 4, donc il n''est jamais coupé
+              #} {% set est_ecole = (jour in [1, 2, 3] and 8 <= heure < 16) or (jour
+              == 4 and 8 <= heure < 13) %}
+
+              {# On autorise le chauffage si planning OFF ou si on est HORS heures
+              d''école #} {{ not planning or not est_ecole }}
+
+              '
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.chauffage_morgan
+    default:
+    - action: switch.turn_off
+      target:
+        entity_id: switch.chauffage_morgan
+  mode: restart

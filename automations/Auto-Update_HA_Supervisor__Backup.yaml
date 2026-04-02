@@ -1,0 +1,13 @@
+- id: '1773266899991'
+  alias: Auto-Update HA Supervisor (Backup)
+  description: Met à jour le Supervisor automatiquement
+  triggers:
+  - entity_id: update.home_assistant_supervisor_update
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: update.home_assistant_supervisor_update
+    action: update.install
+  mode: single

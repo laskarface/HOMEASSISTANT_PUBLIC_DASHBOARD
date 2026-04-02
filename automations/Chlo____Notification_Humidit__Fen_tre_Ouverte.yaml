@@ -1,0 +1,16 @@
+- id: chloe_humidity_window_opened
+  alias: 'Chloé : Notification Humidité Fenêtre Ouverte'
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_fenetre_chloe_contact
+    from: 'off'
+    to: 'on'
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.smart_temp_humidity_sensor_39000e5be749_humidity
+    above: 65
+  actions:
+  - action: notify.mobile_app_iphone_de_chloe
+    data:
+      title: "\U0001F33F Humidité élevée"
+      message: Bonne idée d'ouvrir la fenêtre !

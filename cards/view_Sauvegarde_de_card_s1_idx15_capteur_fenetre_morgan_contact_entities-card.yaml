@@ -1,0 +1,284 @@
+# =========================================
+# CARTE : capteur_fenetre_morgan_contact
+# VUE   : Sauvegarde_de_card
+# TYPE  : entities (Carte monobloc)
+# DÉPENDANCES :
+#  - binary_sensor.capteur_fenetre_morgan_contact
+#  - binary_sensor.capteur_porte_morgan_contact
+#  - entity.state
+#  - event.stop
+#  - input_boolean.arret_force_chauffage_morgan
+#  - input_boolean.forcage_manuel_morgan
+#  - n.card
+#  - person.morgan
+#  - sensor.smart_temp_humidity_sensor_39000e4fa9fc_humidity
+#  - sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+#  - switch.chauffage_morgan
+#  - tate.to
+#  - this.dispatch
+#  - variables.hum_entity
+#  - variables.temp_entity
+# =========================================
+
+card_mod:
+  style: "ha-card {\n  background: transparent !important;\n  box-shadow: none !important;\n\
+    \  border: none !important;\n  padding: 0 !important;\n  margin: 0 !important;\n\
+    \  width: 100% !important;\n}\n.card-content {\n  padding: 0 !important;\n  margin:\
+    \ 0 !important;\n  width: 100% !important;\n}\n"
+entities:
+- card_mod:
+    style: ":host { \n  --toggle-icon-width: 0px !important;\n}\n#head ha-icon, #head\
+      \ ha-icon-button { \n  display: none !important; \n  width: 0px !important;\
+      \ \n  visibility: hidden !important; \n}\ndiv#head { \n  display: block !important;\
+      \ \n  width: 100% !important; \n  padding: 0 !important; \n  margin: 0 !important;\
+      \ \n}\n#head { \n  padding: 0 !important; \n  margin: 0 !important; \n  width:\
+      \ 100% !important; \n  cursor: pointer !important; \n}\n#head > * {\n  width:\
+      \ 100% !important;\n  max-width: 100% !important;\n}\ndiv#items { \n  padding:\
+      \ 0 !important; \n  margin: 0 !important; \n}\n#items > * {\n  padding: 0 !important;\n\
+      \  margin: 0 !important;\n}\n"
+  clickable: true
+  entities:
+  - card_mod:
+      style: "ha-card {\n  background: rgba(20, 27, 38, 0.6) !important;\n  backdrop-filter:\
+        \ blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border-radius: 20px\
+        \ !important;\n  border: 1px solid rgba(255, 255, 255, 0.1) !important;\n\
+        \  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;\n  margin: 10px 0 !important;\n\
+        \  \n  {% if is_state('switch.chauffage_morgan', 'on') %}\n    border: 1px\
+        \ solid rgba(255, 69, 0, 0.4) !important;\n    box-shadow: 0 0 15px rgba(255,\
+        \ 69, 0, 0.2) !important;\n  {% endif %}\n}\n"
+    cards:
+    - custom_fields:
+        s: "[[[ \n  if (states['binary_sensor.capteur_fenetre_morgan_contact']?.state\
+          \ == 'on' || states['binary_sensor.capteur_porte_morgan_contact']?.state\
+          \ == 'on') return \"OUVERTURE DÉTECTÉE\";\n  if (states['switch.chauffage_morgan']?.state\
+          \ == 'on') return \"CHAUFFE EN COURS\";\n  return \"EN ATTENTE\";\n]]]\n"
+        t: "[[[\n  var cur = states['sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature']?.state;\n\
+          \  return cur ? cur + \"°\" : \"--°\";\n]]]\n"
+      icon: mdi:radiator
+      name: Chauffage Morgan
+      styles:
+        card:
+        - background: transparent
+        - border: none
+        - padding: 12px 16px
+        custom_fields:
+          s:
+          - justify-self: start
+          - font-size: 10px
+          - font-weight: 500
+          - color: rgba(255,255,255,0.4)
+          t:
+          - justify-self: end
+          - font-size: 20px
+          - font-weight: 900
+          - color: white
+        grid:
+        - grid-template-areas: '"i n t" "i s t"'
+        - grid-template-columns: 45px 1fr auto
+        icon:
+        - width: 28px
+        - color: "[[[ \n  if (states['binary_sensor.capteur_fenetre_morgan_contact']?.state\
+            \ == 'on' || states['binary_sensor.capteur_porte_morgan_contact']?.state\
+            \ == 'on') return '#FF0000'; \n  if (states['switch.chauffage_morgan']?.state\
+            \ == 'on') return '#FF4500';\n  return 'rgba(255,255,255,0.4)';\n]]]\n"
+        name:
+        - justify-self: start
+        - font-size: 14px
+        - font-weight: 700
+        - color: rgba(255,255,255,0.9)
+      type: custom:button-card
+    - cards:
+      - entity: input_boolean.arret_force_chauffage_morgan
+        icon: mdi:power-off
+        name: Arrêt Forcé
+        show_state: false
+        styles:
+          card:
+          - height: 80px
+          - background: '[[[ return entity.state === ''on'' ? ''rgba(255, 0, 0, 0.1)''
+              : ''transparent'' ]]]
+
+              '
+          - border: none
+          - border-right: 1px solid rgba(255,255,255,0.05)
+          - border-radius: 0
+          icon:
+          - color: '[[[ return entity.state === ''on'' ? ''#FF0000'' : ''rgba(255,255,255,0.2)''
+              ]]]
+
+              '
+          name:
+          - font-size: 11px
+          - color: rgba(255,255,255,0.5)
+        type: custom:button-card
+      - entity: input_boolean.forcage_manuel_morgan
+        icon: mdi:hand-back-right
+        name: Démarrage Forcé
+        show_state: false
+        styles:
+          card:
+          - height: 80px
+          - background: '[[[ return entity.state === ''on'' ? ''rgba(255, 187, 0,
+              0.1)'' : ''transparent'' ]]]
+
+              '
+          - border-radius: 0
+          - border: none
+          - border-right: 1px solid rgba(255,255,255,0.05)
+          icon:
+          - color: '[[[ return entity.state === ''on'' ? ''#FFBB00'' : ''rgba(255,255,255,0.2)''
+              ]]]
+
+              '
+          name:
+          - font-size: 11px
+          - color: rgba(255,255,255,0.5)
+        type: custom:button-card
+      - entity: person.morgan
+        name: Présence Morgan
+        show_state: true
+        styles:
+          card:
+          - height: 80px
+          - background: '[[[ return entity.state === ''home'' ? ''rgba(0, 210, 255,
+              0.1)'' : ''transparent'' ]]]
+
+              '
+          - border: none
+          - border-radius: 0
+          icon:
+          - color: '[[[ return entity.state === ''home'' ? ''#00D2FF'' : ''rgba(255,255,255,0.2)''
+              ]]]
+
+              '
+          name:
+          - font-size: 11px
+          - color: rgba(255,255,255,0.5)
+          state:
+          - font-size: 10px
+          - color: rgba(255,255,255,0.3)
+        type: custom:button-card
+      type: horizontal-stack
+    keep:
+      background: false
+      box_shadow: false
+      margin: false
+    type: custom:stack-in-card
+  full_row: true
+  head:
+    custom_fields:
+      footer: "[[[\n   return `<ha-icon icon=\"mdi:chevron-down\" style=\"color: rgba(255,255,255,0.5);\
+        \ width: 20px; height: 20px; transition: all 0.3s ease;\"></ha-icon>`;\n]]]\n"
+      main: "[[[\n  const tempEnt = states[variables.temp_entity];\n  const humEnt\
+        \ = states[variables.hum_entity];\n  const tempState = tempEnt?.state;\n \
+        \ const humStateVal = humEnt?.state;\n  const temp = tempState && !isNaN(parseFloat(tempState))\
+        \ ? parseFloat(tempState) : 0;\n  const humState = humStateVal ? parseFloat(humStateVal)\
+        \ : 0;\n  \n  const isHumPresent = humState > 0 && !isNaN(humState);\n  const\
+        \ humText = isHumPresent ? humState.toFixed(0) : \"ABSENT\";\n  const humUnit\
+        \ = isHumPresent ? \"%\" : \"\";\n  const humIconColorDef = isHumPresent ?\
+        \ \"rgba(255,255,255,0.3)\" : \"rgba(255,255,255,0.1)\";\n  const humTextColDef\
+        \ = isHumPresent ? \"white\" : \"rgba(255,255,255,0.2)\";\n  \n  // --- ALERTES\
+        \ TEMPERATURE ---\n  let tempAlert = false;\n  let tempBg = \"transparent\"\
+        ;\n  let tempIconColor = \"rgba(255,255,255,0.3)\";\n  let tempTextColor =\
+        \ \"white\";\n  \n  if (temp > 0 && temp < 19) {\n    tempAlert = true; tempBg\
+        \ = \"linear-gradient(135deg, rgba(41, 182, 246, 0.25) 0%, transparent 100%)\"\
+        ;\n    tempIconColor = \"#29B6F6\"; tempTextColor = \"#29B6F6\";\n  } else\
+        \ if (temp > 25) {\n    tempAlert = true; tempBg = \"linear-gradient(135deg,\
+        \ rgba(255, 152, 0, 0.25) 0%, transparent 100%)\";\n    tempIconColor = \"\
+        #FF9800\"; tempTextColor = \"#FF9800\";\n  }\n\n  // --- ALERTES HUMIDITE\
+        \ ---\n  let humAlert = false;\n  let humBg = \"transparent\";\n  let humIconColor\
+        \ = humIconColorDef;\n  let humTextColor = humTextColDef;\n\n  if (isHumPresent\
+        \ && humState > 65) {\n    humAlert = true; \n    humBg = \"linear-gradient(135deg,\
+        \ rgba(33, 150, 243, 0.25) 0%, transparent 100%)\";\n    humIconColor = \"\
+        #2196F3\"; humTextColor = \"#2196F3\";\n  }\n\n  let leftColor = \"#4CAF50\"\
+        ; \n  if (tempAlert || humAlert) {\n     if (temp > 0 && temp < 19) leftColor\
+        \ = \"#29B6F6\"; \n     if (temp > 25) leftColor = \"#FF9800\"; \n     if\
+        \ (isHumPresent && humState > 65) leftColor = \"#2196F3\"; \n  }\n\n  return\
+        \ `\n    <div style=\"display: flex; width: 100%; height: 100%; margin: 0;\
+        \ padding: 0;\">\n      <div style=\"flex: 0 0 130px; height: 100%; display:\
+        \ flex; flex-direction: column; justify-content: center; align-items: center;\
+        \ border-right: 1px solid rgba(255,255,255,0.1); background: linear-gradient(135deg,\
+        \ ${leftColor}25 0%, transparent 100%); margin: 0; padding: 0; box-sizing:\
+        \ border-box;\">\n        <ha-icon icon=\"mdi:bed\" style=\"width: 24px; height:\
+        \ 24px; color: ${leftColor}; filter: drop-shadow(0 0 8px ${leftColor}80);\
+        \ margin-bottom: 2px;\"></ha-icon>\n        <div style=\"font-size: 9px; font-weight:\
+        \ 800; color: white; text-transform: uppercase; letter-spacing: 1px; text-align:\
+        \ center; margin: 0; line-height: 1.2;\">CHAMBRE<br>MORGAN</div>\n      </div>\n\
+        \      <div style=\"flex: 1; height: 100%; display: flex; flex-direction:\
+        \ column; justify-content: center; align-items: center; border-right: 1px\
+        \ solid rgba(255,255,255,0.05); background: ${tempBg}; pointer-events: auto;\
+        \ cursor: pointer; margin: 0; padding: 0; box-sizing: border-box;\"\n    \
+        \       onclick=\"event.stopPropagation(); const e = new CustomEvent('hass-more-info',\
+        \ { detail: { entityId: '${variables.temp_entity}' }, bubbles: true, composed:\
+        \ true }); this.dispatchEvent(e);\">\n        <div style=\"display: flex;\
+        \ align-items: center; gap: 4px; margin-bottom: 2px;\">\n          <ha-icon\
+        \ icon=\"mdi:thermometer\" style=\"width: 12px; height: 12px; color: ${tempIconColor};\"\
+        ></ha-icon>\n          <span style=\"font-size: 8px; font-weight: 900; color:\
+        \ ${tempIconColor}; letter-spacing: 1px; line-height: 1;\">TEMPÉRATURE</span>\n\
+        \        </div>\n        <div style=\"display: flex; align-items: baseline;\
+        \ gap: 4px;\">\n          <span style=\"font-size: 22px; font-weight: 900;\
+        \ color: ${tempTextColor}; line-height: 1;\">${parseFloat(temp).toFixed(1)}</span>\n\
+        \          <span style=\"font-size: 11px; font-weight: 800; color: ${tempIconColor};\
+        \ line-height: 1;\">°C</span>\n        </div>\n      </div>\n      <div style=\"\
+        flex: 1; height: 100%; display: flex; flex-direction: column; justify-content:\
+        \ center; align-items: center; background: ${humBg}; pointer-events: auto;\
+        \ cursor: pointer; margin: 0; padding: 0; box-sizing: border-box;\"\n    \
+        \       onclick=\"event.stopPropagation(); const e = new CustomEvent('hass-more-info',\
+        \ { detail: { entityId: '${variables.hum_entity}' }, bubbles: true, composed:\
+        \ true }); this.dispatchEvent(e);\">\n        <div style=\"display: flex;\
+        \ align-items: center; gap: 4px; margin-bottom: 2px;\">\n          <ha-icon\
+        \ icon=\"mdi:water-percent\" style=\"width: 13px; height: 13px; color: ${humIconColor};\
+        \ margin-left: -2px;\"></ha-icon>\n          <span style=\"font-size: 8px;\
+        \ font-weight: 900; color: ${humIconColor}; letter-spacing: 1px; line-height:\
+        \ 1;\">HUMIDITÉ</span>\n        </div>\n        <div style=\"display: flex;\
+        \ align-items: baseline; gap: 4px;\">\n          <span style=\"font-size:\
+        \ ${isHumPresent ? '22px' : '12px'}; font-weight: 900; color: ${humTextColor};\
+        \ line-height: 1;\">${humText}</span>\n          <span style=\"font-size:\
+        \ 11px; font-weight: 800; color: ${humIconColor}; line-height: 1;\">${humUnit}</span>\n\
+        \        </div>\n      </div>\n    </div>\n  `;\n]]]\n"
+    entity: sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+    show_icon: false
+    show_name: false
+    show_state: false
+    styles:
+      card:
+      - padding: 0
+      - background: rgba(20, 27, 38, 0.6)
+      - backdrop-filter: blur(10px)
+      - -webkit-backdrop-filter: blur(10px)
+      - border-radius: 20px
+      - border: 1px solid rgba(255, 255, 255, 0.1)
+      - box-shadow: 0 4px 15px rgba(0,0,0,0.2)
+      - overflow: hidden
+      - margin-top: 8px
+      custom_fields:
+        footer:
+        - justify-self: stretch
+        - align-self: stretch
+        - background: rgba(0,0,0,0.2)
+        - border-top: 1px solid rgba(255,255,255,0.05)
+        - display: flex
+        - align-items: center
+        - justify-content: center
+        - margin: 0
+        main:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"main" "footer"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 64px 20px
+      - margin: 0
+      - gap: 0
+    tap_action:
+      action: none
+    type: custom:button-card
+    variables:
+      hum_entity: sensor.smart_temp_humidity_sensor_39000e4fa9fc_humidity
+      temp_entity: sensor.smart_temp_humidity_sensor_39000e4fa9fc_temperature
+  padding: 0
+  type: custom:fold-entity-row
+type: entities

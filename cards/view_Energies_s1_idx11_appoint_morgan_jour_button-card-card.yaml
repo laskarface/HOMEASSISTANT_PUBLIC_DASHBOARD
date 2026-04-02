@@ -1,0 +1,111 @@
+# =========================================
+# CARTE : appoint_morgan_jour
+# VUE   : Energies
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - ath.round
+#  - chauffage_morgan_bg.png
+#  - sensor.chauffage_morgan_energy_today
+# =========================================
+
+custom_fields:
+  chart:
+    card:
+      apex_config:
+        chart:
+          height: 120px
+          sparkline:
+            enabled: true
+        fill:
+          gradient:
+            opacityFrom: 0.4
+            opacityTo: 0.05
+            shadeIntensity: 0
+            stops:
+            - 0
+            - 100
+          type: gradient
+        grid:
+          padding:
+            bottom: 0
+            top: 40
+        stroke:
+          curve: smooth
+      card_mod:
+        style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n\
+          \  box-shadow: none !important;\n  padding: 0px !important;\n}\n"
+      graph_span: 24h
+      header:
+        show: false
+      series:
+      - color: '#CCFF00'
+        entity: sensor.chauffage_morgan_energy_today
+        group_by:
+          duration: 1h
+          func: max
+        name: ' '
+        opacity: 0.4
+        stroke_width: 3
+        transform: return Math.round(parseFloat(x));
+        type: area
+      type: custom:apexcharts-card
+      yaxis:
+      - min: 0
+        show: false
+  value: "[[[ \n  const state = states['sensor.chauffage_morgan_energy_today']?.state\
+    \ || '0';\n  return `<span>${state}</span><span style=\"font-size: 14px; opacity:\
+    \ 0.75; color: white; margin-left: 6px; font-weight: 700;\">kWh</span>`;\n]]]\n"
+entity: sensor.chauffage_morgan_energy_today
+grid_options:
+  columns: 6
+  rows: 2
+name: Appoint Morgan Jour
+show_icon: false
+show_name: true
+show_state: false
+styles:
+  card:
+  - padding: 0
+  - background: "[[[ \n  return \"linear-gradient(rgba(10, 15, 25, 0.70), rgba(10,\
+      \ 15, 25, 0.70)), url('/local/chauffage_morgan_bg.png')\";\n]]]\n"
+  - background-size: cover
+  - background-position: center
+  - backdrop-filter: blur(12px)
+  - -webkit-backdrop-filter: blur(12px)
+  - border-radius: 20px
+  - border: 1px solid rgba(255,255,255,0.15)
+  - box-shadow: 0 8px 32px rgba(0,0,0,0.5)
+  - height: 120px
+  - overflow: hidden
+  - cursor: pointer
+  custom_fields:
+    chart:
+    - pointer-events: none
+    - width: 100%
+    - height: 100%
+    - position: absolute
+    - bottom: 0
+    - left: 0
+    value:
+    - position: absolute
+    - top: 38px
+    - left: 16px
+    - z-index: 20
+    - font-size: 26px
+    - font-weight: 900
+    - color: white
+    - text-shadow: 0 2px 4px rgba(0,0,0,0.8)
+  name:
+  - position: absolute
+  - top: 12px
+  - left: 16px
+  - z-index: 20
+  - font-size: 14px
+  - font-weight: 800
+  - color: rgba(255, 255, 255, 0.85)
+  - text-transform: uppercase
+  - letter-spacing: 0.5px
+  - text-shadow: 0 2px 4px rgba(0,0,0,0.8)
+tap_action:
+  action: more-info
+type: custom:button-card

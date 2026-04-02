@@ -1,0 +1,109 @@
+# =========================================
+# CARTE : system_monitor_temperature_du_processeur
+# VUE   : dashboard
+# TYPE  : conditional (Carte monobloc)
+# DÉPENDANCES :
+#  - entity.state
+#  - images.pexels
+#  - sensor.system_monitor_temperature_du_processeur
+#  - variables.theme
+# =========================================
+
+card:
+  card_mod:
+    style: ":host {\n  width: 100% !important;\n  max-width: none !important;\n  margin:\
+      \ 0 !important;\n  display: block !important;\n}\nha-card {\n  width: 100% !important;\n\
+      \  max-width: none !important;\n  margin: 0 !important;\n}\n"
+  custom_fields:
+    details: "[[[\n  const temp = parseFloat(entity.state) || 0;\n  const color =\
+      \ variables.theme.color;\n  const title = variables.theme.title;\n  const sub\
+      \ = variables.theme.sub;\n  \n  // Image thématique : Carte mère / Processeur\
+      \ (High-tech)\n  const bgImg = \"https://images.pexels.com/photos/343457/pexels-photo-343457.jpeg?auto=compress&cs=tinysrgb&w=500\"\
+      ;\n  \n  return `\n    <div style=\"width:100%;height:100%;display:flex;flex-direction:row;justify-content:center;align-items:center;padding:0\
+      \ 15px;position:relative;gap:15px;transition:all 0.5s; overflow:hidden;\">\n\
+      \      <!-- Image de fond Processeur -->\n      <div style=\"position: absolute;\
+      \ top:0; left:0; width: 100%; height: 100%; background: url('${bgImg}') center\
+      \ center / cover no-repeat; opacity: 0.35; z-index: 0;\"></div>\n      \n  \
+      \    <!-- Contenu Texte -->\n      <div style=\"position: relative; z-index:\
+      \ 1; display: flex; flex-direction: row; align-items: center; justify-content:\
+      \ center; gap: 15px;\">\n        <div style=\"font-size:38px;font-weight:900;color:${color};line-height:1;text-shadow:0\
+      \ 0 15px ${color}80;transition:color 0.5s;\">${temp}°</div>\n        <div style=\"\
+      display:flex;flex-direction:column;align-items:flex-start;justify-content:center;\"\
+      >\n          <div style=\"font-size:13px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:1px;transition:all\
+      \ 0.5s; text-shadow: 0 2px 4px rgba(0,0,0,0.9);\">${title}</div>\n         \
+      \ <div style=\"font-size:11px;color:rgba(255,255,255,0.73);margin-top:4px;font-weight:800;transition:all\
+      \ 0.5s; text-shadow: 0 1px 2px rgba(0,0,0,0.8);\">${sub}</div>\n        </div>\n\
+      \      </div>\n    </div>`;\n]]]\n"
+    icon: "[[[\n  const color = variables.theme.color;\n  const icon = variables.theme.icon;\n\
+      \  return `\n    <div style=\"width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,${color}33\
+      \ 0%,${color}0D 100%);box-sizing:border-box;position:relative;transition:all\
+      \ 0.5s;\">\n      <div style=\"position:absolute;width:50px;height:50px;background:${color};border-radius:50%;filter:blur(20px);opacity:0.3;animation:pulseGlow\
+      \ 4s infinite alternate ease-in-out;\"></div>\n      <div style=\"font-size:32px;line-height:1;filter:drop-shadow(0\
+      \ 0 10px ${color}80);display:flex;align-items:center;justify-content:center;z-index:1;transition:all\
+      \ 0.5s;\">${icon}</div>\n      <div style=\"font-size:10px;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;z-index:1;\"\
+      >Système</div>\n      <style>@keyframes pulseGlow { from{opacity:0.2;transform:scale(0.9);}to{opacity:0.4;transform:scale(1.1);}\
+      \ }</style>\n    </div>`;\n]]]\n"
+  entity: sensor.system_monitor_temperature_du_processeur
+  show_icon: false
+  show_name: false
+  show_state: false
+  styles:
+    card:
+    - padding: 0
+    - background: rgba(20, 27, 38, 0.6)
+    - backdrop-filter: blur(10px)
+    - -webkit-backdrop-filter: blur(10px)
+    - border-radius: 20px
+    - border: '[[[ return ''1px solid '' + variables.theme.color + ''80''; ]]]'
+    - box-shadow: '[[[ return ''0 0 20px '' + variables.theme.color + ''40, 0 8px
+        32px rgba(0,0,0,0.4)''; ]]]'
+    - overflow: hidden
+    - margin: 0px
+    - box-sizing: border-box
+    - position: relative
+    - height: 85px
+    - width: 100%
+    - cursor: pointer
+    - transition: all 0.5s ease
+    custom_fields:
+      details:
+      - justify-self: stretch
+      - align-self: stretch
+      - display: flex
+      - flex-direction: column
+      - justify-content: center
+      - align-items: center
+      - padding: 0
+      - overflow: hidden
+      - position: relative
+      icon:
+      - justify-self: stretch
+      - align-self: stretch
+      - border-right: 2px solid rgba(255,255,255,0.6)
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - padding: 0
+    grid:
+    - grid-template-areas: '"icon details"'
+    - grid-template-columns: 130px minmax(0, 1fr)
+    - grid-template-rows: 1fr
+    - gap: 0px
+    - width: 100%
+    - height: 100%
+    - margin: 0
+  tap_action:
+    action: more-info
+  type: custom:button-card
+  variables:
+    theme: "[[[\n  const temp = parseFloat(entity.state) || 0;\n  if (temp > 80) return\
+      \ { color: \"#E53935\", icon: \"⚠️\", title: \"TEMP. CPU CRITIQUE\", sub: \"\
+      ANOMALIE THERMIQUE > 80°C\" };\n  if (temp >= 65) return { color: \"#FF9800\"\
+      , icon: \"⚠️\", title: \"TEMP. CPU ÉLEVÉE\", sub: \"CHARGE SYSTÈME > 65°C\"\
+      \ };\n  return { color: \"#00C853\", icon: \"✅\", title: \"TEMP. CPU NORMALE\"\
+      , sub: \"SYSTÈME STABLE < 65°C\" };\n]]]\n"
+conditions:
+- above: 80
+  condition: numeric_state
+  entity: sensor.system_monitor_temperature_du_processeur
+type: conditional

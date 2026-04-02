@@ -1,0 +1,35 @@
+- id: '1764791081679'
+  alias: 17TRACK - Notification nouveaux colis livrés
+  description: Notifier quand un colis vient de passer en livré
+  triggers:
+  - trigger: time_pattern
+    minutes: /10
+  conditions: []
+  actions:
+  - action: seventeentrack.get_packages
+    data:
+      config_entry_id: 01KBBEN2MB5F9B7Y2BA03EVAC
+      package_state:
+      - delivered
+    response_variable: colis_livres_notif
+  - repeat:
+      for_each: '{{ colis_livres_notif.packages | default([]) }}'
+      sequence:
+      - variables:
+          ts: '{{ repeat.item.timestamp | default(None) }}'
+      - condition: template
+        value_template: '{{ ts is not none and (now() - as_datetime(ts)).total_seconds()
+          <= 3600 }}'
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: "\U0001F4E6 Colis livré"
+          message: '{{ repeat.item.friendly_name | default(''Colis'') }} est maintenant
+            à l’état "{{ repeat.item.status | default(''delivered'') }}". (Suivi :
+            {{ repeat.item.tracking_number }})'
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: "\U0001F4E6 Colis livré"
+          message: '{{ repeat.item.friendly_name | default(''Colis'') }} est maintenant
+            à l’état "{{ repeat.item.status | default(''delivered'') }}". (Suivi :
+            {{ repeat.item.tracking_number }})'
+  mode: single

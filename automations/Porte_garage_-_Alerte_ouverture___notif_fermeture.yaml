@@ -1,0 +1,4 @@
+- id: '1764332380766'
+  alias: Porte garage - Alerte ouverture + notif fermeture
+  description: Alerte si porte ouverte 5 min
+  triggers:

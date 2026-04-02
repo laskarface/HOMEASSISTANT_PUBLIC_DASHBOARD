@@ -1,0 +1,39 @@
+- id: '1773266750888'
+  alias: Lumiere cuisine presence
+  description: Allume la lumière sur présence seulement la nuit et l'éteint après
+    2s sans présence
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.capteur_cuisine_occupancy
+    to: 'on'
+    id: presence_on
+  - trigger: state
+    entity_id: binary_sensor.capteur_cuisine_occupancy
+    to: 'off'
+    for: 00:00:02
+    id: presence_off
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: presence_on
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:30:00
+        - condition: sun
+          before: sunrise
+          before_offset: +00:30:00
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.inter_cuisine
+    - conditions:
+      - condition: trigger
+        id: presence_off
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.inter_cuisine
+  mode: restart

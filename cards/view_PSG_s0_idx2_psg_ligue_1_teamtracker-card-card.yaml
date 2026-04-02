@@ -1,0 +1,27 @@
+# =========================================
+# CARTE : psg_ligue_1
+# VUE   : PSG
+# TYPE  : custom:teamtracker-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.espncdn
+#  - n.tv
+#  - sensor.psg_ligue_1
+# =========================================
+
+card_mod:
+  style: "ha-card {\n   background: rgba(20, 27, 38, 0.6) !important;\n   backdrop-filter:\
+    \ blur(10px) !important;\n   border-radius: 20px !important;\n   border: 1px solid\
+    \ rgba(255,255,255,0.1) !important;\n   box-shadow: 0 4px 15px rgba(0,0,0,0.2)\
+    \ !important;\n   position: relative; /* Indispensable pour placer le logo en\
+    \ mode position absolue sans déformer la carte */\n}\n\n/* Notre logo magique\
+    \ injecté \"En haut au milieu\" */\nha-card::before {\n   content: \"\";\n   position:\
+    \ absolute;\n   top: 8px;             /* Ajuste cette valeur pour le monter/descendre\
+    \ */\n   left: 50%;\n   transform: translateX(-50%);\n   width: 54px;        \
+    \  /* Taille du logo */\n   height: 54px;         /* Taille du logo */\n   background-image:\
+    \ url(\"https://a.espncdn.com/i/leaguelogos/soccer/500/9.png\");\n   background-size:\
+    \ contain;\n   background-repeat: no-repeat;\n   background-position: center;\n\
+    \   filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255,255,255,0.4));\n\
+    \   z-index: 5;\n   opacity: 0.9;\n}\n\n/* Bonus: la ligne pour masquer la chaine\
+    \ TV ESPN vide si besoin */\n.tv-network {\n   display: none !important;\n}\n"
+entity: sensor.psg_ligue_1
+type: custom:teamtracker-card

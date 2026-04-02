@@ -1,0 +1,16 @@
+- id: '1765902011717'
+  alias: Charge tondeuse le jeudi
+  description: ''
+  triggers:
+  - trigger: time
+    at: 05:00:00
+    weekday:
+    - thu
+  conditions: []
+  actions:
+  - action: switch.turn_on
+    target:
+      entity_id:
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_4
+      - switch.smart_switch_2210204886342554060148e1e9ac3905_outlet_5
+  mode: single

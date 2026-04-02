@@ -1,0 +1,17 @@
+- id: '1773266877416'
+  alias: Auto-Update HA Core (Backup)
+  description: Met à jour le cœur de HA automatiquement sur l'instance de secours
+  triggers:
+  - entity_id: update.home_assistant_core_update
+    to: 'on'
+    for:
+      hours: 2
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: update.home_assistant_core_update
+    data:
+      backup: true
+    action: update.install
+  mode: single

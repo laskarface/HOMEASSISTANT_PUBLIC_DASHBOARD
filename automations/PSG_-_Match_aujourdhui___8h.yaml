@@ -1,0 +1,37 @@
+- id: '1764160666075'
+  alias: PSG - Match aujourd'hui à 8h
+  description: Envoie une notification le matin du match du PSG
+  triggers:
+  - at: 08:00:00
+    trigger: time
+  conditions:
+  - condition: template
+    value_template: "{% set start = state_attr('calendar.paris_saint_germain', 'start_time')
+      %} {% if not start %}\n  false\n{% else %}\n  {{ as_datetime(start).date() ==
+      now().date() }}\n{% endif %}\n"
+  actions:
+  - variables:
+      event_summary: '{{ state_attr(''calendar.paris_saint_germain'',''message'')
+        }}'
+      event_location: '{{ state_attr(''calendar.paris_saint_germain'',''location'')
+        }}'
+      event_start: '{% set s = state_attr(''calendar.paris_saint_germain'',''start_time'')
+        %} {{ as_datetime(s).strftime(''%H:%M'') if s else '''' }}'
+      event_end: '{% set e = state_attr(''calendar.paris_saint_germain'',''end_time'')
+        %} {{ as_datetime(e).strftime(''%H:%M'') if e else '''' }}'
+  - data:
+      title: Match du PSG aujourd'hui ⚽️
+      message: '{{ event_summary }} à {{ event_start }} (fin {{ event_end }}) {% if
+        event_location %}- {{ event_location }}{% endif %}'
+    action: notify.mobile_app_iphone_daline
+  - data:
+      title: Match du PSG aujourd'hui ⚽️
+      message: '{{ event_summary }} à {{ event_start }} (fin {{ event_end }}) {% if
+        event_location %}- {{ event_location }}{% endif %}'
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Match du PSG aujourd'hui ⚽️
+      message: '{{ event_summary }} à {{ event_start }} (fin {{ event_end }}) {% if
+        event_location %}- {{ event_location }}{% endif %}'
+    action: notify.mobile_app_iphone_de_marley
+  mode: single

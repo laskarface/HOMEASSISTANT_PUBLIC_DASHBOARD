@@ -1,0 +1,7 @@
+- resource: "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss%2Fsearch%3Fq%3DPSG%2Bsite%3Armcsport.bfmtv.com%26hl%3Dfr%26gl%3DFR%26ceid%3DFR%3Afr"
+  scan_interval: 3600
+  sensor:
+    - name: psg_news_rmc
+      json_attributes:
+        - items
+      value_template: "OK"

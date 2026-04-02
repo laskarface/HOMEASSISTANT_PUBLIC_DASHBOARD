@@ -1,0 +1,38 @@
+# =========================================
+# CARTE : imprimante_3d
+# VUE   : Energies
+# TYPE  : sensor (Carte monobloc)
+# DÉPENDANCES :
+#  - d_bg.png
+#  - n.graph
+#  - n.header
+#  - n.measurement
+#  - n.name
+#  - n.value
+#  - sensor.prise_imprimante_3d_power
+# =========================================
+
+card_mod:
+  style: ":host {\n  --accent-color: #FF8000 !important;\n  --sensor-color: #FF8000\
+    \ !important;\n  --primary-color: #FF8000 !important;\n}\n\n.graph svg polyline\
+    \ {\n  stroke: #FF8000 !important;\n}\n\n.graph svg path {\n  fill: #FF8000 !important;\n\
+    \  opacity: 0.15 !important;\n}\n\nha-card {\n  background: linear-gradient(rgba(10,\
+    \ 15, 25, 0.70), rgba(10, 15, 25, 0.70)), \n              url('/local/imprimante_3d_bg.png')\
+    \ !important;\n  background-size: cover !important;\n  background-position: center\
+    \ !important;\n  backdrop-filter: blur(12px) !important;\n  -webkit-backdrop-filter:\
+    \ blur(12px) !important;\n  border-radius: 20px !important;\n  border: 1px solid\
+    \ rgba(255,255,255,0.12) !important;\n  box-shadow: 0 8px 32px rgba(0,0,0,0.5)\
+    \ !important;\n}\n\n.header { \n  padding: 16px 16px 0 16px !important; \n  position:\
+    \ relative; \n  z-index: 2;\n}\n\n.name { \n  font-size: 14px !important; \n \
+    \ font-weight: 800 !important; \n  color: rgba(255,255,255,0.9) !important; \n\
+    \  text-transform: uppercase;\n  letter-spacing: 0.5px;\n  text-shadow: 0 2px\
+    \ 4px rgba(0,0,0,0.8) !important;\n}\n\n.value { \n  font-size: 26px !important;\
+    \ \n  font-weight: 900 !important; \n  color: #FFFFFF !important; \n  text-shadow:\
+    \ 0 2px 4px rgba(0,0,0,0.8) !important;\n}\n\n.measurement { \n  font-size: 14px\
+    \ !important; \n  opacity: 0.75 !important; \n}\n\n.graph {\n  position: relative;\n\
+    \  z-index: 1;\n}\n"
+detail: 1
+entity: sensor.prise_imprimante_3d_power
+graph: line
+name: Imprimante 3D
+type: sensor

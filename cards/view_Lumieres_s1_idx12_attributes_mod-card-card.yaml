@@ -1,0 +1,263 @@
+# =========================================
+# CARTE : attributes
+# VUE   : Lumieres
+# TYPE  : custom:mod-card (Carte monobloc)
+# DÉPENDANCES :
+#  - ath.round
+#  - bulb.attributes
+#  - bulb.state
+#  - entity.attributes
+#  - entity.state
+#  - leds.attributes
+#  - leds.state
+#  - light.leds_lison
+#  - light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+# =========================================
+
+card:
+  cards:
+  - card_mod:
+      style: ':host { flex: 0 0 130px !important; max-width: 130px !important; min-width:
+        130px !important; }
+
+        '
+    custom_fields:
+      main: "[[[\n  const bulb = states['light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e'];\n\
+        \  const leds = states['light.leds_lison'];\n  \n  const bulbOn = bulb &&\
+        \ bulb.state === 'on';\n  const ledsOn = leds && leds.state === 'on';\n  const\
+        \ anyOn = bulbOn || ledsOn;\n  \n  let dominantColor = '255,255,255';\n  if\
+        \ (bulbOn && bulb.attributes.rgb_color) {\n     dominantColor = `${bulb.attributes.rgb_color[0]},${bulb.attributes.rgb_color[1]},${bulb.attributes.rgb_color[2]}`;\n\
+        \  } else if (ledsOn && leds.attributes.rgb_color) {\n     dominantColor =\
+        \ `${leds.attributes.rgb_color[0]},${leds.attributes.rgb_color[1]},${leds.attributes.rgb_color[2]}`;\n\
+        \  } else if (anyOn) {\n     dominantColor = '255,152,0'; \n  }\n\n  const\
+        \ color = anyOn ? 'white' : 'rgba(255,255,255,0.3)';\n  const shadow = anyOn\
+        \ ? 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' : 'none';\n  const bg = anyOn\
+        \ ? `linear-gradient(135deg, rgba(${dominantColor}, 0.25) 0%, transparent\
+        \ 100%)` : 'transparent';\n  \n  return `\n    <div style=\"box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;width:100%;padding-bottom:8px;background:${bg};transition:all\
+        \ 0.5s;\">\n      <ha-icon icon=\"mdi:bed\" style=\"width:24px;height:24px;color:${color};filter:${shadow};margin-bottom:2px;transition:all\
+        \ 0.5s;display:block;\"></ha-icon>\n      <div style=\"font-size:10px;font-weight:950;color:${anyOn?'white':'rgba(255,255,255,0.5)'};text-transform:uppercase;letter-spacing:1px;line-height:1;transition:all\
+        \ 0.5s;\">LISON</div>\n    </div>\n  `;\n]]]\n"
+    entity: light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - padding: 0
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - border-right: 1px solid rgba(255,255,255,0.1)
+      - border-radius: 0
+      - height: 62px
+      custom_fields:
+        main:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"main"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+    tap_action:
+      action: none
+    triggers_update:
+    - light.leds_lison
+    type: custom:button-card
+  - card_mod:
+      style: ':host { flex: 1 1 0 !important; }
+
+        '
+    custom_fields:
+      main: "[[[\n  const isOn = entity.state === 'on';\n  const rgbAttr = entity.attributes.rgb_color;\n\
+        \  const rgb = isOn ? (rgbAttr || [255, 230, 200]) : null;\n  const c = rgb\
+        \ ? `rgb(${rgb[0]},${rgb[1]},${rgb[2]})` : 'rgba(255,255,255,0.3)';\n  \n\
+        \  const bg = rgb ? `radial-gradient(ellipse at center, rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.15)\
+        \ 0%, transparent 80%)` : 'transparent';\n  \n  return `\n    <div style=\"\
+        display:flex;position:relative;height:100%;width:100%;background:${bg};transition:all\
+        \ 0.5s;\">\n      <div style=\"box-sizing:border-box;position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-bottom:8px;\"\
+        >\n        <ha-icon icon=\"mdi:lightbulb\" style=\"width:20px;height:20px;color:${c};margin-bottom:2px;transition:all\
+        \ 0.5s;display:block;${isOn?`filter:drop-shadow(0 0 6px ${c})`:''}\"></ha-icon>\n\
+        \        <div style=\"font-size:8px;font-weight:800;color:${isOn?'white':'rgba(255,255,255,0.5)'};text-transform:uppercase;letter-spacing:1px;line-height:1;transition:all\
+        \ 0.5s;\">Lumière Lison</div>\n        <div style=\"font-size:11px;font-weight:900;color:${isOn?'white':'rgba(255,255,255,0.3)'};margin-top:2px;line-height:1;transition:all\
+        \ 0.5s;\">${isOn?'ON':'OFF'}</div>\n      </div>\n    </div>\n  `;\n]]]\n"
+    entity: light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - border-radius: 0
+      - padding: 0
+      - height: 62px
+      custom_fields:
+        main:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"main"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+    tap_action:
+      action: toggle
+    type: custom:button-card
+  - card_mod:
+      style: ':host { flex: 0 0 45px !important; max-width: 45px !important; min-width:
+        45px !important; z-index: 2 !important; }
+
+        '
+    custom_fields:
+      m: "[[[\n  const on = entity.state === 'on';\n  const rgb = entity.attributes.rgb_color\
+        \ || [255,230,200];\n  const r = rgb[0], g = rgb[1], b = rgb[2];\n  const\
+        \ briRatio = on ? (entity.attributes.brightness || 0) / 255 : 0;\n  \n  const\
+        \ size = on ? Math.round(18 + briRatio * 14) : 18;\n  const op = on ? (briRatio\
+        \ * 0.45).toFixed(2) : '0.06';\n  const bord = on ? (briRatio * 0.85).toFixed(2)\
+        \ : '0.14';\n  const svgSize = Math.round(size * 0.45);\n  \n  return `<div\
+        \ style=\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;\"\
+        >\n    <div style=\"width:${size}px;height:${size}px;border-radius:50%;\n\
+        \      background:rgba(${on?r+','+g+','+b:'255,255,255'},${op});\n      border:1.5px\
+        \ solid rgba(${on?r+','+g+','+b:'255,255,255'},${bord});\n      display:flex;align-items:center;justify-content:center;transition:all\
+        \ 0.4s;\">\n      <svg viewBox=\"0 0 24 24\" width=\"${svgSize}\" height=\"\
+        ${svgSize}\" fill=\"none\">\n        <circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"\
+        rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"/>\n        <path\
+        \ d=\"M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41\
+        \ 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\"\n          stroke=\"rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"\
+        \n          stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n      </svg>\n\
+        \    </div>\n  </div>`;\n]]]\n"
+    entity: light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - border: none
+      - border-right: 1px solid rgba(255,255,255,0.1)
+      - box-shadow: none
+      - border-radius: 0
+      - padding: 0
+      - height: 62px
+      custom_fields:
+        m:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"m"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+    tap_action:
+      action: more-info
+    type: custom:button-card
+  - card_mod:
+      style: ':host { flex: 1 1 0 !important; }
+
+        '
+    custom_fields:
+      main: "[[[\n  const isOn = entity.state === 'on';\n  const rgbAttr = entity.attributes.rgb_color;\n\
+        \  const rgb = isOn ? (rgbAttr || [255, 152, 0]) : null;\n  const c = rgb\
+        \ ? `rgb(${rgb[0]},${rgb[1]},${rgb[2]})` : 'rgba(255,255,255,0.3)';\n  \n\
+        \  const bg = rgb ? `radial-gradient(ellipse at center, rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.15)\
+        \ 0%, transparent 80%)` : 'transparent';\n  \n  return `\n    <div style=\"\
+        display:flex;position:relative;height:100%;width:100%;background:${bg};transition:all\
+        \ 0.5s;\">\n      <div style=\"box-sizing:border-box;position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-bottom:8px;\"\
+        >\n        <ha-icon icon=\"mdi:led-strip-variant\" style=\"width:20px;height:20px;color:${c};margin-bottom:2px;transition:all\
+        \ 0.5s;display:block;${isOn?`filter:drop-shadow(0 0 6px ${c})`:''}\"></ha-icon>\n\
+        \        <div style=\"font-size:8px;font-weight:800;color:${isOn?'white':'rgba(255,255,255,0.5)'};text-transform:uppercase;letter-spacing:1px;line-height:1;transition:all\
+        \ 0.5s;\">Leds Lison</div>\n        <div style=\"font-size:11px;font-weight:900;color:${isOn?'white':'rgba(255,255,255,0.3)'};margin-top:2px;line-height:1;transition:all\
+        \ 0.5s;\">${isOn?'ON':'OFF'}</div>\n      </div>\n    </div>\n  `;\n]]]\n"
+    entity: light.leds_lison
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - border-radius: 0
+      - padding: 0
+      - height: 62px
+      custom_fields:
+        main:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"main"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+    tap_action:
+      action: toggle
+    type: custom:button-card
+  - card_mod:
+      style: ':host { flex: 0 0 45px !important; max-width: 45px !important; min-width:
+        45px !important; z-index: 2 !important; }
+
+        '
+    custom_fields:
+      m: "[[[\n  const on = entity.state === 'on';\n  const rgb = entity.attributes.rgb_color\
+        \ || [255,152,0];\n  const r = rgb[0], g = rgb[1], b = rgb[2];\n  const briRatio\
+        \ = on ? (entity.attributes.brightness || 0) / 255 : 0;\n  \n  const size\
+        \ = on ? Math.round(18 + briRatio * 14) : 18;\n  const op = on ? (briRatio\
+        \ * 0.45).toFixed(2) : '0.06';\n  const bord = on ? (briRatio * 0.85).toFixed(2)\
+        \ : '0.14';\n  const svgSize = Math.round(size * 0.45);\n  \n  return `<div\
+        \ style=\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;\"\
+        >\n    <div style=\"width:${size}px;height:${size}px;border-radius:50%;\n\
+        \      background:rgba(${on?r+','+g+','+b:'255,255,255'},${op});\n      border:1.5px\
+        \ solid rgba(${on?r+','+g+','+b:'255,255,255'},${bord});\n      display:flex;align-items:center;justify-content:center;transition:all\
+        \ 0.4s;\">\n      <svg viewBox=\"0 0 24 24\" width=\"${svgSize}\" height=\"\
+        ${svgSize}\" fill=\"none\">\n        <circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"\
+        rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"/>\n        <path\
+        \ d=\"M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41\
+        \ 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\"\n          stroke=\"rgba(${on?r+','+g+','+b:'255,255,255'},${on?'1':'0.35'})\"\
+        \n          stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n      </svg>\n\
+        \    </div>\n  </div>`;\n]]]\n"
+    entity: light.leds_lison
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - border-radius: 0
+      - padding: 0
+      - height: 62px
+      custom_fields:
+        m:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+        - margin: 0
+      grid:
+      - grid-template-areas: '"m"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+    tap_action:
+      action: more-info
+    type: custom:button-card
+  type: horizontal-stack
+card_mod:
+  style: "ha-card {\n  /* Style Glassmorphism Raffiné */\n  background: rgba(10, 15,\
+    \ 25, 0.8) !important;\n  backdrop-filter: blur(15px) !important;\n  -webkit-backdrop-filter:\
+    \ blur(15px) !important;\n  border-radius: 20px !important;\n  \n  /* Bordure\
+    \ Dynamique fine avec lueur orange si allumé */\n  border: 1px solid\n    {% if\
+    \ states('light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e') == 'on'\n  \
+    \     or states('light.leds_lison') == 'on' %}\n      rgba(255, 152, 0, 0.6)\n\
+    \    {% else %}\n      rgba(255, 255, 255, 0.12)\n    {% endif %} !important;\n\
+    \  \n  /* box-shadow profond */\n  box-shadow:\n    {% if states('light.smart_rgb_bulb_2401023613738552050248e1e9e8e94e')\
+    \ == 'on'\n       or states('light.leds_lison') == 'on' %}\n      0 0 25px rgba(255,\
+    \ 152, 0, 0.25), 0 8px 32px rgba(0, 0, 0, 0.6)\n    {% else %}\n      0 8px 32px\
+    \ rgba(0, 0, 0, 0.5)\n    {% endif %} !important;\n    \n  overflow: hidden !important;\n\
+    \  margin-top: 8px !important;\n  padding: 0 !important;\n}\n"
+type: custom:mod-card

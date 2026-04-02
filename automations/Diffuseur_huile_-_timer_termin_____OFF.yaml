@@ -1,0 +1,14 @@
+- id: '1770138883430'
+  alias: Diffuseur huile - timer terminé => OFF
+  triggers:
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.diffuseur_huile
+    trigger: event
+  actions:
+  - action: select.select_option
+    target:
+      entity_id: select.smart_humidifier_diffuser_spray
+    data:
+      option: 'off'
+  mode: single

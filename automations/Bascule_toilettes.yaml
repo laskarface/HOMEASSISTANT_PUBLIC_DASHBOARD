@@ -1,0 +1,15 @@
+- id: '1766430537075'
+  alias: Bascule toilettes
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: f2d957196da2dd76f26c8bd803da0212
+    type: action
+    subtype: 'on'
+    trigger: device
+  conditions: []
+  actions:
+  - action: switch.toggle
+    target:
+      entity_id: switch.inter_toilettes_z
+  mode: single

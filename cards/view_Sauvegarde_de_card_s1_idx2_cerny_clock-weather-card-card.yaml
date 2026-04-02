@@ -1,0 +1,38 @@
+# =========================================
+# CARTE : cerny
+# VUE   : Sauvegarde_de_card
+# TYPE  : custom:clock-weather-card (Carte monobloc)
+# DÉPENDANCES :
+#  - sensor.air_quality_index
+#  - sensor.outdoor_humidity
+#  - sensor.outdoor_temp
+#  - sensor.real_feel_temperature
+#  - sun.sun
+#  - weather.cerny
+# =========================================
+
+animated_icon: true
+apparent_sensor: sensor.real_feel_temperature
+aqi_sensor: sensor.air_quality_index
+card_mod:
+  style: "ha-card {\n  background: rgba(20, 27, 38, 0.6) !important;\n  backdrop-filter:\
+    \ blur(20px);\n  -webkit-backdrop-filter: blur(20px);\n  border-radius: 24px !important;\n\
+    \  border: 1px solid rgba(255,255,255,0.1) !important;\n  box-shadow: 0 8px 32px\
+    \ rgba(0,0,0,0.3) !important;\n  \n  --primary-text-color: #ffffff;\n  --secondary-text-color:\
+    \ rgba(255,255,255,0.7);\n}\n"
+entity: weather.cerny
+forecast_rows: 5
+hide_clock: true
+hide_date: true
+hide_forecast_section: false
+hide_today_section: true
+hourly_forecast: false
+humidity_sensor: sensor.outdoor_humidity
+show_decimal: false
+show_humidity: true
+sun_entity: sun.sun
+temperature_sensor: sensor.outdoor_temp
+title: null
+type: custom:clock-weather-card
+use_browser_time: false
+weather_icon_type: line

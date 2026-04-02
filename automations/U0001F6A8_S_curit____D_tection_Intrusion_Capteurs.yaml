@@ -1,0 +1,89 @@
+- id: '1774696938176'
+  alias: "\U0001F6A8 Sécurité : Détection Intrusion Capteurs"
+  description: Déclenche l'alarme Eufy et notifie la famille (Priorité Critique Chris/Aline)
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.camera_bureau_cell_motion_detection
+    - binary_sensor.camera_bureau_person_detection
+    - binary_sensor.camera_salon_cell_motion_detection
+    - binary_sensor.camera_salon_person_detection
+    - binary_sensor.capteur_fenetre_chloe_contact
+    - binary_sensor.capteur_fenetre_morgan_contact
+    - binary_sensor.capteur_porte_garage_contact
+    - binary_sensor.capteur_porte_morgan_contact
+    - binary_sensor.capteur_cuisine_occupancy
+    - binary_sensor.capteur_bureau_occupancy
+    - binary_sensor.capteur_presence_bar_z_occupancy
+    to: 'on'
+    id: intrusion_trigger
+  conditions:
+  - condition: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    state: armed_away
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.eufy_homebase2
+      state: triggered
+  - condition: template
+    value_template: "{% set people = ['person.chris', 'person.aline', 'person.marley',
+      'person.chloe', 'person.morgan'] %} {{ expand(people) | selectattr('state',
+      'eq', 'home') \n   | selectattr('last_changed', 'gt', now() - timedelta(seconds=30))
+      \n   | list | count == 0 }}\n"
+  - condition: template
+    value_template: "{% if trigger.id == 'capteur_bureau_occupancy' %}\n  {{ states('binary_sensor.camera_bureau_cell_motion_detection')
+      in ['unavailable', 'unknown']\n     and states('binary_sensor.camera_bureau_person_detection')
+      in ['unavailable', 'unknown'] }}\n{% elif trigger.id == 'capteur_presence_bar_z_occupancy'
+      %}\n  {{ states('binary_sensor.camera_salon_cell_motion_detection') in ['unavailable',
+      'unknown']\n     and states('binary_sensor.camera_salon_person_detection') in
+      ['unavailable', 'unknown'] }}\n{% else %}\n  true\n{% endif %}\n"
+  actions:
+  - action: alarm_control_panel.alarm_trigger
+    target:
+      entity_id: alarm_control_panel.eufy_homebase2
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: "\U0001F6A8 INTRUSION DÉTECTÉE !"
+      message: '{% set name = trigger.to_state.attributes.friendly_name %}  {{ name.split(''
+        Cell'')[0].split('' Person'')[0] }} a détecté une intrusion !
+
+        '
+      data:
+        push:
+          interruption-level: critical
+          sound: default
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: "\U0001F6A8 INTRUSION DÉTECTÉE !"
+      message: '{% set name = trigger.to_state.attributes.friendly_name %}  {{ name.split(''
+        Cell'')[0].split('' Person'')[0] }} a détecté une intrusion !
+
+        '
+      data:
+        push:
+          interruption-level: critical
+          sound: default
+  - action: notify.mobile_app_iphone_de_chloe
+    data:
+      title: "\U0001F6A8 Alerte Sécurité"
+      message: Une présence a été détectée dans la maison.
+      data:
+        push:
+          interruption-level: active
+  - action: notify.mobile_app_iphone_de_marley
+    data:
+      title: "\U0001F6A8 Alerte Sécurité"
+      message: Une présence a été détectée dans la maison.
+      data:
+        push:
+          interruption-level: active
+  - action: notify.mobile_app_iphone_de_morgan
+    data:
+      title: "\U0001F6A8 Alerte Sécurité"
+      message: Une présence a été détectée dans la maison.
+      data:
+        push:
+          interruption-level: active
+  mode: single
+  max_exceeded: silent

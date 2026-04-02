@@ -1,0 +1,200 @@
+# =========================================
+# CARTE : color
+# VUE   : dashboard
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - ath.floor
+#  - ath.round
+#  - binary_sensor.capteur_ouverture_lave_linge_contact
+#  - binary_sensor.machine_a_laver_en_cours
+#  - c.active
+#  - c.color
+#  - c.icon
+#  - c.label
+#  - c.name
+#  - d.get
+#  - images.unsplash
+#  - input_boolean.machine_a_laver_terminee
+#  - input_boolean.seche_linge_termine
+#  - input_boolean.turn_off
+#  - input_select.phase_machine_a_laver
+#  - items.length
+#  - items.push
+#  - pathname.includes
+#  - search.includes
+#  - sensor.prise_machine_a_laver_z_power
+#  - sensor.prise_seche_linge_z_power
+#  - sensor.seche_linge_door_status
+#  - sensor.seche_linge_end_time
+#  - sensor.seche_linge_mode
+#  - window.location
+# =========================================
+
+custom_fields:
+  img: "[[[\n  const blue = \"#4fc3f7\";\n  const svg = `\n    <svg viewBox=\"0 0\
+    \ 100 100\" width=\"55\" height=\"55\" style=\"filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));\"\
+    >\n      <defs>\n        <linearGradient id=\"basketGrad\" x1=\"0%\" y1=\"0%\"\
+    \ x2=\"0%\" y2=\"100%\">\n          <stop offset=\"0%\" style=\"stop-color:#eeeeee;stop-opacity:1\"\
+    \ />\n          <stop offset=\"100%\" style=\"stop-color:#bdbdbd;stop-opacity:1\"\
+    \ />\n        </linearGradient>\n        <linearGradient id=\"cloth1\" x1=\"0%\"\
+    \ y1=\"0%\" x2=\"100%\" y2=\"100%\">\n          <stop offset=\"0%\" style=\"stop-color:#ffffff;stop-opacity:1\"\
+    \ />\n          <stop offset=\"100%\" style=\"stop-color:#e0e0e0;stop-opacity:1\"\
+    \ />\n        </linearGradient>\n        <linearGradient id=\"cloth2\" x1=\"0%\"\
+    \ y1=\"0%\" x2=\"100%\" y2=\"100%\">\n          <stop offset=\"0%\" style=\"stop-color:#b3e5fc;stop-opacity:1\"\
+    \ />\n          <stop offset=\"100%\" style=\"stop-color:#4fc3f7;stop-opacity:1\"\
+    \ />\n        </linearGradient>\n      </defs>\n      <path d=\"M30,50 Q40,35\
+    \ 55,45 Q70,35 75,55 L75,65 L25,65 Z\" fill=\"url(#cloth1)\" />\n      <path d=\"\
+    M40,55 Q55,40 70,50 L70,60 L35,60 Z\" fill=\"url(#cloth2)\" opacity=\"0.8\" />\n\
+    \      <path d=\"M20,55 L80,55 L75,90 L25,90 Z\" fill=\"url(#basketGrad)\" stroke=\"\
+    #9e9e9e\" stroke-width=\"1\" />\n      <g opacity=\"0.3\" fill=\"#616161\">\n\
+    \        <rect x=\"28\" y=\"62\" width=\"6\" height=\"4\" rx=\"1\" /> <rect x=\"\
+    40\" y=\"62\" width=\"6\" height=\"4\" rx=\"1\" />\n        <rect x=\"52\" y=\"\
+    62\" width=\"6\" height=\"4\" rx=\"1\" /> <rect x=\"64\" y=\"62\" width=\"6\"\
+    \ height=\"4\" rx=\"1\" />\n        <rect x=\"30\" y=\"70\" width=\"6\" height=\"\
+    4\" rx=\"1\" /> <rect x=\"42\" y=\"70\" width=\"6\" height=\"4\" rx=\"1\" />\n\
+    \        <rect x=\"54\" y=\"70\" width=\"6\" height=\"4\" rx=\"1\" /> <rect x=\"\
+    66\" y=\"70\" width=\"6\" height=\"4\" rx=\"1\" />\n        <rect x=\"32\" y=\"\
+    78\" width=\"6\" height=\"4\" rx=\"1\" /> <rect x=\"44\" y=\"78\" width=\"6\"\
+    \ height=\"4\" rx=\"1\" />\n        <rect x=\"56\" y=\"78\" width=\"6\" height=\"\
+    4\" rx=\"1\" /> <rect x=\"68\" y=\"78\" width=\"6\" height=\"4\" rx=\"1\" />\n\
+    \      </g>\n      <rect x=\"18\" y=\"52\" width=\"64\" height=\"6\" rx=\"3\"\
+    \ fill=\"#eeeeee\" stroke=\"#bdbdbd\" stroke-width=\"0.5\" />\n      <rect x=\"\
+    22\" y=\"53.5\" width=\"20\" height=\"1.5\" rx=\"1\" fill=\"white\" opacity=\"\
+    0.4\" />\n    </svg>\n  `;\n  return `\n    <div style=\"width: 100%; height:\
+    \ 100%; display: flex; flex-direction: column; align-items: center; justify-content:\
+    \ center; background: linear-gradient(135deg, rgba(79, 195, 247, 0.2) 0%, rgba(79,\
+    \ 195, 247, 0) 100%); border-top-left-radius: 20px; position: relative;\">\n \
+    \     <div style=\"position: absolute; width: 50px; height: 50px; background:\
+    \ ${blue}; border-radius: 50%; filter: blur(20px); opacity: 0.3; animation: pulseGlow\
+    \ 4s infinite alternate ease-in-out;\"></div>\n      <div style=\"position: relative;\
+    \ z-index: 1;\">${svg}</div>\n      <div style=\"font-size: 9px; font-weight:\
+    \ 900; color: white; text-transform: uppercase; letter-spacing: 0.5px; margin-top:\
+    \ 4px; z-index: 1;\">BUANDERIE</div>\n      <style>@keyframes pulseGlow { from\
+    \ { opacity: 0.2; transform: scale(0.9); } to { opacity: 0.4; transform: scale(1.1);\
+    \ } }</style>\n    </div>\n  `;\n]]]\n"
+  info: "[[[\n  var timeSince = function(dateString) {\n    if (!dateString) return\
+    \ '';\n    var date = new Date(dateString);\n    var seconds = Math.floor((new\
+    \ Date() - date) / 1000);\n    if (seconds < 60) return \"à l'instant\";\n   \
+    \ var minutes = Math.floor(seconds / 60);\n    if (minutes < 60) return \"depuis\
+    \ \" + minutes + \" min\";\n    var hours = Math.floor(minutes / 60);\n    var\
+    \ r_min = minutes % 60;\n    if (hours < 24) return \"depuis \" + hours + \"h\"\
+    \ + (r_min < 10 && r_min > 0 ? '0' : '') + (r_min > 0 ? r_min : '');\n    var\
+    \ days = Math.floor(hours / 24);\n    return \"depuis \" + days + \" j\";\n  };\n\
+    \n  var parseTimeOrPhase = function(val) {\n    if (!val || val === 'unavailable'\
+    \ || val === 'unknown') return '';\n    if (!isNaN(val)) return \"Reste \" + val\
+    \ + \" min\";\n    var d = new Date(val);\n    if (!isNaN(d.getTime())) {\n  \
+    \     var seconds = Math.floor((d - new Date()) / 1000);\n       if (seconds <=\
+    \ 0) return \"Bientôt fini\";\n       var minutes = Math.floor(seconds / 60);\n\
+    \       if (minutes < 60) return \"Reste \" + minutes + \" min\";\n       var\
+    \ hours = Math.floor(minutes / 60);\n       var r_min = minutes % 60;\n      \
+    \ return \"Reste \" + hours + \"h\" + (r_min < 10 ? '0' : '') + r_min;\n    }\n\
+    \    return val;\n  };\n\n  var isEditMode = window.location.search.includes('edit=1')\
+    \ || window.location.pathname.includes('edit');\n  \n  var w_power_val = parseFloat(states['sensor.prise_machine_a_laver_z_power']?.state\
+    \ || '0');\n  var w_on = states['binary_sensor.machine_a_laver_en_cours']?.state\
+    \ === 'on' || w_power_val > 10;\n  var w_door = states['binary_sensor.capteur_ouverture_lave_linge_contact']?.state\
+    \ === 'on';\n  var w_done_state = states['input_boolean.machine_a_laver_terminee'];\n\
+    \  var w_done = (w_done_state?.state === 'on') && !w_door;\n  \n  var d_mode =\
+    \ states['sensor.seche_linge_mode']?.state;\n  var d_on = (d_mode === 'Running'\
+    \ || d_mode === '2');\n  var d_door = states['sensor.seche_linge_door_status']?.state\
+    \ === 'Open';\n  var d_done_state = states['input_boolean.seche_linge_termine'];\n\
+    \  var d_done = (d_done_state?.state === 'on') && !d_door;\n  \n  var w_power\
+    \ = states['sensor.prise_machine_a_laver_z_power']?.state || '0';\n  var d_power\
+    \ = states['sensor.prise_seche_linge_z_power']?.state || '0';\n  var d_end = states['sensor.seche_linge_end_time']?.state;\n\
+    \  \n  var items = [];\n  \n  if (w_on) {\n    var phase = states['input_select.phase_machine_a_laver']?.state\
+    \ || \"En cours\";\n    let label = `${phase} - ${Math.round(w_power)} W`;\n \
+    \   let couleur = (phase === 'Lavage (Chauffe)') ? '#ff4444' : '#FF9800';\n  \
+    \  items.push({ name: 'Lave-linge', label: label, icon: 'mdi:washing-machine',\
+    \ color: couleur, active: true });\n  } else if (w_done) {\n    let label = \"\
+    Terminé \" + timeSince(w_done_state?.last_changed);\n    items.push({ name: 'Lave-linge',\
+    \ label: label, icon: 'mdi:washing-machine-alert', color: '#00BFA5', active: false\
+    \ });\n  }\n  \n  if (d_on) {\n    let info = parseTimeOrPhase(d_end);\n    let\
+    \ label = info ? info : `En cours - ${Math.round(d_power)} W`;\n    items.push({\
+    \ name: 'Sèche-linge', label: label, icon: 'mdi:tumble-dryer', color: '#FF9800',\
+    \ active: true });\n  } else if (d_done) {\n    let label = \"Terminé \" + timeSince(d_done_state?.last_changed);\n\
+    \    items.push({ name: 'Sèche-linge', label: label, icon: 'mdi:tumble-dryer-alert',\
+    \ color: '#00BFA5', active: false });\n  }\n  \n  if (items.length === 0 && !isEditMode)\
+    \ return '';\n  \n  // Image thématique : Buanderie moderne (Opacité 0.35)\n \
+    \ const bgImg = \"https://images.unsplash.com/photo-1545173168-9f1947eebb7f?q=80&w=500&auto=format&fit=crop0\"\
+    ;\n  \n  var style = '<style>@keyframes pulse-icon { 0% { transform: scale(1);\
+    \ filter: drop-shadow(0 0 2px currentColor); } 50% { transform: scale(1.15); filter:\
+    \ drop-shadow(0 0 10px currentColor); } 100% { transform: scale(1); filter: drop-shadow(0\
+    \ 0 2px currentColor); } } @keyframes glow-box { 0% { box-shadow: 0 0 5px rgba(255,\
+    \ 152, 0, 0.2); } 50% { box-shadow: 0 0 15px rgba(255, 152, 0, 0.6); } 100% {\
+    \ box-shadow: 0 0 5px rgba(255, 152, 0, 0.2); } }</style>';\n  \n  var content\
+    \ = '<div style=\"display: flex; gap: 12px; align-items: center; justify-content:\
+    \ center; height: 100%; padding: 0 15px 0 10px; position: relative; z-index: 1;\"\
+    >';\n  \n  if (isEditMode && items.length === 0) {\n    content += '<div style=\"\
+    color: rgba(255,255,255,0.4); font-size: 11px;\">Mode Édition</div>';\n  } else\
+    \ {\n    for (var i = 0; i < items.length; i++) {\n      var c = items[i];\n \
+    \     var bg = `linear-gradient(145deg, rgba(20,27,38,0.75) 0%, ${c.color}20 100%)`;\n\
+    \      var shadow = c.active ? 'animation: glow-box 3s infinite ease-in-out;'\
+    \ : `box-shadow: 0 4px 10px rgba(0,0,0,0.3);`;\n      content += `<div style=\"\
+    flex: 1; height: 60px; border-radius: 14px; background: ${bg}; border: 1px solid\
+    \ ${c.color}50; ${shadow} display: flex; flex-direction: column; justify-content:\
+    \ center; align-items: center; backdrop-filter: blur(5px);\">`;\n      var iconAnim\
+    \ = c.active ? 'animation: pulse-icon 2s infinite ease-in-out;' : '';\n      content\
+    \ += `<ha-icon icon=\"${c.icon}\" style=\"--mdc-icon-size: 24px; color: ${c.color};\
+    \ margin-bottom: 4px; ${iconAnim}\"></ha-icon>`;\n      content += `<div style=\"\
+    font-size: 11px; font-weight: 800; color: white; line-height: 1.1; letter-spacing:\
+    \ 0.5px;\">${c.name}</div>`;\n      content += `<div style=\"font-size: 9px; color:\
+    \ rgba(255,255,255,0.7); font-weight: 600; text-transform: uppercase; margin-top:\
+    \ 3px; text-align: center; padding: 0 2px;\">${c.label}</div>`;\n      content\
+    \ += '</div>';\n    }\n  }\n  content += '</div>';\n  \n  return `\n    <div style=\"\
+    width: 100%; height: 100%; position: relative; overflow: hidden;\">\n      <!--\
+    \ Image de fond Buanderie -->\n      <div style=\"position: absolute; top:0; left:0;\
+    \ width: 100%; height: 100%; background: url('${bgImg}') center/cover no-repeat;\
+    \ opacity: 0.35; z-index: 0;\"></div>\n      ${style}\n      ${content}\n    </div>\n\
+    \  `;\n]]]\n"
+hold_action:
+  action: call-service
+  service: input_boolean.turn_off
+  target:
+    entity_id: input_boolean.seche_linge_termine
+show_icon: false
+show_name: false
+show_state: false
+styles:
+  card:
+  - padding: 0
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 20px
+  - border: 1px solid rgba(79, 195, 247, 0.55)
+  - box-shadow: 0 0 15px rgba(79, 195, 247, 0.5), 0 4px 15px rgba(0,0,0,0.4)
+  - overflow: hidden
+  - margin: 0px
+  - box-sizing: border-box
+  - position: relative
+  - cursor: pointer
+  - display: "[[[\n  var isEditMode = window.location.search.includes('edit=1') ||\
+      \ window.location.pathname.includes('edit');\n  \n  // LAVE-LINGE\n  var w_power_val\
+      \ = parseFloat(states['sensor.prise_machine_a_laver_z_power']?.state || '0');\n\
+      \  var w_on = states['binary_sensor.machine_a_laver_en_cours']?.state === 'on'\
+      \ || w_power_val > 10;\n  var w_door = states['binary_sensor.capteur_ouverture_lave_linge_contact']?.state\
+      \ === 'on';\n  var w_done = (states['input_boolean.machine_a_laver_terminee']?.state\
+      \ === 'on') && !w_door;\n  \n  // SÈCHE-LINGE (Correction Mode et Porte)\n \
+      \ var d_mode = states['sensor.seche_linge_mode']?.state;\n  var d_on = (d_mode\
+      \ === 'Running' || d_mode === '2'); \n  var d_door = states['sensor.seche_linge_door_status']?.state\
+      \ === 'Open';\n  var d_done = (states['input_boolean.seche_linge_termine']?.state\
+      \ === 'on') && !d_door;\n  \n  if (isEditMode || w_on || w_done || d_on || d_done)\
+      \ return 'flex';\n  return 'none !important';\n]]]\n"
+  custom_fields:
+    img:
+    - justify-self: stretch
+    - align-self: stretch
+    - border-right: 2px solid rgba(255,255,255,0.6)
+    - padding: 0
+    info:
+    - justify-self: stretch
+    - align-self: stretch
+    - width: 100%
+    - box-sizing: border-box
+  grid:
+  - grid-template-areas: '"img info"'
+  - grid-template-columns: 130px minmax(0, 1fr)
+  - grid-template-rows: 80px
+  - align-items: stretch
+tap_action:
+  action: none
+type: custom:button-card

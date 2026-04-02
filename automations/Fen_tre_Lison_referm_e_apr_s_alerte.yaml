@@ -1,0 +1,23 @@
+- id: '1767607610603'
+  alias: Fenêtre Lison refermée après alerte
+  triggers:
+  - entity_id: binary_sensor.fenetre_lison_contact
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: input_boolean.fenetre_lison_notifiee
+    state: 'on'
+  actions:
+  - data:
+      title: Fenêtre Lison refermée
+      message: La fenêtre a été refermée, le chauffage peut fonctionner normalement.
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: Fenêtre Lison refermée
+      message: La fenêtre a été refermée, le chauffage peut fonctionner normalement.
+    action: notify.mobile_app_iphone_daline
+  - target:
+      entity_id: input_boolean.fenetre_lison_notifiee
+    action: input_boolean.turn_off
+  mode: single

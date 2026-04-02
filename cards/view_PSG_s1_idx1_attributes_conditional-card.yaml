@@ -1,0 +1,66 @@
+# =========================================
+# CARTE : attributes
+# VUE   : PSG
+# TYPE  : conditional (Carte monobloc)
+# DÉPENDANCES :
+#  - attr.clock
+#  - attr.last_play
+#  - attr.opponent_score
+#  - attr.team_score
+#  - entity.attributes
+#  - sensor.psg_cl
+#  - window.open
+#  - www.flashscore
+# =========================================
+
+card:
+  custom_fields:
+    live: "[[[\n  let attr = entity.attributes;\n  let score = `${attr.team_score}\
+      \ - ${attr.opponent_score}`;\n  let clock = attr.clock || \"0\";\n  let last_play\
+      \ = attr.last_play || \"Mise à jour de l'action en cours...\";\n  \n  return\
+      \ `\n    <div onclick=\"window.open('https://www.flashscore.fr/equipe/psg/xGqRj8D8/',\
+      \ '_blank');\" style=\"display: flex; flex-direction: column;\">\n      <div\
+      \ style=\"display: flex; align-items: center; justify-content: space-between;\
+      \ border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; margin-bottom:\
+      \ 8px;\">\n         <div style=\"color: white; font-weight: 800; font-size:\
+      \ 16px; display: flex; align-items: center; gap: 8px; text-transform: uppercase;\"\
+      >\n            <ha-icon icon=\"mdi:record-circle\" style=\"color: #ff4a4a; animation:\
+      \ pulseRed 1.5s infinite;\"></ha-icon>\n            EN DIRECT • ${clock}'\n\
+      \         </div>\n         <div style=\"color: white; font-weight: 800; font-size:\
+      \ 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);\">\n            ${score}\n \
+      \        </div>\n      </div>\n      \n      <div style=\"color: rgba(255,255,255,0.9);\
+      \ font-size: 12px; font-style: italic; line-height: 1.3;\">\n         \U0001F4E2\
+      \ Flash Action : <br>\n         <span style=\"font-weight: 600; font-size: 13.5px;\
+      \ font-style: normal; color: white;\">${last_play}</span>\n      </div>\n  \
+      \    \n      <div style=\"color: rgba(255,255,255,0.6); font-size: 9px; text-align:\
+      \ center; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;\"\
+      >\n        \U0001F517 Toucher pour ouvrir la chronologie (Flashscore)\n    \
+      \  </div>\n    </div>\n  `;\n]]]\n"
+  entity: sensor.psg_cl
+  extra_styles: "@keyframes pulseRed {\n  0% { opacity: 1; transform: scale(1); }\n\
+    \  50% { opacity: 0.3; transform: scale(0.9); }\n  100% { opacity: 1; transform:\
+    \ scale(1); }\n}\n"
+  show_icon: false
+  show_name: false
+  show_state: false
+  styles:
+    card:
+    - background: linear-gradient(135deg, rgba(0, 65, 112, 0.95), rgba(227, 6, 19,
+        0.85))
+    - backdrop-filter: blur(15px)
+    - -webkit-backdrop-filter: blur(15px)
+    - border-radius: 15px
+    - border: 1px solid rgba(255, 255, 255, 0.4)
+    - box-shadow: 0 8px 32px rgba(227, 6, 19, 0.3)
+    - padding: 15px
+    - cursor: pointer
+    grid:
+    - grid-template-areas: '"live"'
+    - grid-template-columns: 100%
+  tap_action:
+    action: none
+  type: custom:button-card
+conditions:
+- entity: sensor.psg_cl
+  state: IN
+type: conditional

@@ -1,0 +1,100 @@
+# =========================================
+# CARTE : inter_cuisine
+# VUE   : Lumieres
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - active.length
+#  - active.push
+#  - cellier.state
+#  - cuisine.state
+#  - ids.some
+#  - images.pexels
+#  - switch.inter_cellier
+#  - switch.inter_cuisine
+#  - switch.inter_toilettes_z
+#  - switch.turn_off
+#  - switch.turn_on
+#  - toilette.state
+# =========================================
+
+custom_fields:
+  left: "[[[\n  const cuisine = states['switch.inter_cuisine'];\n  const toilette\
+    \ = states['switch.inter_toilettes_z'];\n  const cellier = states['switch.inter_cellier'];\n\
+    \  \n  const on = (cuisine && cuisine.state === 'on') || \n             (toilette\
+    \ && toilette.state === 'on') || \n             (cellier && cellier.state ===\
+    \ 'on');\n  \n  const shadow = on ? 'drop-shadow(0 0 10px rgba(255,220,100,0.9))'\
+    \ : 'none';\n  const bg = on ? 'linear-gradient(135deg, rgba(255,152,0,0.3) 0%,\
+    \ rgba(255,152,0,0.05) 100%)' : 'transparent';\n  \n  return `\n    <div style=\"\
+    width: 100%; height: 100%; display: flex; flex-direction: column; align-items:\
+    \ center; justify-content: center; background: ${bg}; border-right: 2px solid\
+    \ rgba(255,152,0,0.3); box-sizing: border-box; gap: 4px;\">\n      <ha-icon icon=\"\
+    mdi:home-lightbulb\" style=\"width: 24px; height: 24px; color: white; filter:\
+    \ ${shadow};\"></ha-icon>\n      <div style=\"font-size: 9px; font-weight: 950;\
+    \ text-transform: uppercase; letter-spacing: 1.2px; color: white; line-height:\
+    \ 1.2; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,0.5);\">\n      \
+    \  ÉCLAIRAGE<br>PRINCIPAL\n      </div>\n    </div>\n  `;\n]]]\n"
+  right: "[[[\n  const cuisine = states['switch.inter_cuisine'];\n  const toilette\
+    \ = states['switch.inter_toilettes_z'];\n  const cellier = states['switch.inter_cellier'];\n\
+    \  \n  const cOn = cuisine && cuisine.state === 'on';\n  const tOn = toilette\
+    \ && toilette.state === 'on';\n  const cellOn = cellier && cellier.state === 'on';\n\
+    \  const on = cOn || tOn || cellOn;\n  \n  const bgImg = \"https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg?auto=compress&cs=tinysrgb&w=500\"\
+    ;\n  const bgHtml = `<div style=\"position: absolute; inset: 0; background: url('${bgImg}')\
+    \ center center / cover no-repeat; opacity: 0.35; z-index: 0; filter: contrast(1.4)\
+    \ brightness(0.6) saturate(1.3);\"></div>`;\n\n  let active = [];\n  if (cOn)\
+    \ active.push('Cuisine');\n  if (tOn) active.push('Toilettes');\n  if (cellOn)\
+    \ active.push('Cellier');\n  \n  let label = '';\n  if (!on) label = 'TOUT EST\
+    \ ÉTEINT';\n  else if (active.length === 1) {\n    if (cOn) label = '✦ Cuisine\
+    \ allumée ✦';\n    else if (tOn) label = '✦ Toilettes allumées ✦';\n    else if\
+    \ (cellOn) label = '✦ Cellier allumé ✦';\n  } else if (active.length === 2) {\n\
+    \    label = '✦ ' + active[0] + ' & ' + active[1] + ' ✦';\n  } else {\n    label\
+    \ = '✦ TOUT EST ALLUMÉ ✦';\n  }\n\n  return bgHtml + `\n    <div style=\"position:\
+    \ relative; width: 100%; height: 100%; z-index: 1; pointer-events: none; background:\
+    \ rgba(0,0,0,0.25);\">\n      <div style=\"\n        position: absolute; inset:\
+    \ 0;\n        background: linear-gradient(90deg, rgba(255,220,80,0.1) 0%, rgba(255,240,150,0.25)\
+    \ 50%, rgba(255,220,80,0.1) 100%);\n        z-index: 1;\n      \"></div>\n   \
+    \   <div style=\"position: absolute; inset: 0; display: flex; align-items: center;\
+    \ justify-content: center; z-index: 2; padding: 0 10px;\">\n        <span style=\"\
+    font-size: 11px; font-weight: 950; color: white; text-shadow: 0 2px 8px rgba(0,0,0,1);\
+    \ letter-spacing: 0.8px; white-space: nowrap; text-transform: uppercase;\">\n\
+    \          ${label}\n        </span>\n      </div>\n    </div>`;\n]]]\n"
+entity: switch.inter_cuisine
+show_icon: false
+show_name: false
+styles:
+  card:
+  - height: 62px
+  - padding: 0
+  - border-radius: 20px
+  - border: 1.5px solid rgba(255, 152, 0, 0.6)
+  - background: rgba(10, 15, 25, 0.85)
+  - backdrop-filter: blur(8px)
+  - -webkit-backdrop-filter: blur(8px)
+  - box-shadow: 0 4px 15px rgba(0,0,0,0.4)
+  - overflow: hidden
+  custom_fields:
+    left:
+    - justify-self: stretch
+    - align-self: stretch
+    - z-index: 2
+    right:
+    - justify-self: stretch
+    - align-self: stretch
+    - position: relative
+    - overflow: hidden
+    - z-index: 1
+  grid:
+  - grid-template-areas: '"left right"'
+  - grid-template-columns: 130px 1fr
+  - grid-template-rows: 100%
+tap_action:
+  action: call-service
+  service: "[[[\n  const ids = [\n    'switch.inter_cuisine',\n    'switch.inter_toilettes_z',\n\
+    \    'switch.inter_cellier'\n  ];\n  const anyOn = ids.some(id => states[id] &&\
+    \ states[id].state === 'on');\n  return anyOn ? 'switch.turn_off' : 'switch.turn_on';\n\
+    ]]]\n"
+  target:
+    entity_id:
+    - switch.inter_cuisine
+    - switch.inter_toilettes_z
+    - switch.inter_cellier
+type: custom:button-card

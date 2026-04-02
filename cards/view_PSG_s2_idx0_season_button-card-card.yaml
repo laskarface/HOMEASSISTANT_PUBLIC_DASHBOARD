@@ -1,0 +1,229 @@
+# =========================================
+# CARTE : season
+# VUE   : PSG
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.date
+#  - a.espncdn
+#  - aller.competitions
+#  - arr.length
+#  - at.team
+#  - at_a.score
+#  - at_a.team
+#  - away_team.aggregate
+#  - away_team.score
+#  - away_team.shootout
+#  - away_team.team
+#  - b.date
+#  - c.competitors
+#  - c.home
+#  - c.leg
+#  - c.status
+#  - c_a.competitors
+#  - comp.competitors
+#  - comp.leg
+#  - comp.status
+#  - core.display
+#  - d.to
+#  - e.competitions
+#  - ev.competitions
+#  - ev.date
+#  - ev.season
+#  - event.stop
+#  - events_sorted.filter
+#  - events_sorted.find
+#  - home_team.aggregate
+#  - home_team.score
+#  - home_team.shootout
+#  - home_team.team
+#  - ht.team
+#  - ht_a.score
+#  - ht_a.team
+#  - id.to
+#  - knockouts.for
+#  - knockouts.length
+#  - n_ev.season
+#  - n_raw.replace
+#  - phase.includes
+#  - phase.replace
+#  - poules.for
+#  - poules.length
+#  - raw_events.slice
+#  - raw_phase.replace
+#  - sensor.attributes
+#  - sensor.psg_ldc_schedule
+#  - type.state
+#  - x.home
+#  - ype.name
+# =========================================
+
+custom_fields:
+  table: "[[[\n  let out = `\n  <h2 style=\"margin: 0 0 8px 5px; border-bottom: 1px\
+    \ solid rgba(255,255,255,0.1); padding-bottom: 8px; font-size: 16px; color: white;\
+    \ font-weight: 500; display: flex; align-items: center; gap: 10px;\">\n    <img\
+    \ src=\"https://a.espncdn.com/i/leaguelogos/soccer/500/2.png\" style=\"width:\
+    \ 38px; height: 38px; filter: grayscale(100%) invert(100%) brightness(200%) drop-shadow(0\
+    \ 0 5px rgba(255,255,255,0.5));\">\n    Parcours Ligue des Champions\n  </h2>`;\n\
+    \  out += `<table style=\"width: 100%; border-collapse: collapse; color: white;\
+    \ font-size: 12px;\">`;\n  \n  let sensor = states['sensor.psg_ldc_schedule'];\n\
+    \  if (!sensor || !sensor.attributes || !sensor.attributes.events) return out\
+    \ + `</table>`;\n  \n  let raw_events = sensor.attributes.events || [];\n  \n\
+    \  // Trier du plus récent au plus ancien\n  let events_sorted = raw_events.slice().sort((a,\
+    \ b) => new Date(b.date) - new Date(a.date));\n  \n  // Séparer Phase Finale /\
+    \ Poules\n  let knockouts = events_sorted.filter(ev => {\n    let phase = ev.seasonType\
+    \ ? ev.seasonType.name.toUpperCase() : '';\n    return !phase.includes('LEAGUE\
+    \ PHASE') && !phase.includes('GROUP STAGE') && !phase.includes('POULES');\n  });\n\
+    \  \n  let poules = events_sorted.filter(ev => {\n    let phase = ev.seasonType\
+    \ ? ev.seasonType.name.toUpperCase() : '';\n    return phase.includes('LEAGUE\
+    \ PHASE') || phase.includes('GROUP STAGE') || phase.includes('POULES');\n  });\n\
+    \  \n  let prev_base_phase = '';\n  \n  // Fonction de création de ligne\n  let\
+    \ renderRow = function(ev, index, arr) {\n    if (!ev.competitions || !ev.competitions[0]\
+    \ || !ev.competitions[0].competitors) return '';\n    let comp = ev.competitions[0];\n\
+    \    let home_team = comp.competitors.find(c => c.homeAway === 'home');\n    let\
+    \ away_team = comp.competitors.find(c => c.homeAway === 'away');\n    if(!home_team\
+    \ || !away_team) return '';\n    \n    let h_logo = (home_team.team.logos && home_team.team.logos[0])\
+    \ ? home_team.team.logos[0].href : '';\n    let a_logo = (away_team.team.logos\
+    \ && away_team.team.logos[0]) ? away_team.team.logos[0].href : '';\n    let h_name\
+    \ = home_team.team.shortDisplayName || 'Dom';\n    let a_name = away_team.team.shortDisplayName\
+    \ || 'Ext';\n    \n    let score_str = '';\n    let h_score = 0;\n    let a_score\
+    \ = 0;\n    if (home_team.score && away_team.score) {\n      h_score = parseInt(home_team.score.displayValue)\
+    \ || 0;\n      a_score = parseInt(away_team.score.displayValue) || 0;\n    }\n\
+    \    \n    let status = comp.status.type.state;\n    let h_bg = 'transparent';\n\
+    \    let a_bg = 'transparent';\n    \n    let finale_h_score = h_score;\n    let\
+    \ finale_a_score = a_score;\n    let agg_str = '';\n    let is_retour = (comp.leg\
+    \ && comp.leg.value == 2);\n    \n    if (status === 'post' && is_retour) {\n\
+    \      if (home_team.aggregateScore && away_team.aggregateScore) {\n        let\
+    \ agg_h = parseInt(home_team.aggregateScore.displayValue) || 0;\n        let agg_a\
+    \ = parseInt(away_team.aggregateScore.displayValue) || 0;\n        finale_h_score\
+    \ = agg_h;\n        finale_a_score = agg_a;\n        agg_str = `<br><span style=\"\
+    color:#ffeb3b; font-size:10px; font-weight:bold; display:block; margin-top:1px;\
+    \ text-shadow: 0 0 2px rgba(0,0,0,0.5);\">(CUMUL ${agg_h}-${agg_a})</span>`;\n\
+    \      } else {\n        let aller = events_sorted.find(e => {\n          if (!e.competitions\
+    \ || !e.competitions[0]) return false;\n          let c = e.competitions[0];\n\
+    \          if (c.status.type.state === 'post' && c.leg && c.leg.value == 1 &&\
+    \ c.competitors) {\n            let ht = c.competitors.find(x => x.homeAway ===\
+    \ 'home');\n            let at = c.competitors.find(x => x.homeAway === 'away');\n\
+    \            if(!ht || !at) return false;\n            let t_aller = [ht.team.id.toString(),\
+    \ at.team.id.toString()].sort().join('_');\n            let t_ret = [home_team.team.id.toString(),\
+    \ away_team.team.id.toString()].sort().join('_');\n            return t_aller\
+    \ === t_ret;\n          }\n          return false;\n        });\n        if (aller)\
+    \ {\n          let c_a = aller.competitions[0];\n          let ht_a = c_a.competitors.find(x\
+    \ => x.homeAway === 'home');\n          let at_a = c_a.competitors.find(x => x.homeAway\
+    \ === 'away');\n          let h_sc_a = parseInt(ht_a.score.displayValue) || 0;\n\
+    \          let a_sc_a = parseInt(at_a.score.displayValue) || 0;\n          let\
+    \ agg_h = h_score + (ht_a.team.id == home_team.team.id ? h_sc_a : a_sc_a);\n \
+    \         let agg_a = a_score + (at_a.team.id == away_team.team.id ? a_sc_a :\
+    \ h_sc_a);\n          \n          finale_h_score = agg_h;\n          finale_a_score\
+    \ = agg_a;\n          agg_str = `<br><span style=\"color:#ffeb3b; font-size:10px;\
+    \ font-weight:bold; display:block; margin-top:1px; text-shadow: 0 0 2px rgba(0,0,0,0.5);\"\
+    >(CUMUL ${agg_h}-${agg_a})</span>`;\n        }\n      }\n    }\n    \n    if (status\
+    \ === 'post') {\n      score_str = home_team.score.displayValue + ' - ' + away_team.score.displayValue;\n\
+    \      \n      if (finale_h_score > finale_a_score) {\n        h_bg = 'radial-gradient(circle\
+    \ at center, rgba(76,175,80,0.5) 0%, transparent 70%)';\n        a_bg = 'radial-gradient(circle\
+    \ at center, rgba(244,67,54,0.3) 0%, transparent 65%)';\n      } else if (finale_h_score\
+    \ < finale_a_score) {\n        h_bg = 'radial-gradient(circle at center, rgba(244,67,54,0.3)\
+    \ 0%, transparent 65%)';\n        a_bg = 'radial-gradient(circle at center, rgba(76,175,80,0.5)\
+    \ 0%, transparent 70%)';\n      } else {\n        if (home_team.shootoutScore\
+    \ && away_team.shootoutScore) {\n           let h_pen = parseInt(home_team.shootoutScore.displayValue)\
+    \ || 0;\n           let a_pen = parseInt(away_team.shootoutScore.displayValue)\
+    \ || 0;\n           if (h_pen > a_pen) {\n             h_bg = 'radial-gradient(circle\
+    \ at center, rgba(76,175,80,0.5) 0%, transparent 70%)';\n             a_bg = 'radial-gradient(circle\
+    \ at center, rgba(244,67,54,0.3) 0%, transparent 65%)';\n             agg_str\
+    \ += `<br><span style=\"font-size:9px; color:#aaa;\">(TAB: ${h_pen}-${a_pen})</span>`;\n\
+    \           } else if (h_pen < a_pen) {\n             h_bg = 'radial-gradient(circle\
+    \ at center, rgba(244,67,54,0.3) 0%, transparent 65%)';\n             a_bg = 'radial-gradient(circle\
+    \ at center, rgba(76,175,80,0.5) 0%, transparent 70%)';\n             agg_str\
+    \ += `<br><span style=\"font-size:9px; color:#aaa;\">(TAB: ${h_pen}-${a_pen})</span>`;\n\
+    \           } else {\n             h_bg = 'radial-gradient(circle at center, rgba(255,152,0,0.35)\
+    \ 0%, transparent 65%)';\n             a_bg = 'radial-gradient(circle at center,\
+    \ rgba(255,152,0,0.35) 0%, transparent 65%)';\n           }\n        } else {\n\
+    \           h_bg = 'radial-gradient(circle at center, rgba(255,152,0,0.35) 0%,\
+    \ transparent 65%)';\n           a_bg = 'radial-gradient(circle at center, rgba(255,152,0,0.35)\
+    \ 0%, transparent 65%)';\n        }\n      }\n    } else if (status === 'in')\
+    \ {\n      score_str = comp.status.displayClock + ' ⏱ ' + home_team.score.displayValue\
+    \ + '-' + away_team.score.displayValue;\n    } else {\n      let d = new Date(ev.date);\n\
+    \      score_str = d.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});\n\
+    \    }\n    \n    let raw_phase = ev.seasonType ? ev.seasonType.name : 'Match';\n\
+    \    let base_phase = raw_phase.replace('Knockout Round Play-offs', 'BARRAGES').replace('Knockout\
+    \ Round Playoffs', 'BARRAGES').replace('Knockout Round', '').replace('Play-offs',\
+    \ 'BARRAGES').replace('Playoffs', 'BARRAGES').replace('League Phase', 'POULES').replace('Round\
+    \ of 16', '1/8').replace('Quarterfinals', '1/4').replace('Semifinals', '1/2').replace('Final',\
+    \ 'FINALE').trim().toUpperCase();\n    \n    let row_out = '';\n    // Séparateur\
+    \ entre phases\n    if (prev_base_phase !== '' && prev_base_phase !== base_phase)\
+    \ {\n      row_out += `\n        <tr><td colspan=\"4\" style=\"height: 4px;\"\
+    ></td></tr>\n        <tr>\n          <td colspan=\"4\" style=\"padding: 0;\">\n\
+    \            <div style=\"height: 2px; width: 90%; margin: 0 auto; background:\
+    \ linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent\
+    \ 100%); box-shadow: 0 0 5px rgba(255,255,255,0.2);\"></div>\n          </td>\n\
+    \        </tr>\n        <tr><td colspan=\"4\" style=\"height: 4px;\"></td></tr>\n\
+    \      `;\n    }\n    prev_base_phase = base_phase;\n    \n    let phase = raw_phase;\n\
+    \    if (comp.leg) phase += (comp.leg.value == 1) ? ' (Aller)' : ' (Retour)';\n\
+    \    phase = phase.replace('Knockout Round Play-offs', 'Barrages').replace('Knockout\
+    \ Round Playoffs', 'Barrages').replace('Knockout Round', '').replace('Play-offs',\
+    \ 'Barrages').replace('Playoffs', 'Barrages').replace('League Phase', 'Poules').replace('Round\
+    \ of 16', '1/8').replace('Quarterfinals', '1/4').replace('Semifinals', '1/2').replace('Final',\
+    \ 'Finale').trim().toUpperCase();\n    \n    let d = new Date(ev.date);\n    let\
+    \ date_str = d.toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit',\
+    \ year: '2-digit'});\n    \n    let is_last_in_phase = false;\n    if (index <\
+    \ arr.length - 1) {\n      let n_ev = arr[index + 1];\n      let n_raw = n_ev.seasonType\
+    \ ? n_ev.seasonType.name : 'Match';\n      let n_base = n_raw.replace('Knockout\
+    \ Round Play-offs', 'BARRAGES').replace('Knockout Round Playoffs', 'BARRAGES').replace('Knockout\
+    \ Round', '').replace('Play-offs', 'BARRAGES').replace('Playoffs', 'BARRAGES').replace('League\
+    \ Phase', 'POULES').replace('Round of 16', '1/8').replace('Quarterfinals', '1/4').replace('Semifinals',\
+    \ '1/2').replace('Final', 'FINALE').trim().toUpperCase();\n      if (n_base !==\
+    \ base_phase) is_last_in_phase = true;\n    } else {\n       is_last_in_phase\
+    \ = true;\n    }\n    \n    let row_style = is_last_in_phase ? \"border-bottom:\
+    \ none;\" : \"border-bottom: 1px solid rgba(255,255,255,0.05);\";\n    \n    row_out\
+    \ += `\n      <tr style=\"${row_style}\">\n        <td style=\"width: 25%; padding:\
+    \ 3px 0; text-align: left; vertical-align: middle; white-space: nowrap; line-height:\
+    \ 1.2;\">\n          <span style=\"font-size: 10px; font-weight: bold; color:\
+    \ #eeeeee;\">${phase}</span><br>\n          <span style=\"color: #a0a0a0; font-size:\
+    \ 9px;\">${date_str}</span>\n        </td>\n        \n        <td style=\"width:\
+    \ 25%; padding: 3px 0; text-align: center; vertical-align: middle; background:\
+    \ ${h_bg}; border-radius: 6px;\">\n          <img src=\"${h_logo}\" style=\"width:\
+    \ 30px; height: 30px; margin-bottom: 1px;\"><br>\n          <span style=\"font-size:\
+    \ 10px; font-weight: bold; color: #ffffff; text-shadow: 0 0 3px rgba(0,0,0,0.5);\"\
+    >${h_name}</span>\n        </td>\n        \n        <td style=\"width: 25%; padding:\
+    \ 3px; text-align: center; vertical-align: middle; white-space: nowrap;\">\n \
+    \         <span style=\"font-weight: bold; font-size: 13px;\">${score_str}</span>${agg_str}\n\
+    \        </td>\n        \n        <td style=\"width: 25%; padding: 3px 0; text-align:\
+    \ center; vertical-align: middle; background: ${a_bg}; border-radius: 6px;\">\n\
+    \          <img src=\"${a_logo}\" style=\"width: 30px; height: 30px; margin-bottom:\
+    \ 1px;\"><br>\n          <span style=\"font-size: 10px; font-weight: bold; color:\
+    \ #ffffff; text-shadow: 0 0 3px rgba(0,0,0,0.5);\">${a_name}</span>\n        </td>\n\
+    \      </tr>\n    `;\n    return row_out;\n  };\n  \n  if (knockouts.length >\
+    \ 0) {\n    knockouts.forEach((ev, i) => {  \n      out += renderRow(ev, i, knockouts);\
+    \ \n    });\n  } else {\n    out += `<tr><td style=\"padding: 15px; text-align:\
+    \ center; font-style: italic; color: #a9b1d6;\">Phase éliminatoire en attente...</td></tr>`;\n\
+    \  }\n  \n  out += `</table>`;\n  \n  // Menu Déroulant pour les Poules avec ton\
+    \ padding à 6px conservé !\n  if (poules.length > 0) {\n    prev_base_phase =\
+    \ ''; \n    \n    out += `\n    <details \n      onpointerdown=\"event.stopPropagation();\"\
+    \ \n      ontouchstart=\"event.stopPropagation();\"\n      onclick=\"event.stopPropagation();\"\
+    \ \n      style=\"width: 100%; outline: none;\">\n      <summary style=\"cursor:\
+    \ pointer; text-align: center; display: block; color: #ffffff; padding: 6px; font-size:\
+    \ 11px; font-weight: bold; background: rgba(255,255,255,0); border-radius: 8px;\
+    \ margin: 8px 0; outline: none; border: 1px solid rgba(255,255,255,0.2); box-shadow:\
+    \ 0 2px 5px rgba(0,0,0,0.2);\">\n        ▼ AFFICHER LES MATCHS DE POULES ▼\n \
+    \     </summary>\n\n      <table style=\"width: 100%; border-collapse: collapse;\
+    \ color: white; font-size: 12px; margin-top: 4px;\">\n    `;\n    poules.forEach((ev,\
+    \ i) => {\n      out += renderRow(ev, i, poules);\n    });\n    out += `</table></details>`;\n\
+    \  }\n  \n  return out;\n]]]\n"
+show_icon: false
+show_name: false
+styles:
+  card:
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 15px
+  - border: 1px solid rgba(255, 255, 255, 0.1)
+  - box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3)
+  - padding: 10px
+  - cursor: default
+  custom_fields:
+    table:
+    - pointer-events: auto
+  grid:
+  - grid-template-areas: '"table"'
+  - grid-template-columns: 100%
+type: custom:button-card

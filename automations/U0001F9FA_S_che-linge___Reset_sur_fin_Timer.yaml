@@ -1,0 +1,13 @@
+- id: '1774784641871'
+  alias: "\U0001F9FA Sèche-linge — Reset sur fin Timer"
+  description: Reset automatique après 1h si on oublie
+  triggers:
+  - trigger: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.seche_linge_fin
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  mode: single

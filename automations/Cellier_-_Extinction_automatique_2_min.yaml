@@ -1,0 +1,17 @@
+- id: '1773944750959'
+  alias: Cellier - Extinction automatique 2 min
+  description: Éteint le cellier 2 minutes après activation
+  triggers:
+  - entity_id: switch.inter_cellier
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - delay: 00:02:00
+  - condition: state
+    entity_id: switch.inter_cellier
+    state: 'on'
+  - target:
+      entity_id: switch.inter_cellier
+    action: switch.turn_off
+  mode: restart

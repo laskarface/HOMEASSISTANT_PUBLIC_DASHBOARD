@@ -1,0 +1,115 @@
+# =========================================
+# CARTE : attributes
+# VUE   : dashboard
+# TYPE  : conditional (Carte monobloc)
+# DÉPENDANCES :
+#  - brown_bin.png
+#  - entity.attributes
+#  - entity.state
+#  - glass_bin.png
+#  - green_bin.png
+#  - s.includes
+#  - sensor.poubelle_a_sortir
+#  - state.includes
+#  - title.includes
+#  - title.match
+#  - variables.color
+#  - variables.glow_opacity
+#  - yellow_bin.png
+# =========================================
+
+card:
+  custom_fields:
+    img: "[[[\n  const title = (entity.attributes.original_title || \"\").toLowerCase();\n\
+      \  const state = (entity.state || \"\").toLowerCase();\n  const s = title +\
+      \ state;\n  const v = new Date().getTime();\n  let imgUrl = `/local/garbage/green_bin.png?v=${v}`;\n\
+      \  if (s.includes('jaune')) imgUrl = `/local/garbage/yellow_bin.png?v=${v}`;\n\
+      \  else if (s.includes('verre')) imgUrl = `/local/glass_bin.png?v=${v}`;\n \
+      \ else if (s.includes('marron') || s.includes('brun') || s.includes('bio'))\
+      \ imgUrl = `/local/garbage/brown_bin.png?v=${v}`;\n  \n  const color = variables.color;\n\
+      \  return `\n    <div style=\"width: 100%; height: 100%; display: flex; flex-direction:\
+      \ column; align-items: center; justify-content: center; background: linear-gradient(135deg,\
+      \ ${color}33 0%, ${color}0D 100%); margin: 0; padding: 0; box-sizing: border-box;\"\
+      >\n      <img src=\"${imgUrl}\" style=\"height: 72px; width: auto; filter: drop-shadow(0\
+      \ 4px 10px ${color}66); object-fit: contain; margin-top: -3px;\" />\n      <div\
+      \ style=\"font-size: 8px; font-weight: 900; color: white; text-transform: uppercase;\
+      \ letter-spacing: 0.8px; margin-top: -5px; z-index: 1;\">Poubelles</div>\n \
+      \   </div>\n  `;\n]]]\n"
+    info: "[[[\n  const title = entity.attributes.original_title || \"POUBELLE À SORTIR\"\
+      ;\n  const color = variables.color;\n  const regex = /(.*?)\\((.*)\\)/;\n  const\
+      \ match = title.match(regex);\n  let m = title;\n  let p = \"\";\n  if (match)\
+      \ { m = match[1].trim(); p = `(${match[2].trim()})`; }\n  \n  // Utilisation\
+      \ de votre fichier local (Garantie de sujet)\n  const bgImg = \"/local/garbage/recyclage-115022.jpg\"\
+      ;\n  \n  return `\n    <div style=\"width: 100%; height: 100%; position: relative;\
+      \ overflow: hidden; display: flex; align-items: center; justify-content: center;\"\
+      >\n      <!-- Votre image locale bien cadrée -->\n      <div style=\"position:\
+      \ absolute; top:0; left:0; width: 100%; height: 100%; background: url('${bgImg}')\
+      \ center center / cover no-repeat; opacity: 0.45; z-index: 0;\"></div>\n   \
+      \   \n      <!-- Contenu Texte avec padding et ombres renforcées -->\n     \
+      \ <div style=\"width: 100%; height: 100%; position: relative; z-index: 1; display:\
+      \ flex; flex-direction: column; justify-content: center; align-items: center;\
+      \ --glow-color: ${color}44; text-align: center; padding: 0 15px; box-sizing:\
+      \ border-box;\">\n        <div style=\"font-size: 13px; font-weight: 900; color:\
+      \ ${color}; text-transform: uppercase; letter-spacing: 1.2px; line-height: 1.1;\
+      \ animation: blink 2s ease infinite; text-shadow: 0 2px 8px rgba(0,0,0,0.95);\"\
+      >\n          ${m}\n        </div>\n        ${p ? `<div style=\"font-size: 9px;\
+      \ font-weight: 700; color: white; opacity: 0.9; margin-top: 4px; text-transform:\
+      \ uppercase; text-shadow: 0 1px 4px rgba(0,0,0,1);\">${p}</div>` : ''}\n   \
+      \   </div>\n    </div>\n  `;\n]]]\n"
+  entity: sensor.poubelle_a_sortir
+  extra_styles: "@keyframes blink {\n  0% { opacity: 1; text-shadow: 0 0 10px var(--glow-color);\
+    \ }\n  50% { opacity: 0.35; text-shadow: 0 0 2px var(--glow-color); } \n  100%\
+    \ { opacity: 1; text-shadow: 0 0 10px var(--glow-color); }\n}\n"
+  show_icon: false
+  show_name: false
+  show_state: false
+  styles:
+    card:
+    - padding: 0
+    - background: rgba(20, 27, 38, 0.6)
+    - backdrop-filter: blur(10px)
+    - -webkit-backdrop-filter: blur(10px)
+    - border-radius: 20px
+    - height: 85px
+    - border: '[[[ return `1.5px solid ${variables.color}${variables.glow_opacity}`;
+        ]]]'
+    - box-shadow: '[[[ return `0 0 20px ${variables.color}${variables.glow_opacity},
+        0 8px 32px rgba(0,0,0,0.4)`; ]]]
+
+        '
+    - overflow: hidden
+    - margin: 0px
+    - box-sizing: border-box
+    custom_fields:
+      img:
+      - justify-self: stretch
+      - align-self: stretch
+      - border-right: 2px solid rgba(255, 255, 255, 0.6)
+      - display: flex
+      - align-items: center
+      - justify-content: center
+      - padding: 0
+      info:
+      - justify-self: stretch
+      - align-self: stretch
+      - padding: 0
+    grid:
+    - grid-template-areas: '"img info"'
+    - grid-template-columns: 130px minmax(0, 1fr)
+    - grid-template-rows: 85px
+    - gap: 0px
+  type: custom:button-card
+  variables:
+    color: "[[[\n  const title = (entity.attributes.original_title || \"\").toLowerCase();\n\
+      \  const state = (entity.state || \"\").toLowerCase();\n  const s = title +\
+      \ state;\n  if (s.includes('jaune')) return '#FFEB3B';\n  if (s.includes('verre'))\
+      \ return '#00BCD4';\n  if (s.includes('marron') || s.includes('brun') || s.includes('bio'))\
+      \ return '#CD853F';\n  return '#4CAF50'; \n]]]\n"
+    glow_opacity: "[[[\n  const title = (entity.attributes.original_title || \"\"\
+      ).toLowerCase();\n  const state = (entity.state || \"\").toLowerCase();\n  if\
+      \ (title.includes('marron') || state.includes('marron')) return '99';\n  return\
+      \ '66';\n]]]\n"
+conditions:
+- entity: sensor.poubelle_a_sortir
+  state_not: none
+type: conditional

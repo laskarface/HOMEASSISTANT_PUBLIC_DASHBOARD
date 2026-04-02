@@ -1,0 +1,357 @@
+# =========================================
+# CARTE : volume_down
+# VUE   : Lison
+# TYPE  : custom:mod-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.includes
+#  - media_player.decodeur_orange
+#  - media_player.media_next_track
+#  - media_player.media_play_pause
+#  - media_player.media_previous_track
+#  - media_player.media_seek
+#  - media_player.toggle
+#  - media_player.volume_down
+#  - media_player.volume_mute
+#  - media_player.volume_up
+# =========================================
+
+card:
+  cards:
+  - custom_fields:
+      app: "[[[\n  const mp = states['media_player.decodeur_orange'];\n  const a =\
+        \ (mp?.attributes?.app_name || mp?.attributes?.source || '').toString().toLowerCase();\n\
+        \  const label = (mp?.attributes?.app_name || mp?.attributes?.source || 'Orange').toString();\n\
+        \n  let ic = 'mdi:television';\n  if (a.includes('netflix')) ic = 'mdi:netflix';\n\
+        \  else if (a.includes('youtube')) ic = 'mdi:youtube';\n  else if (a.includes('music'))\
+        \ ic = 'mdi:music';\n\n  return `\n    <div style=\"\n      display:flex;\
+        \ align-items:center; gap:8px;\n      padding:6px 10px;\n      border-radius:999px;\n\
+        \      background: rgba(255,255,255,0.1);\n      border: 1px solid rgba(255,255,255,0.15);\n\
+        \      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);\n    \">\n     \
+        \ <ha-icon icon=\"${ic}\" style=\"width:18px;height:18px;color:rgba(255,255,255,0.92)\"\
+        ></ha-icon>\n      <span style=\"\n        font-weight:900;\n        font-size:12px;\n\
+        \        color: rgba(255,255,255,0.95);\n        max-width:140px;\n      \
+        \  overflow:hidden;\n        text-overflow:ellipsis;\n        white-space:nowrap;\n\
+        \      \">${label}</span>\n    </div>\n  `;\n]]]\n"
+    entity: media_player.decodeur_orange
+    icon: mdi:television-box
+    name: TV Lison
+    show_state: false
+    styles:
+      card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - padding: 10px 12px 0
+      custom_fields:
+        app:
+        - justify-self: end
+        - align-self: center
+      grid:
+      - grid-template-areas: '"i n app"'
+      - grid-template-columns: 18px 1fr auto
+      - column-gap: 8px
+      - align-items: center
+      icon:
+      - width: 18px
+      - color: rgba(255, 102, 0, 0.92)
+      name:
+      - justify-self: start
+      - font-weight: 900
+      - font-size: 13px
+      - color: rgba(255,255,255,0.95)
+    tap_action:
+      action: more-info
+      entity: media_player.decodeur_orange
+    type: custom:button-card
+  - card_mod:
+      style: "ha-card{\n  background: transparent !important;\n  border: none !important;\n\
+        \  box-shadow: none !important;\n  padding: 6px 10px 2px;\n}\n"
+    entity: media_player.decodeur_orange
+    type: media-control
+  - card_mod:
+      style: "ha-card{\n  background: transparent !important;\n  border: none !important;\n\
+        \  box-shadow: none !important;\n  padding: 0 10px 8px;\n}\n"
+    cards:
+    - icon: mdi:power
+      name: POWER
+      show_state: false
+      styles:
+        card:
+        - border-radius: 12px
+        - padding: 9px
+        - background: rgba(255,255,255,0.06)
+        - border: 1px solid rgba(255,255,255,0.10)
+        - height: 52px
+        grid:
+        - grid-template-areas: '"i" "n"'
+        - grid-template-rows: 20px min-content
+        - row-gap: 4px
+        - justify-items: center
+        - align-items: center
+        icon:
+        - width: 18px
+        - color: rgba(255,255,255,0.92)
+        name:
+        - font-weight: 900
+        - font-size: 10px
+        - color: rgba(255,255,255,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.toggle
+        target:
+          entity_id: media_player.decodeur_orange
+      type: custom:button-card
+    - icon: mdi:play-pause
+      name: LECTURE
+      show_state: false
+      styles:
+        card:
+        - border-radius: 12px
+        - padding: 9px
+        - background: rgba(255,255,255,0.06)
+        - border: 1px solid rgba(255,255,255,0.10)
+        - height: 52px
+        grid:
+        - grid-template-areas: '"i" "n"'
+        - grid-template-rows: 20px min-content
+        - row-gap: 4px
+        - justify-items: center
+        - align-items: center
+        icon:
+        - width: 18px
+        - color: rgba(255,255,255,0.92)
+        name:
+        - font-weight: 900
+        - font-size: 10px
+        - color: rgba(255,255,255,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.media_play_pause
+        target:
+          entity_id: media_player.decodeur_orange
+      type: custom:button-card
+    - icon: mdi:volume-mute
+      name: MUTE
+      show_state: false
+      styles:
+        card:
+        - border-radius: 12px
+        - padding: 9px
+        - background: rgba(255,255,255,0.06)
+        - border: 1px solid rgba(255,255,255,0.10)
+        - height: 52px
+        grid:
+        - grid-template-areas: '"i" "n"'
+        - grid-template-rows: 20px min-content
+        - row-gap: 4px
+        - justify-items: center
+        - align-items: center
+        icon:
+        - width: 18px
+        - color: rgba(255,255,255,0.92)
+        name:
+        - font-weight: 900
+        - font-size: 10px
+        - color: rgba(255,255,255,0.95)
+      tap_action:
+        action: call-service
+        data:
+          is_volume_muted: true
+        service: media_player.volume_mute
+        target:
+          entity_id: media_player.decodeur_orange
+      type: custom:button-card
+    columns: 3
+    square: false
+    type: grid
+  - cards:
+    - cards:
+      - color_type: blank-card
+        type: custom:button-card
+      - icon: mdi:chevron-up
+        name: CH+
+        show_name: true
+        styles:
+          card:
+          - border-radius: 12px
+          - padding: 12px
+          - background: rgba(255,255,255,0.06)
+          - border: 1px solid rgba(255,255,255,0.10)
+          - height: 112px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          - flex-direction: column
+          icon:
+          - width: 26px
+          - color: rgba(255,255,255,0.95)
+          name:
+          - font-size: 11px
+          - color: rgba(255,255,255,0.6)
+        tap_action:
+          action: call-service
+          service: media_player.media_next_track
+          target:
+            entity_id: media_player.decodeur_orange
+        type: custom:button-card
+      - color_type: blank-card
+        type: custom:button-card
+      - icon: mdi:chevron-left
+        show_name: false
+        styles:
+          card:
+          - border-radius: 12px
+          - padding: 12px
+          - background: rgba(255,255,255,0.06)
+          - border: 1px solid rgba(255,255,255,0.10)
+          - height: 112px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          icon:
+          - width: 26px
+          - color: rgba(255,255,255,0.95)
+        tap_action:
+          action: call-service
+          data:
+            seek_position: -15
+          service: media_player.media_seek
+          target:
+            entity_id: media_player.decodeur_orange
+        type: custom:button-card
+      - icon: mdi:circle-slice-8
+        name: ''
+        show_state: false
+        styles:
+          card:
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.10)
+          - border: 1px solid rgba(255,255,255,0.18)
+          - height: 112px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          icon:
+          - width: 28px
+          - color: rgba(255, 102, 0, 0.95)
+        tap_action:
+          action: none
+        type: custom:button-card
+      - icon: mdi:chevron-right
+        show_name: false
+        styles:
+          card:
+          - border-radius: 12px
+          - padding: 12px
+          - background: rgba(255,255,255,0.06)
+          - border: 1px solid rgba(255,255,255,0.10)
+          - height: 112px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          icon:
+          - width: 26px
+          - color: rgba(255,255,255,0.95)
+        tap_action:
+          action: call-service
+          data:
+            seek_position: 15
+          service: media_player.media_seek
+          target:
+            entity_id: media_player.decodeur_orange
+        type: custom:button-card
+      - color_type: blank-card
+        type: custom:button-card
+      - icon: mdi:chevron-down
+        name: CH-
+        show_name: true
+        styles:
+          card:
+          - border-radius: 12px
+          - padding: 12px
+          - background: rgba(255,255,255,0.06)
+          - border: 1px solid rgba(255,255,255,0.10)
+          - height: 112px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          - flex-direction: column
+          icon:
+          - width: 26px
+          - color: rgba(255,255,255,0.95)
+          name:
+          - font-size: 11px
+          - color: rgba(255,255,255,0.6)
+        tap_action:
+          action: call-service
+          service: media_player.media_previous_track
+          target:
+            entity_id: media_player.decodeur_orange
+        type: custom:button-card
+      - color_type: blank-card
+        type: custom:button-card
+      columns: 3
+      square: false
+      type: grid
+      view_layout:
+        grid-column: 1 / span 4
+    - cards:
+      - icon: mdi:volume-plus
+        name: ''
+        show_state: false
+        styles:
+          card:
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.06)
+          - border: 1px solid rgba(255,255,255,0.10)
+          - height: 172px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          icon:
+          - width: 26px
+          - color: rgba(255,255,255,0.92)
+        tap_action:
+          action: call-service
+          service: media_player.volume_up
+          target:
+            entity_id: media_player.decodeur_orange
+        type: custom:button-card
+      - icon: mdi:volume-minus
+        name: ''
+        show_state: false
+        styles:
+          card:
+          - border-radius: 12px
+          - background: rgba(255,255,255,0.06)
+          - border: 1px solid rgba(255,255,255,0.10)
+          - height: 172px
+          - display: flex
+          - align-items: center
+          - justify-content: center
+          icon:
+          - width: 26px
+          - color: rgba(255,255,255,0.92)
+        tap_action:
+          action: call-service
+          service: media_player.volume_down
+          target:
+            entity_id: media_player.decodeur_orange
+        type: custom:button-card
+      type: vertical-stack
+      view_layout:
+        grid-column: 5 / span 1
+    layout:
+      align-items: stretch
+      grid-column-gap: 10px
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+    layout_type: custom:grid-layout
+    type: custom:layout-card
+  type: vertical-stack
+card_mod:
+  style: "ha-card {\n  border-radius: 20px !important;\n  /* Le fameux effet Glassmorphism\
+    \ */\n  background: rgba(20, 27, 38, 0.5) !important; \n  backdrop-filter: blur(15px)\
+    \ !important;\n  -webkit-backdrop-filter: blur(15px) !important;\n  box-shadow:\
+    \ 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;\n  border: 1px solid rgba(255, 255,\
+    \ 255, 0.15) !important;\n  overflow: hidden;\n}\n"
+type: custom:mod-card

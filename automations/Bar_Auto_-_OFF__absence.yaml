@@ -1,0 +1,12 @@
+- id: '1765959938733'
+  alias: Bar Auto - OFF (absence)
+  triggers:
+  - entity_id: binary_sensor.capteur_presence_bar_z_occupancy
+    to: 'off'
+    for: 00:01:00
+    trigger: state
+  actions:
+  - target:
+      entity_id: light.bar
+    action: light.turn_off
+  mode: single

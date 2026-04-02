@@ -1,0 +1,58 @@
+order:
+  - item: Aperçu
+    match: text
+    order: 1
+
+  - item: Énergie
+    match: text
+    order: 2
+
+  - item: File editor
+    match: text
+    order: 3
+
+  - item: Glances
+    match: text
+    order: 4
+
+  - item: HA Tracker
+    match: text
+    order: 5
+
+  - item: HACS
+    match: text
+    order: 6
+
+  - item: Terminal
+    match: text
+    order: 7
+
+  - item: Zigbee2MQTT
+    match: text
+    order: 8
+
+  - item: Activité
+    match: text
+    hide: true
+
+  - item: Historique
+    match: text
+    hide: true
+
+  - item: Browser Mod
+    match: text
+    hide: true
+
+  - item: Calendrier
+    match: text
+    hide: true
+
+  - item: Médias
+    match: text
+    hide: true
+
+  - item: Listes de tâches
+    match: text
+    hide: true
+
+id: main

@@ -1,0 +1,27 @@
+- id: '1764544957516'
+  alias: 17TRACK - Archiver colis livrés après 2h
+  description: ''
+  triggers:
+  - minutes: /30
+    trigger: time_pattern
+  conditions: []
+  actions:
+  - action: seventeentrack.get_packages
+    data:
+      config_entry_id: 01KBBEN2MB5F9B7Y2BA03EVAC
+      package_state:
+      - delivered
+    response_variable: colis_livres
+  - repeat:
+      for_each: '{{ colis_livres.packages | default([]) }}'
+      sequence:
+      - variables:
+          ts: '{{ repeat.item.timestamp | default(None) }}'
+      - condition: template
+        value_template: '{{ ts is not none and (now() - as_datetime(ts)).total_seconds()
+          > 2 * 3600 }}'
+      - action: seventeentrack.archive_package
+        data:
+          config_entry_id: 01KBBEN2MB5F9B7Y2BA03EVAC
+          package_tracking_number: '{{ repeat.item.tracking_number }}'
+  mode: single

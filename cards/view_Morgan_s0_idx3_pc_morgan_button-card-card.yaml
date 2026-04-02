@@ -1,0 +1,126 @@
+# =========================================
+# CARTE : pc_morgan
+# VUE   : Morgan
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - agent.state
+#  - button.pcmorgan_eteindre
+#  - sensor.pcmorgan_cpu_temperature
+#  - switch.pc_morgan
+#  - temp.to
+# =========================================
+
+custom_fields:
+  main: "[[[\n  const agent = states['button.pcmorgan_eteindre'];\n  const isOn =\
+    \ agent && agent.state !== 'unavailable' && agent.state !== 'unknown';\n  const\
+    \ tempState = states['sensor.pcmorgan_cpu_temperature'] ? states['sensor.pcmorgan_cpu_temperature'].state\
+    \ : 'unavailable';\n  const temp = parseFloat(tempState);\n\n  const stateText\
+    \ = isOn ? \"ALLUMÉ\" : \"ÉTEINT\";\n  const offColor = \"rgba(255, 255, 255,\
+    \ 0.3)\";\n  const rightTextColor = isOn ? \"white\" : offColor;\n  \n  // Détermination\
+    \ des couleurs selon température\n  let mainColor = \"#00e5ff\"; // Cyan par défaut\n\
+    \  let tempLabel = \"Excellent\";\n  let isWarning = false;\n\n  if (isOn) {\n\
+    \    if (temp >= 100) { mainColor = \"#ff1744\"; tempLabel = \"PROBLEME !\"; isWarning\
+    \ = true; }\n    else if (temp >= 90) { mainColor = \"#f44336\"; tempLabel = \"\
+    Limite\"; }\n    else if (temp >= 80) { mainColor = \"#ff9800\"; tempLabel = \"\
+    En charge\"; }\n  } else {\n    mainColor = \"#424242\";\n  }\n\n  // Icône SVG\
+    \ adaptée avec couleurs dynamiques\n  const svg = `\n    <svg viewBox=\"0 0 100\
+    \ 100\" width=\"32\" height=\"32\" style=\"filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));\
+    \ transition: all 0.5s;\">\n      <defs>\n        <linearGradient id=\"metal\"\
+    \ x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"\
+    #ffffff\"/><stop offset=\"100%\" stop-color=\"#bdbdbd\"/></linearGradient>\n \
+    \       <linearGradient id=\"screenOn\" x1=\"0%\" y1=\"0%\" x2=\"0%\" y2=\"100%\"\
+    ><stop offset=\"0%\" stop-color=\"${mainColor}\"/><stop offset=\"100%\" stop-color=\"\
+    #010810\"/></linearGradient>\n        <linearGradient id=\"screenOff\" x1=\"0%\"\
+    \ y1=\"0%\" x2=\"0%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#424242\"/><stop\
+    \ offset=\"100%\" stop-color=\"#111\"/></linearGradient>\n      </defs>\n    \
+    \  <path d=\"M 25 74 L 51 74 L 47 70 L 29 70 Z\" fill=\"url(#metal)\" stroke=\"\
+    #9e9e9e\" stroke-width=\"0.5\" />\n      <rect x=\"35\" y=\"58\" width=\"6\" height=\"\
+    15\" fill=\"#e0e0e0\" stroke=\"#9e9e9e\" stroke-width=\"0.5\" />\n      <rect\
+    \ x=\"8\" y=\"24\" width=\"60\" height=\"36\" rx=\"2\" fill=\"url(#metal)\" stroke=\"\
+    #9e9e9e\" stroke-width=\"0.5\" />\n      <rect x=\"11\" y=\"27\" width=\"54\"\
+    \ height=\"28\" fill=\"${isOn ? 'url(#screenOn)' : 'url(#screenOff)'}\" />\n \
+    \     <path d=\"M 11 27 L 65 27 L 65 42 L 11 53 Z\" fill=\"white\" opacity=\"\
+    0.05\" />\n      <circle cx=\"63\" cy=\"57.5\" r=\"0.8\" fill=\"${mainColor}\"\
+    \ />\n      <rect x=\"73\" y=\"20\" width=\"20\" height=\"56\" rx=\"2\" fill=\"\
+    url(#metal)\" stroke=\"#9e9e9e\" stroke-width=\"0.5\" />\n      <rect x=\"76\"\
+    \ y=\"23\" width=\"14\" height=\"44\" rx=\"1\" fill=\"#111\" stroke=\"#757575\"\
+    \ stroke-width=\"0.5\" />\n      ${isOn ? `<rect x=\"76\" y=\"23\" width=\"14\"\
+    \ height=\"44\" rx=\"1\" fill=\"${mainColor}\" opacity=\"0.3\" />` : ''}\n   \
+    \   <circle cx=\"91.5\" cy=\"24.5\" r=\"0.6\" fill=\"${mainColor}\" />\n    </svg>\n\
+    \  `;\n\n  return `\n    <div style=\"display: flex; width: 100%; height: 100%;\
+    \ margin: 0; padding: 0;\">\n      \n      <!-- GAUCHE : 130px (IDÉNTIQUE LEDS)\
+    \ -->\n      <div style=\"flex: 0 0 130px; height: 100%; display: flex; flex-direction:\
+    \ column; justify-content: center; align-items: center; border-right: 1px solid\
+    \ rgba(255,255,255,0.1); background: ${isOn ? mainColor + '10' : 'transparent'};\"\
+    >\n         ${svg}\n         <div style=\"font-size: 9px; font-weight: 800; color:\
+    \ ${isOn ? 'white' : 'rgba(255,255,255,0.4)'}; text-transform: uppercase; letter-spacing:\
+    \ 1px; margin-top: 2px;\">PC MORGAN</div>\n      </div>\n      \n      <!-- MILIEU\
+    \ : ÉTAT -->\n      <div style=\"flex: 1; display: flex; justify-content: center;\
+    \ align-items: center;\">\n        <span style=\"font-size: 18px; font-weight:\
+    \ 900; color: ${rightTextColor}; letter-spacing: 1.5px;\">${stateText}</span>\n\
+    \      </div>\n\n      <!-- DROITE : 130px (TEMPÉRATURE) -->\n      <div style=\"\
+    flex: 0 0 130px; height: 100%; display: flex; flex-direction: column; justify-content:\
+    \ center; align-items: center; border-left: 1px solid rgba(255,255,255,0.1); background:\
+    \ ${isOn ? 'rgba(255,255,255,0.03)' : 'transparent'};\">\n        ${isOn ? `\n\
+    \          <div style=\"display: flex; align-items: baseline; color: ${mainColor};\
+    \ ${isWarning ? 'animation: blink 0.8s infinite;' : ''}\">\n            <span\
+    \ style=\"font-size: 18px; font-weight: 900;\">${temp.toFixed(0)}</span>\n   \
+    \         <span style=\"font-size: 10px; font-weight: 700; margin-left: 2px;\"\
+    >°C</span>\n          </div>\n          <div style=\"font-size: 8px; font-weight:\
+    \ 800; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-top: 1px;\"\
+    >${tempLabel}</div>\n        ` : `\n          <ha-icon icon=\"mdi:thermometer-off\"\
+    \ style=\"width: 20px; color: ${offColor};\"></ha-icon>\n          <div style=\"\
+    font-size: 8px; font-weight: 800; color: ${offColor}; text-transform: uppercase;\"\
+    >VEILLE</div>\n        `}\n      </div>\n      \n      <style>\n        @keyframes\
+    \ blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }\n  \
+    \    </style>\n    </div>\n  `;\n]]]\n"
+entity: switch.pc_morgan
+show_icon: false
+show_name: false
+show_state: false
+styles:
+  card:
+  - padding: 0
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 20px
+  - border: "[[[\n  const temp = states['sensor.pcmorgan_cpu_temperature'] ? parseFloat(states['sensor.pcmorgan_cpu_temperature'].state)\
+      \ : 0;\n  const agent = states['button.pcmorgan_eteindre'];\n  const isOn =\
+      \ agent && agent.state !== 'unavailable' && agent.state !== 'unknown';\n  if\
+      \ (!isOn) return '1px solid rgba(255, 255, 255, 0.1)';\n  if (temp >= 100) return\
+      \ '2px solid #ff1744';\n  if (temp >= 90) return '1px solid #f44336';\n  if\
+      \ (temp >= 80) return '1px solid #ff9800';\n  return '1px solid rgba(0, 229,\
+      \ 255, 0.3)';\n]]]\n"
+  - box-shadow: "[[[\n  const temp = states['sensor.pcmorgan_cpu_temperature'] ? parseFloat(states['sensor.pcmorgan_cpu_temperature'].state)\
+      \ : 0;\n  const agent = states['button.pcmorgan_eteindre'];\n  const isOn =\
+      \ agent && agent.state !== 'unavailable' && agent.state !== 'unknown';\n  if\
+      \ (!isOn) return '0 4px 15px rgba(0,0,0,0.2)';\n  if (temp >= 100) return '0\
+      \ 0 20px #ff1744';\n  if (temp >= 90) return '0 0 15px rgba(244, 67, 54, 0.4)';\n\
+      \  if (temp >= 80) return '0 0 15px rgba(255, 152, 0, 0.4)';\n  return '0 0\
+      \ 15px rgba(0, 229, 255, 0.2)';\n]]]\n"
+  - overflow: hidden
+  - margin-top: 8px
+  - cursor: pointer
+  custom_fields:
+    main:
+    - justify-self: stretch
+    - align-self: stretch
+    - padding: 0
+    - height: 100%
+    - margin: 0
+  grid:
+  - grid-template-areas: '"main"'
+  - grid-template-columns: 1fr
+  - grid-template-rows: 64px
+  - margin: 0
+  - gap: 0
+tap_action:
+  action: toggle
+  confirmation:
+    text: ⚠️ Confirmer l'action (Allumage / Extinction) sur le PC Morgan ?
+  haptic: heavy
+triggers_update:
+- button.pcmorgan_eteindre
+- sensor.pcmorgan_cpu_temperature
+type: custom:button-card

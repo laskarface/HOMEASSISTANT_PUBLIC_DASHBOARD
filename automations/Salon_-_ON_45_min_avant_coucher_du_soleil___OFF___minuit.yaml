@@ -1,0 +1,24 @@
+- id: '1765969558363'
+  alias: Salon - ON 45 min avant coucher du soleil / OFF à minuit
+  description: ''
+  triggers:
+  - event: sunset
+    offset: -00:45:00
+    trigger: sun
+  - at: 00:00:00
+    trigger: time
+  actions:
+  - choose:
+    - conditions:
+      - condition: sun
+        after: sunset
+        after_offset: -00:45:00
+      sequence:
+      - target:
+          entity_id: light.salon
+        action: light.turn_on
+    default:
+    - target:
+        entity_id: light.salon
+      action: light.turn_off
+  mode: single

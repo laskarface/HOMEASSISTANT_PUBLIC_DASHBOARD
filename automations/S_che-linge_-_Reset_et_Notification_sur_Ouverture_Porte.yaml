@@ -1,0 +1,24 @@
+- id: '1764079641247'
+  alias: Sèche-linge - Reset et Notification sur Ouverture Porte
+  description: Acquitte le cycle et notifie quand la porte du sèche-linge est ouverte.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.seche_linge_door_status
+    to: 'on'
+  conditions:
+  - condition: state
+    entity_id: input_boolean.seche_linge_termine
+    state: 'on'
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: "Sèche-linge vidé \U0001F9FA"
+      message: Le sèche-linge a été vidé
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: "Sèche-linge vidé \U0001F9FA"
+      message: Le sèche-linge a été vidé
+  mode: single

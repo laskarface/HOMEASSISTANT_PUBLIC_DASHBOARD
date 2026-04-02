@@ -1,0 +1,12 @@
+- id: '1774619594508'
+  alias: "\U0001F6A8 Fermer popup alarme auto"
+  description: Ferme automatiquement le dialog HA quand l'alarme se déclenche
+  triggers:
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: triggered
+  actions:
+  - delay: 00:00:01
+  - action: browser_mod.close_popup
+    data: {}
+  mode: single

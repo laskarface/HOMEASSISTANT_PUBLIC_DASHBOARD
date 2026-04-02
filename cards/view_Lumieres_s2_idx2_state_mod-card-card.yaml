@@ -1,0 +1,105 @@
+# =========================================
+# CARTE : state
+# VUE   : Lumieres
+# TYPE  : custom:mod-card (Carte monobloc)
+# DÉPENDANCES :
+#  - entity.state
+#  - switch.bureau_z
+# =========================================
+
+card:
+  cards:
+  - card_mod:
+      style: ':host { flex: 1 1 0 !important; }
+
+        '
+    custom_fields:
+      main: "[[[\n  const isOn = entity.state === 'on';\n  const stateText = isOn\
+        \ ? \"ALLUMÉ\" : \"ÉTEINT\";\n  const rightTextColor = isOn ? \"white\" :\
+        \ \"rgba(255,255,255,0.35)\";\n  \n  const rgbColor = \"rgb(255,255,255)\"\
+        ;\n  const rgbStrAlpha = \"rgba(255,255,255,0.3)\";\n  const centerHaloStr\
+        \ = \"rgba(255,255,255,0.15)\";\n\n  const iconColor = isOn ? rgbColor : \"\
+        rgba(255,255,255,0.3)\";\n  const iconShadow = isOn ? `drop-shadow(0 0 8px\
+        \ ${rgbColor})` : \"none\";\n  \n  const leftBgStyle = isOn ? `background:linear-gradient(135deg,\
+        \ ${rgbStrAlpha} 0%, transparent 100%);` : '';\n  const centerHaloStyle =\
+        \ isOn ? `background:radial-gradient(ellipse at center, ${centerHaloStr} 0%,\
+        \ transparent 70%);` : '';\n\n  return `\n    <div style=\"display:flex;width:100%;height:100%;margin:0;padding:0;align-items:center;\"\
+        >\n      <div style=\"flex:0 0 130px;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border-right:1px\
+        \ solid rgba(255,255,255,0.1);${leftBgStyle}\">\n        <ha-icon icon=\"\
+        mdi:desk-lamp\" style=\"width:20px;height:20px;color:${iconColor};filter:${iconShadow};\"\
+        ></ha-icon>\n        <div style=\"font-size:8px;font-weight:950;color:${isOn?'white':'rgba(255,255,255,0.5)'};text-transform:uppercase;letter-spacing:1px;text-align:center;line-height:1;\"\
+        >BUREAU</div>\n      </div>\n      <div style=\"flex:1;height:100%;display:flex;justify-content:center;align-items:center;${centerHaloStyle}\"\
+        >\n        <span style=\"font-size:16px;font-weight:950;color:${rightTextColor};letter-spacing:1px;\"\
+        >${stateText}</span>\n      </div>\n    </div>`;\n]]]\n"
+    entity: switch.bureau_z
+    show_icon: false
+    show_name: false
+    show_state: false
+    styles:
+      card:
+      - padding: 0
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - border-radius: 0
+      - overflow: hidden
+      - height: 52px
+      custom_fields:
+        main:
+        - justify-self: stretch
+        - align-self: stretch
+        - padding: 0
+        - height: 100%
+      grid:
+      - grid-template-areas: '"main"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 52px
+      - margin: 0
+      - gap: 0
+    tap_action:
+      action: toggle
+    type: custom:button-card
+  - card_mod:
+      style: ':host { flex: 0 0 54px !important; } ha-card { display: flex !important;
+        align-items: center !important; justify-content: center !important; }
+
+        '
+    custom_fields:
+      m: "[[[\n  const on = entity.state === 'on';\n  const size = on ? 34 : 28;\n\
+        \  const op = on ? '0.22' : '0.08';\n  const bord = on ? '0.6' : '0.15';\n\
+        \  const svgSize = size * 0.55;\n  return `<div style=\"width:${size}px;height:${size}px;border-radius:50%;\n\
+        \    background:rgba(255,255,255,${op});\n    border:1px solid rgba(255,255,255,${bord});\n\
+        \    display:flex;align-items:center;justify-content:center;transition:all\
+        \ 0.4s;\">\n    <ha-icon icon=\"mdi:cog\" style=\"--mdc-icon-size: ${svgSize}px;\
+        \ color: rgba(255,255,255,${on?'1':'0.4'});\"></ha-icon>\n  </div>`;\n]]]\n"
+    entity: switch.bureau_z
+    show_icon: false
+    show_name: false
+    styles:
+      card:
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - border-left: 1px solid rgba(255,255,255,0.08)
+      - border-radius: 0
+      - padding: 0
+      - height: 52px
+      grid:
+      - grid-template-areas: '"m"'
+    tap_action:
+      action: more-info
+    type: custom:button-card
+  type: horizontal-stack
+card_mod:
+  style: "ha-card {\n  /* Style Glassmorphism Raffiné */\n  background: rgba(10, 15,\
+    \ 25, 0.8) !important;\n  backdrop-filter: blur(15px) !important;\n  -webkit-backdrop-filter:\
+    \ blur(15px) !important;\n  border-radius: 20px !important;\n  \n  /* Bordure\
+    \ Dynamique Fine */\n  border: 1px solid \n    {% if states('switch.bureau_z')\
+    \ == 'on' %}\n      rgba(255, 255, 255, 0.4)\n    {% else %}\n      rgba(255,\
+    \ 255, 255, 0.12)\n    {% endif %} !important;\n  \n  /* box-shadow profond */\n\
+    \  box-shadow: \n    {% if states('switch.bureau_z') == 'on' %}\n      0 0 20px\
+    \ rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.6)\n    {% else %}\n  \
+    \    0 8px 32px rgba(0, 0, 0, 0.5)\n    {% endif %} !important;\n    \n  overflow:\
+    \ hidden !important;\n  margin-top: 8px !important;\n  padding: 0 !important;\n\
+    }\n"
+type: custom:mod-card

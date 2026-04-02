@@ -1,0 +1,17 @@
+- sensor:
+    - name: "PAC énergie corrigée (Wh)"
+      unique_id: pac_energie_corrigee_wh
+      unit_of_measurement: "Wh"
+      device_class: energy
+      state_class: total_increasing
+      state: >
+        {% set v = states('sensor.sonde_pac_io_5470820_6_electric_energy_consumption') | float(0) %}
+        {% set last = state_attr('sensor.pac_energie_corrigee_wh', 'last_value') | float(0) %}
+        {% if v >= last %}
+          {{ v | round(0) }}
+        {% else %}
+          {{ last | round(0) }}
+        {% endif %}
+      attributes:
+        last_value: >
+          {{ states('sensor.sonde_pac_io_5470820_6_electric_energy_consumption') | float(0) }}

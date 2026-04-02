@@ -1,0 +1,25 @@
+homeassistant:
+    token: !secret access_token.464hXJQW1oqUYBm_itiIjxcQ1sQBjmehvAOjx7aAt00
+    url: http://!secret local_ip:8123
+api:
+  listen: ":1984"
+  username: "chris"  # Choisissez un nom
+  password: !secret password"!secret password" # Choisissez un mot de passe fort
+
+log:
+  api: info
+  level: info  # On garde 'info' pour ne pas surcharger le CPU
+
+publish:
+    xdebug:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          rtmps://127.0.0.1/s/x:x
+streams:
+    Bureau:
+        - rtsp://!secret user@gmail.com:!secret password@!secret local_ip/stream1
+    Chambre:
+        - rtsp://!secret user@gmail.com:!secret password@!secret local_ip/stream1
+    Salon:
+        - rtsp://!secret user@gmail.com:!secret password@!secret local_ip/stream1
+    boite_lettres:
+        - rtsp://Hu315nop67RyJLY5:Po4Z4CD0y9rL5sbg@!secret local_ip/live0
+    portail:
+        - rtsp://Hu315nop67RyJLY5:Po4Z4CD0y9rL5sbg@!secret local_ip/live1

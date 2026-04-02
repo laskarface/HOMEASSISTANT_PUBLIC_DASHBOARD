@@ -1,0 +1,22 @@
+# =========================================
+# CARTE : psg_cl
+# VUE   : PSG
+# TYPE  : custom:teamtracker-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.espncdn
+#  - sensor.psg_cl
+# =========================================
+
+card_mod:
+  style: "ha-card {\n   background: rgba(20, 27, 38, 0.6) !important;\n   backdrop-filter:\
+    \ blur(10px) !important;\n   border-radius: 20px !important;\n   border: 1px solid\
+    \ rgba(255,255,255,0.1) !important;\n   box-shadow: 0 4px 15px rgba(0,0,0,0.2)\
+    \ !important;\n   position: relative; /* Indispensable pour le logo central */\n\
+    }\n\n/* Logo Officiel LDC en haut au milieu */\nha-card::before {\n   content:\
+    \ \"\";\n   position: absolute;\n   top: 8px;\n   left: 50%;\n   transform: translateX(-50%);\n\
+    \   width: 52px;\n   height: 52px;\n   background-image: url(\"https://a.espncdn.com/i/leaguelogos/soccer/500/2.png\"\
+    );\n   background-size: contain;\n   background-repeat: no-repeat;\n   background-position:\
+    \ center;\n   filter: grayscale(100%) invert(100%) brightness(200%) drop-shadow(0\
+    \ 0 5px rgba(255,255,255,0.4));\n   z-index: 5;\n   opacity: 0.85; \n}\n"
+entity: sensor.psg_cl
+type: custom:teamtracker-card

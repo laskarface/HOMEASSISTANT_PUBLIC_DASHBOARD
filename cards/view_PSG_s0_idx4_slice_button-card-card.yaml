@@ -1,0 +1,109 @@
+# =========================================
+# CARTE : slice
+# VUE   : PSG
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  - a.espncdn
+#  - entries.slice
+#  - entry.stats
+#  - entry.team
+#  - event.stop
+#  - pld_stat.display
+#  - pts_stat.display
+#  - rank_stat.display
+#  - rest.for
+#  - rest.length
+#  - s.name
+#  - sensor.attributes
+#  - sensor.ligue_1_scoreboard
+#  - stats.find
+# =========================================
+
+custom_fields:
+  table: "[[[\n  let out = `\n  <h1 style=\"display: flex; align-items: center; gap:\
+    \ 10px; padding: 12px 16px 0 16px; margin: 0; font-size: 18px; font-weight: 600;\
+    \ letter-spacing: 0.5px; color: #ffffff;\">\n    <img src=\"https://a.espncdn.com/i/leaguelogos/soccer/500/9.png\"\
+    \ style=\"width: 38px; height: 38px; filter: brightness(0) invert(1) drop-shadow(0\
+    \ 0 5px rgba(255,255,255,0.5));\">\n    Classement Ligue 1\n  </h1>`;\n\n  \n\
+    \  let sensor = states['sensor.ligue_1_scoreboard'];\n  if (!sensor || !sensor.attributes\
+    \ || !sensor.attributes.entries) {\n    return out + `<div style=\"padding: 10px;\
+    \ text-align: center; color: #ffb300;\">Données en cours de synchronisation...</div>`;\n\
+    \  }\n  \n  let entries = sensor.attributes.entries;\n  \n  let renderRow = function(entry)\
+    \ {\n    let stats = entry.stats || [];\n    let rank_stat = stats.find(s => s.name\
+    \ === 'rank');\n    let pts_stat = stats.find(s => s.name === 'points');\n   \
+    \ let pld_stat = stats.find(s => s.name === 'gamesPlayed');\n    \n    let rank\
+    \ = rank_stat ? rank_stat.displayValue : '0';\n    let pts = pts_stat ? pts_stat.displayValue\
+    \ : '0';\n    let pld = pld_stat ? pld_stat.displayValue : '0';\n    \n    let\
+    \ r = parseInt(rank) || 0;\n    let c_color = '#ffffff'; \n    let opacity = '1';\
+    \ \n    \n    if (r >= 1 && r <= 4) {\n      c_color = '#4caf50'; \n    } else\
+    \ if (r >= 5 && r <= 6) {\n      c_color = '#2196f3'; \n    } else if (r == 16)\
+    \ {\n      c_color = '#ff9800'; \n    } else if (r >= 17) {\n      c_color = '#f44336';\
+    \ \n      opacity = '0.4';\n    }\n    \n    let border_left = (c_color !== '#ffffff')\
+    \ ? `3px solid ${c_color}` : `3px solid transparent`;\n    \n    let name = entry.team.shortDisplayName\
+    \ || entry.team.name;\n    let logo = (entry.team.logos && entry.team.logos[0])\
+    \ ? entry.team.logos[0].href : '';\n    \n    let name_style = \"white-space:\
+    \ nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;\";\n  \
+    \  if (name === 'PSG' || name === 'Paris Saint-Germain') {\n      name_style +=\
+    \ \" font-weight: bold; color: #ffb300;\";\n    }\n    \n    return `\n      <tr\
+    \ style=\"border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; opacity:\
+    \ ${opacity};\">\n        <td style=\"width: 12%; padding: 3px 8px; font-weight:\
+    \ bold; color: ${c_color}; border-left: ${border_left};\">${rank}</td>\n     \
+    \   <td style=\"width: 58%; padding: 3px 4px;\">\n          <div style=\"display:\
+    \ flex; align-items: center; gap: 8px;\">\n            <img src=\"${logo}\" width=\"\
+    16\" height=\"16\" style=\"background: white; border-radius: 50%; padding: 1px;\"\
+    >\n            <span style=\"${name_style}\">${name}</span>\n          </div>\n\
+    \        </td>\n        <td style=\"width: 15%; text-align: center; padding: 3px\
+    \ 4px; color: #a9b1d6;\">${pld}</td>\n        <td style=\"width: 15%; text-align:\
+    \ center; padding: 3px 4px; font-weight: bold;\">${pts}</td>\n      </tr>\n  \
+    \  `;\n  };\n  \n  out += `<table width=\"100%\" style=\"border-collapse: collapse;\
+    \ text-align: left; color: white; font-family: Roboto, sans-serif; margin-top:\
+    \ 8px;\">\n    <tr style=\"border-bottom: 2px solid rgba(255,255,255,0.2); font-size:\
+    \ 11px; text-transform: uppercase; color: #a9b1d6;\">\n      <th style=\"width:\
+    \ 12%; padding: 4px 8px;\">#</th>\n      <th style=\"width: 58%; padding: 4px\
+    \ 4px;\">Équipe</th>\n      <th style=\"width: 15%; text-align: center; padding:\
+    \ 4px 4px;\">J</th>\n      <th style=\"width: 15%; text-align: center; padding:\
+    \ 4px 4px;\">Pts</th>\n    </tr>`;\n    \n  let top_6 = entries.slice(0, 6);\n\
+    \  let rest = entries.slice(6);\n  \n  top_6.forEach(entry => {\n    out += renderRow(entry);\n\
+    \  });\n  out += `</table>`;\n  \n  if (rest.length > 0) {\n    out += `\n   \
+    \ <details \n      onpointerdown=\"event.stopPropagation();\" \n      ontouchstart=\"\
+    event.stopPropagation();\"\n      onclick=\"event.stopPropagation();\" \n    \
+    \  style=\"width: 100%; outline: none;\">\n      <summary style=\"cursor: pointer;\
+    \ text-align: center; display: block; color: #ffffff; padding: 6px; font-size:\
+    \ 11px; font-weight: bold; background: rgba(255,255,255,0); border-radius: 8px;\
+    \ margin: 8px 0; outline: none; border: 1px solid rgba(255,255,255,0.2); box-shadow:\
+    \ 0 2px 5px rgba(0,0,0,0.2);\">\n        ▼ AFFICHER LE RESTE DU CLASSEMENT ▼\n\
+    \      </summary>\n      <table width=\"100%\" style=\"border-collapse: collapse;\
+    \ text-align: left; color: white; font-family: Roboto, sans-serif;\">\n    `;\n\
+    \    rest.forEach(entry => {\n      out += renderRow(entry);\n    });\n    out\
+    \ += `</table></details>`;\n  }\n  \n  out += `\n    <div style=\"margin-top:\
+    \ 10px; margin-bottom: 10px; font-size: 10px; color: #a9b1d6; display: flex; gap:\
+    \ 10px; justify-content: center; flex-wrap: wrap;\">\n      <span style=\"display:\
+    \ flex; align-items: center; gap: 4px;\"><div style=\"width:8px; height:8px; background:#4caf50;\
+    \ border-radius:50%;\"></div> LDC</span>\n      <span style=\"display: flex; align-items:\
+    \ center; gap: 4px;\"><div style=\"width:8px; height:8px; background:#2196f3;\
+    \ border-radius:50%;\"></div> Europa</span>\n      <span style=\"display: flex;\
+    \ align-items: center; gap: 4px;\"><div style=\"width:8px; height:8px; background:#ff9800;\
+    \ border-radius:50%;\"></div> Barrages</span>\n      <span style=\"display: flex;\
+    \ align-items: center; gap: 4px;\"><div style=\"width:8px; height:8px; background:#f44336;\
+    \ border-radius:50%;\"></div> Relégation</span>\n    </div>\n  `;\n  \n  return\
+    \ out;\n]]]\n"
+show_icon: false
+show_name: false
+styles:
+  card:
+  - background: rgba(20, 27, 38, 0.6)
+  - backdrop-filter: blur(10px)
+  - -webkit-backdrop-filter: blur(10px)
+  - border-radius: 20px
+  - border: 1px solid rgba(255,255,255,0.1)
+  - box-shadow: 0 4px 15px rgba(0,0,0,0.3)
+  - margin-top: 8px
+  - padding: 0
+  - cursor: default
+  custom_fields:
+    table:
+    - pointer-events: auto
+  grid:
+  - grid-template-areas: '"table"'
+  - grid-template-columns: 100%
+type: custom:button-card

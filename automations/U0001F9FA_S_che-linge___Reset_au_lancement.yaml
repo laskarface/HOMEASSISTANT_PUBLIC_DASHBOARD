@@ -1,0 +1,12 @@
+- id: '1763114905068'
+  alias: "\U0001F9FA Sèche-linge — Reset au lancement"
+  description: Éteint le témoin terminé dès que la machine quitte l'état Finished
+  triggers:
+  - trigger: state
+    entity_id: sensor.seche_linge_mode
+    from: Finished
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.seche_linge_termine
+  mode: single

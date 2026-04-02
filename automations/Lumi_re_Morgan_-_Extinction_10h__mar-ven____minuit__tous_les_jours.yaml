@@ -1,0 +1,37 @@
+- id: '1770140041798'
+  alias: Lumière Morgan - Extinction 10h (mar-ven) + minuit (tous les jours)
+  description: 'Éteint light.pilote_led_morgan à 10h du mardi au vendredi et à minuit
+    tous les jours
+
+    '
+  triggers:
+  - at: 00:00:00
+    id: minuit
+    trigger: time
+  - at: '10:00:00'
+    id: dix_heures
+    trigger: time
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: minuit
+      sequence:
+      - target:
+          entity_id: light.pilote_led_morgan
+        action: light.turn_off
+    - conditions:
+      - condition: trigger
+        id: dix_heures
+      - condition: time
+        weekday:
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - target:
+          entity_id: light.pilote_led_morgan
+        action: light.turn_off
+  mode: single

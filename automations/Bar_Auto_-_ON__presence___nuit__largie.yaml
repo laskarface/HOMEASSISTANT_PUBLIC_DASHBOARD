@@ -1,0 +1,20 @@
+- id: '1765902795277'
+  alias: Bar Auto - ON (presence + nuit élargie)
+  triggers:
+  - entity_id: binary_sensor.capteur_presence_bar_z_occupancy
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: or
+    conditions:
+    - condition: sun
+      after: sunset
+      after_offset: -00:45:00
+    - condition: sun
+      before: sunrise
+      before_offset: +00:45:00
+  actions:
+  - target:
+      entity_id: light.bar
+    action: light.turn_on
+  mode: restart

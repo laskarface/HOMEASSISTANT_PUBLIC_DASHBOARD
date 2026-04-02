@@ -1,0 +1,91 @@
+smart_home:
+  locale: fr-FR
+  endpoint: https://api.eu.amazonalexa.com/v3/events
+
+  filter:
+    include_entities:
+      # --- Lumières ---
+      - light.leds_morgan_v2
+      - light.pilote_led_chloe
+      - light.lumiere_chloe
+      # --- Prises & Interrupteurs ---
+      - switch.bureau_z
+      - switch.inter_cuisine
+      - switch.inter_toilettes_z
+      - switch.inter_cellier
+      - switch.miroir_sdb_parents
+      - switch.sdb_parent_z
+      # --- Capteurs de contact (Portes/Fenêtres) ---
+      - binary_sensor.capteur_fenetre_chloe_contact
+      - binary_sensor.capteur_fenetre_morgan_contact
+      - binary_sensor.capteur_porte_morgan_contact
+      - binary_sensor.fenetre_lison_contact
+
+  entity_config:
+    # ====== LUMIÈRES ======
+    light.leds_morgan_v2:
+      name: "Leds Morgane"
+      description: "Bandeau LED Morgan via Home Assistant"
+      display_categories: LIGHT
+
+    light.pilote_led_chloe:
+      name: "Leds Chloé"
+      description: "Bandeau LED Chloé via Home Assistant"
+      display_categories: LIGHT
+      
+    light.lumiere_chloe:
+      name: "Lumière Chloé"
+      description: "Plafonnier Chloé via Home Assistant"
+      display_categories: LIGHT
+
+    # ====== PRISES ET INTERRUPTEURS ======
+    switch.bureau_z:
+      name: "Lumière Bureau"
+      description: "Interrupteur principal du bureau"
+      display_categories: SWITCH
+
+    switch.inter_cuisine:
+      name: "Lumière Cuisine"
+      description: "Interrupteur principal de la cuisine"
+      display_categories: SWITCH
+
+    switch.inter_toilettes_z:
+      name: "Lumière Toilettes"
+      description: "Interrupteur des toilettes"
+      display_categories: SWITCH
+      
+    switch.inter_cellier:
+      name: "Lumière Cellier"
+      description: "Interrupteur du cellier"
+      display_categories: SWITCH    
+
+    switch.sdb_parent_z:
+      name: "Lumière Salle de Bain Parents"
+      description: "Interrupteur principal SDB"
+      display_categories: SWITCH
+
+    switch.miroir_sdb_parents:
+      name: "Miroir Salle de Bain"
+      description: "Lumière du miroir SDB Parents"
+      display_categories: SWITCH
+
+    # ====== CAPTEURS DE CONTACT ======
+    binary_sensor.capteur_fenetre_chloe_contact:
+      name: "Fenêtre Chloé"
+      description: "Capteur de la fenêtre de Chloé"
+      display_categories: CONTACT_SENSOR
+
+    binary_sensor.capteur_fenetre_morgan_contact:
+      name: "Fenêtre Morgan"
+      description: "Capteur de la fenêtre de Morgan"
+      display_categories: CONTACT_SENSOR
+
+    binary_sensor.capteur_porte_morgan_contact:
+      name: "Porte Morgan"
+      description: "Capteur de la porte de Morgan"
+      display_categories: CONTACT_SENSOR
+
+    binary_sensor.fenetre_lison_contact:
+      name: "Fenêtre Lison"
+      description: "Capteur de la fenêtre de Lison"
+      display_categories: CONTACT_SENSOR

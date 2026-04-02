@@ -1,0 +1,12 @@
+# sensors.yaml
+- platform: template
+  sensors:
+    pac_energie_kwh:
+      unique_id: pac_energie_kwh
+      friendly_name: "PAC énergie (kWh)"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      value_template: >
+        {% set v = states('sensor.dhwp_actuator_io_3109718_2_electric_energy_consumption') | float(0) %}
+        {{ (v / 1000) | round(3) }}

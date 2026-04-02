@@ -1,0 +1,32 @@
+- id: '1768307208201'
+  alias: Poubelles - Sortie ce soir 20h (Chris + Aline)
+  triggers:
+  - at: '20:00:00'
+    trigger: time
+  actions:
+  - target:
+      entity_id: calendar.chris_billet_gmail_com
+    data:
+      start_date_time: '{{ now().replace(hour=19, minute=55).isoformat() }}'
+      end_date_time: '{{ now().replace(hour=20, minute=20).isoformat() }}'
+    response_variable: cal
+    action: calendar.get_events
+  - variables:
+      events: '{{ cal[''calendar.chris_billet_gmail_com''][''events''] | default([])
+        }}'
+      poubelles_list: '{{ events | selectattr(''summary'', ''defined'') | selectattr(''summary'',
+        ''search'', ''(?i)sortir\\s+poubelle'') | map(attribute=''summary'') | list
+        }}'
+      message_poubelles: '{{ poubelles_list | map(''regex_replace'', ''(?i)^sortir\\s+poubelle\\s*[:\\-]?\\s*'',
+        '''') | join(''\n'') }}'
+  - condition: template
+    value_template: '{{ poubelles_list | length > 0 }}'
+  - data:
+      title: "Poubelles \U0001F5D1️"
+      message: '{{ message_poubelles }}'
+    action: notify.mobile_app_iphone_16_pro_de_kristensen
+  - data:
+      title: "Poubelles \U0001F5D1️"
+      message: '{{ message_poubelles }}'
+    action: notify.mobile_app_iphone_daline
+  mode: single

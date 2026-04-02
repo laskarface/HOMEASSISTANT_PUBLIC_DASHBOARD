@@ -1,0 +1,14 @@
+- id: '1773250392627'
+  alias: 'SDB Parents : Synchronisation Miroir'
+  description: Le miroir suit l'état de l'interrupteur principal
+  triggers:
+  - entity_id: switch.sdb_parent_z
+    trigger: state
+    to:
+    - 'on'
+    - 'off'
+  actions:
+  - action: switch.turn_{{ trigger.to_state.state }}
+    target:
+      entity_id: switch.miroir_sdb_parents
+  mode: restart

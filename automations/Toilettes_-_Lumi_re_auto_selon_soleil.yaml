@@ -1,0 +1,40 @@
+- id: '1773266632551'
+  alias: Toilettes - Lumière auto selon soleil
+  description: Allume sur présence de 30 min avant le coucher du soleil à 30 min après
+    le lever, puis éteint 2 min après absence
+  triggers:
+  - entity_id: binary_sensor.mouvement_toilettes_z_occupancy
+    to: 'on'
+    id: presence_on
+    trigger: state
+  - entity_id: binary_sensor.mouvement_toilettes_z_occupancy
+    to: 'off'
+    for: 00:02:00
+    id: presence_off
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: presence_on
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: -00:30:00
+        - condition: sun
+          before: sunrise
+          before_offset: +00:30:00
+      sequence:
+      - target:
+          entity_id: switch.inter_toilettes_z
+        action: switch.turn_on
+    - conditions:
+      - condition: trigger
+        id: presence_off
+      sequence:
+      - target:
+          entity_id: switch.inter_toilettes_z
+        action: switch.turn_off
+  mode: restart

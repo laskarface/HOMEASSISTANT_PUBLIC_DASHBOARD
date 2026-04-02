@@ -1,0 +1,32 @@
+- id: notif_suivi_greffe_mobile
+  alias: Notif Suivi Greffe - iPhone 6h
+  description: Notification quotidienne du suivi greffe envoyée à l'iPhone de Kristensen
+  initial_state: true
+  triggers:
+  - trigger: time
+    at: 06:00:00
+  conditions: []
+  actions:
+  - delay: 00:00:10
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: Suivi post-greffe - {{ states('sensor.suivi_greffe_jour') }}
+      message: "{% set days = state_attr('sensor.suivi_greffe_jour','days_since_start')
+        | int(-1) %}\n{% set vit = state_attr('sensor.suivi_greffe_jour','vitamine_aujourdhui')
+        %}\n{% set sham = state_attr('sensor.suivi_greffe_jour','shampoing_aujourdhui')
+        %}\n{% set ozone = state_attr('sensor.suivi_greffe_jour','serum_ozone_aujourdhui')
+        %}\n{% set derma = state_attr('sensor.suivi_greffe_jour','dermaroller_serum_aujourdhui')
+        %}\n{% set huile = state_attr('sensor.suivi_greffe_jour','huile_capillaire_aujourdhui')
+        %}\n{% set massage = state_attr('sensor.suivi_greffe_jour','massage_cuir_chevelu_aujourdhui')
+        %}\n{% if days < 0 %}\n  Protocole non démarré (avant J0).\n{% elif days >
+        365 %}\n  Protocole terminé.\n{% else %}\n  {% set msg = 'Jour J+' ~ days
+        %}\n  {% if vit in [true, 'true', 'True', 1] %}{% set msg = msg ~ ' | Vitamines'
+        %}{% endif %}\n  {% if sham in [true, 'true', 'True', 1] %}{% set msg = msg
+        ~ ' | Shampoing' %}{% endif %}\n  {% if ozone in [true, 'true', 'True', 1]
+        %}{% set msg = msg ~ ' | Sérum huile ozonée' %}{% endif %}\n  {% if derma
+        in [true, 'true', 'True', 1] %}{% set msg = msg ~ ' | Dermaroller + sérum'
+        %}{% endif %}\n  {% if huile in [true, 'true', 'True', 1] %}{% set msg = msg
+        ~ ' | Huile capillaire' %}{% endif %}\n  {% if massage in [true, 'true', 'True',
+        1] %}{% set msg = msg ~ ' | Massage cuir chevelu' %}{% endif %}\n  {{ msg
+        }}\n{% endif %}\n"
+  mode: single

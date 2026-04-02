@@ -1,0 +1,35 @@
+- id: notif_ouvertures_depart_chris_aline
+  alias: 'Sécurité : Notification ouvertures au départ'
+  triggers:
+  - trigger: state
+    entity_id:
+    - person.chris
+    - person.aline
+    from: home
+    to: not_home
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.ouvertures_count
+    above: 0
+  - condition: state
+    entity_id: person.chris
+    state: not_home
+  - condition: state
+    entity_id: person.aline
+    state: not_home
+  actions:
+  - action: notify.mobile_app_iphone_16_pro_de_kristensen
+    data:
+      title: "\U0001F6AB Ouverture détectée !"
+      message: 'Chris et Aline viennent de quitter la maison. Attention, {{ states(''sensor.ouvertures_count'')
+        }} ouverture(s) sont encore détectées.
+
+        '
+  - action: notify.mobile_app_iphone_daline
+    data:
+      title: "\U0001F6AB Ouverture détectée !"
+      message: 'Chris et Aline viennent de quitter la maison. Attention, {{ states(''sensor.ouvertures_count'')
+        }} ouverture(s) sont encore détectées.
+
+        '
+  mode: single

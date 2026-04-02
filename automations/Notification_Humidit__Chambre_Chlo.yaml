@@ -1,0 +1,30 @@
+- id: chloe_humidity_notification
+  alias: Notification Humidité Chambre Chloé
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.smart_temp_humidity_sensor_39000e5be749_humidity
+    above: 67
+    id: high
+  - trigger: numeric_state
+    entity_id: sensor.smart_temp_humidity_sensor_39000e5be749_humidity
+    below: 65
+    id: normal
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: high
+      sequence:
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: "Humidité élevée \U0001F4A7"
+          message: Ta chambre est trop humide ({{ states('sensor.smart_temp_humidity_sensor_39000e5be749_humidity')
+            }}%), il faut aérer !
+    - conditions:
+      - condition: trigger
+        id: normal
+      sequence:
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: Humidité OK ✅
+          message: L'humidité est redevenue normale.

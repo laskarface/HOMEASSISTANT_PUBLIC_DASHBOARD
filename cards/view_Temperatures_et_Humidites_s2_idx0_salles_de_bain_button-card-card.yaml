@@ -1,0 +1,46 @@
+# =========================================
+# CARTE : salles_de_bain
+# VUE   : Temperatures_et_Humidites
+# TYPE  : custom:button-card (Carte monobloc)
+# DÉPENDANCES :
+#  (Aucune dépendance)
+# =========================================
+
+custom_fields:
+  l: ' '
+icon: mdi:sofa-single
+name: Salles de bain
+styles:
+  card:
+  - background: none
+  - border: none
+  - padding: 8px 15px
+  - height: auto
+  custom_fields:
+    l:
+    - width: 100%
+    - height: 1.5px
+    - background: 'linear-gradient(to right, transparent 0%, #00D2FF 50%, transparent
+        100%)'
+    - margin-top: 5px
+    - opacity: 0.7
+  grid:
+  - grid-template-areas: '"i n" "l l"'
+  - grid-template-columns: min-content 1fr
+  - grid-template-rows: min-content min-content
+  - gap: 0px 10px
+  icon:
+  - width: 24px
+  - color: '#00D2FF'
+  - filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.4))
+  - align-self: center
+  name:
+  - justify-self: start
+  - font-weight: 900
+  - font-size: 15px
+  - color: '#00D2FF'
+  - text-transform: uppercase
+  - letter-spacing: 1px
+  - text-shadow: 0 0 10px rgba(0, 210, 255, 0.3)
+  - align-self: center
+type: custom:button-card

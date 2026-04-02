@@ -1,0 +1,147 @@
+- id: '1774617444422'
+  alias: "\U0001F514 Sécurité : Notifications Alarme"
+  description: Notifie la famille à chaque changement d'état de l'alarme (hors intrusion)
+  triggers:
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_home
+    id: alarme_presente
+    for: 00:00:15
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: armed_away
+    id: alarme_absente
+  - trigger: state
+    entity_id: alarm_control_panel.eufy_homebase2
+    to: disarmed
+    id: alarme_desactivee
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: alarme_presente
+      - condition: template
+        value_template: '{{ trigger.from_state.state not in [''unavailable'', ''unknown'']
+          }}
+
+          '
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_de_marley
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: "\U0001F3E0 Alarme — Mode PRÉSENT"
+          message: Surveillance activée sans sirène.
+          data:
+            push:
+              interruption-level: active
+    - conditions:
+      - condition: trigger
+        id: alarme_absente
+      - condition: template
+        value_template: '{{ trigger.from_state.state not in [''triggered'', ''unavailable'',
+          ''unknown''] }}
+
+          '
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_de_marley
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: "\U0001F6A8 Alarme — Mode ABSENCE"
+          message: Alarme activée. Une sirène retentira en cas d'intrusion.
+          data:
+            push:
+              interruption-level: time-sensitive
+    - conditions:
+      - condition: trigger
+        id: alarme_desactivee
+      sequence:
+      - action: notify.mobile_app_iphone_16_pro_de_kristensen
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_daline
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_de_chloe
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_de_marley
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+      - action: notify.mobile_app_iphone_de_morgan
+        data:
+          title: ✅ Alarme Désactivée
+          message: Alarme désactivée. Bienvenue !
+          data:
+            push:
+              interruption-level: passive
+  mode: single
