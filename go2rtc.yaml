@@ -2,7 +2,7 @@ homeassistant:
     token: !secret access_token.464hXJQW1oqUYBm_itiIjxcQ1sQBjmehvAOjx7aAt00
     url: http://!secret local_ip:8123
 api:
-  listen: ":1984"
+  listen: ":xxxx"
   username: "chris"  # Choisissez un nom
   password: !secret password"!secret password" # Choisissez un mot de passe fort
 
